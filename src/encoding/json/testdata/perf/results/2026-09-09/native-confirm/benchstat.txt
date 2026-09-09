@@ -1,0 +1,17 @@
+                        │  encode.txt  │           final.txt            │
+                        │    sec/op    │    sec/op     vs base          │
+JSON/ASCII256/Unmarshal   221.3n ± 21%   198.3n ± 15%  ~ (p=0.274 n=20)
+
+                        │  encode.txt   │            final.txt            │
+                        │      B/s      │      B/s       vs base          │
+JSON/ASCII256/Unmarshal   1.087Gi ± 25%   1.212Gi ± 15%  ~ (p=0.277 n=20)
+
+                        │ encode.txt │           final.txt            │
+                        │    B/op    │    B/op     vs base            │
+JSON/ASCII256/Unmarshal   0.000 ± 0%   0.000 ± 0%  ~ (p=1.000 n=20) ¹
+¹ all samples are equal
+
+                        │ encode.txt │           final.txt            │
+                        │ allocs/op  │ allocs/op   vs base            │
+JSON/ASCII256/Unmarshal   0.000 ± 0%   0.000 ± 0%  ~ (p=1.000 n=20) ¹
+¹ all samples are equal

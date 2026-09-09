@@ -1,0 +1,1 @@
+BenchmarkJSON/StringUnicode/Marshal    85508	     62930 ns/op	 288.00 MB/s	   18434 B/op	       1 allocs/op

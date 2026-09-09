@@ -1,0 +1,259 @@
+--------------------------------------------------------------------------------
+Profile data file 'results/guard-decode-counts/EscapeRuns-Unmarshal-0-guard.callgrind' (creator: callgrind-3.27.1)
+--------------------------------------------------------------------------------
+I1 cache:
+D1 cache:
+LL cache:
+Timerange: Basic block 0 - 4013025
+Trigger: Program termination
+Profiled target:  guard-decode -case EscapeRuns -op Unmarshal -n 200 (PID 11, part 1)
+Events recorded:  Ir Bc Bcm Bi Bim
+Events shown:     Ir Bc Bcm Bi Bim
+Event sort order: Ir Bc Bcm Bi Bim
+Thresholds:       100 0 0 0 0
+Include dirs:
+User annotated:
+Auto-annotation:  off
+
+--------------------------------------------------------------------------------
+Ir                  Bc                 Bcm             Bi             Bim
+--------------------------------------------------------------------------------
+12,870,582 (100.0%) 3,894,558 (100.0%) 16,492 (100.0%) 1,148 (100.0%) 11 (100.0%)  PROGRAM TOTALS
+
+--------------------------------------------------------------------------------
+Ir                 Bc                 Bcm            Bi           Bim         file:function
+--------------------------------------------------------------------------------
+9,333,000 (72.51%) 3,330,600 (85.52%) 4,057 (24.60%)   .          .           go/src/encoding/json/internal/jsonwire/decode.go:encoding/json/internal/jsonwire.AppendUnquote [guard-decode]
+1,581,600 (12.29%)   164,400 ( 4.22%) 6,806 (41.27%)   .          .           go/src/encoding/json/internal/jsonwire/ascii_simd_amd64.go:encoding/json/internal/jsonwire.consumeASCIIPrefixAVX2 [guard-decode]
+  651,600 ( 5.06%)   138,800 ( 3.56%)   574 ( 3.48%)   .          .           go/src/encoding/json/internal/jsonwire/decode.go:encoding/json/internal/jsonwire.ConsumeStringResumable [guard-decode]
+  272,006 ( 2.11%)    44,601 ( 1.15%)   429 ( 2.60%)   .          .           go/src/runtime/memmove_amd64.s:runtime.memmove [guard-decode]
+  126,828 ( 0.99%)   110,409 ( 2.83%)   627 ( 3.80%)   .          .           go/src/runtime/memclr_amd64.s:runtime.memclrNoHeapPointers [guard-decode]
+  115,600 ( 0.90%)         .              .            .          .           go/src/simd/archsimd/other_gen_amd64.go:encoding/json/internal/jsonwire.consumeASCIIPrefixAVX2
+   65,760 ( 0.51%)     4,320 ( 0.11%)   401 ( 2.43%)   .          .           go/src/runtime/mpagealloc.go:runtime.mergeSummaries [guard-decode]
+   54,800 ( 0.43%)         .              .            .          .           go/src/simd/archsimd/slice_gen_amd64.go:encoding/json/internal/jsonwire.consumeASCIIPrefixAVX2
+   35,909 ( 0.28%)     5,599 ( 0.14%)   180 ( 1.09%)   .          .           go/src/runtime/malloc.go:runtime.mallocgcSmallNoscan [guard-decode]
+   32,000 ( 0.25%)     6,400 ( 0.16%)     2 ( 0.01%)   .          .           go/src/encoding/json/internal/jsonwire/ascii_simd_amd64.go:encoding/json/internal/jsonwire.ConsumeStringResumable
+   25,600 ( 0.20%)     6,400 ( 0.16%)     .            .          .           go/src/unicode/utf8/utf8.go:encoding/json/internal/jsonwire.ConsumeStringResumable
+   25,134 ( 0.20%)     2,385 ( 0.06%)   128 ( 0.78%)   .          .           go/src/runtime/mpagealloc.go:runtime.(*pageAlloc).update [guard-decode]
+   20,200 ( 0.16%)     3,400 ( 0.09%)   126 ( 0.76%)   .          .           go/src/encoding/json/jsontext/decode.go:encoding/json/jsontext.(*decoderState).ReadValue [guard-decode]
+   18,400 ( 0.14%)     3,600 ( 0.09%)     2 ( 0.01%)   .          .           go/src/encoding/json/internal/jsonwire/decode.go:encoding/json/internal/jsonwire.ConsumeSimpleString [guard-decode]
+   16,600 ( 0.13%)       600 ( 0.02%)     4 ( 0.02%)   .          .           go/src/encoding/json/jsontext/decode.go:encoding/json/jsontext.(*decoderState).reset [guard-decode]
+   16,400 ( 0.13%)     1,600 ( 0.04%)     .            .          .           go/src/encoding/json/jsontext/decode.go:encoding/json/jsontext.(*decoderState).consumeWhitespace [guard-decode]
+   14,800 ( 0.11%)     1,200 ( 0.03%)     2 ( 0.01%)   .          .           go/src/encoding/json/jsontext/decode.go:encoding/json/jsontext.(*decoderState).consumeString [guard-decode]
+   14,200 ( 0.11%)     1,200 ( 0.03%)     6 ( 0.04%)   .          .           go/src/encoding/json/v2/arshal_default.go:encoding/json/v2.makeStringArshaler.func2 [guard-decode]
+   14,000 ( 0.11%)     2,000 ( 0.05%)     4 ( 0.02%)   .          .           go/src/encoding/json/jsontext/decode.go:encoding/json/jsontext.(*decoderState).consumeValue [guard-decode]
+   13,800 ( 0.11%)     1,800 ( 0.05%)     4 ( 0.02%) 200 (17.42%) 1 ( 9.09%)  go/src/internal/sync/hashtriemap.go:internal/sync.(*HashTrieMap[go.shape.interface {},go.shape.interface {}]).Load [guard-decode]
+   12,240 ( 0.10%)     2,376 ( 0.06%)   140 ( 0.85%)   .          .           go/src/runtime/mpallocbits.go:runtime.(*pallocBits).findSmallN [guard-decode]
+   12,057 ( 0.09%)     3,618 ( 0.09%)   104 ( 0.63%)   1 ( 0.09%) 1 ( 9.09%)  go/src/runtime/malloc.go:runtime.mallocgc [guard-decode]
+   11,866 ( 0.09%)     1,610 ( 0.04%)     6 ( 0.04%)   .          .           go/src/runtime/slice.go:runtime.growslice [guard-decode]
+   11,400 ( 0.09%)     2,200 ( 0.06%)     8 ( 0.05%)   .          .           go/src/encoding/json/jsontext/decode.go:encoding/json/jsontext.(*decoderState).PeekKind [guard-decode]
+   10,600 ( 0.08%)     1,600 ( 0.04%)     6 ( 0.04%) 200 (17.42%) 1 ( 9.09%)  go/src/encoding/json/v2/arshal.go:encoding/json/v2.unmarshalDecode [guard-decode]
+   10,375 ( 0.08%)     1,511 ( 0.04%)    24 ( 0.15%)   .          .           go/src/runtime/mheap.go:runtime.(*mheap).allocSpan [guard-decode]
+   10,000 ( 0.08%)     1,600 ( 0.04%)     2 ( 0.01%)   .          .           go/src/encoding/json/jsontext/decode.go:encoding/json/jsontext.(*decoderState).checkEOF [guard-decode]
+    9,595 ( 0.07%)     1,036 ( 0.03%)    20 ( 0.12%)   .          .           go/src/runtime/mheap.go:runtime.(*mheap).initSpan [guard-decode]
+    8,982 ( 0.07%)     1,311 ( 0.03%)   204 ( 1.24%)   .          .           go/src/runtime/mpallocbits.go:runtime.(*pallocBits).summarize [guard-decode]
+    8,000 ( 0.06%)     1,200 ( 0.03%)     4 ( 0.02%) 200 (17.42%) 1 ( 9.09%)  go/src/encoding/json/internal/jsonopts/options.go:encoding/json/internal/jsonopts.(*Struct).Join [guard-decode]
+    7,614 ( 0.06%)       904 ( 0.02%)    88 ( 0.53%)   .          .           go/src/runtime/mcache.go:runtime.(*mcache).refill [guard-decode]
+    7,599 ( 0.06%)     1,200 ( 0.03%)     1 ( 0.01%)   .          .           go/src/sync/pool.go:sync.(*Pool).pin [guard-decode]
+    7,400 ( 0.06%)       400 ( 0.01%)     2 ( 0.01%) 200 (17.42%) 1 ( 9.09%)  go/src/encoding/json/v2/arshal.go:encoding/json/v2.Unmarshal [guard-decode]
+    6,800 ( 0.05%)     1,600 ( 0.04%)   399 ( 2.42%)   .          .           go/src/runtime/alg.go:runtime.ifaceeq [guard-decode]
+    6,800 ( 0.05%)     1,000 ( 0.03%)     2 ( 0.01%)   .          .           go/src/encoding/json/jsontext/decode.go:encoding/json/jsontext.(*decoderState).CheckNextValue [guard-decode]
+    6,400 ( 0.05%)     3,200 ( 0.08%)     .            .          .           go/src/unicode/utf8/utf8.go:encoding/json/internal/jsonwire.AppendUnquote
+    6,400 ( 0.05%)       400 ( 0.01%)     .            .          .           go/src/encoding/json/jsontext/pools.go:encoding/json/jsontext.getBufferedDecoder [guard-decode]
+    6,400 ( 0.05%)         .              .            .          .           go/src/simd/archsimd/cpu.go:encoding/json/internal/jsonwire.ConsumeStringResumable
+    6,200 ( 0.05%)     1,200 ( 0.03%)     4 ( 0.02%)   .          .           go/src/runtime/string.go:runtime.slicebytetostring [guard-decode]
+    6,000 ( 0.05%)       600 ( 0.02%)     .            .          .           go/src/slices/slices.go:encoding/json/internal/jsonwire.AppendUnquote
+    5,800 ( 0.05%)       800 ( 0.02%)     2 ( 0.01%)   .          .           go/src/reflect/value.go:encoding/json/v2.unmarshalDecode
+    5,766 ( 0.04%)       901 ( 0.02%)    12 ( 0.07%)   .          .           go/src/runtime/mcentral.go:runtime.(*mcentral).cacheSpan [guard-decode]
+    5,405 ( 0.04%)       800 ( 0.02%)   200 ( 1.21%)   .          .           go/src/sync/pool.go:sync.(*Pool).Get [guard-decode]
+    5,372 ( 0.04%)       632 ( 0.02%)     8 ( 0.05%)   .          .           go/src/runtime/mheap.go:runtime.(*mheap).setSpans [guard-decode]
+    5,313 ( 0.04%)       207 ( 0.01%)    68 ( 0.41%)   .          .           go/src/runtime/mpagealloc.go:runtime.(*pageAlloc).allocRange [guard-decode]
+    5,214 ( 0.04%)     1,106 ( 0.03%)    21 ( 0.13%)   .          .           go/src/runtime/mheap.go:runtime.newMarkBits [guard-decode]
+    5,200 ( 0.04%)     1,000 ( 0.03%)     2 ( 0.01%)   .          .           go/src/reflect/value.go:reflect.Value.Elem [guard-decode]
+    5,000 ( 0.04%)     1,000 ( 0.03%)     4 ( 0.02%)   .          .           go/src/reflect/value.go:reflect.Value.SetString [guard-decode]
+    5,000 ( 0.04%)       800 ( 0.02%)     .            .          .           go/src/sync/pool.go:sync.(*Pool).Put [guard-decode]
+    4,800 ( 0.04%)       800 ( 0.02%)   400 ( 2.43%)   .          .           go/src/encoding/json/jsontext/decode.go:encoding/json/jsontext.(*decoderState).fetch [guard-decode]
+    4,800 ( 0.04%)       800 ( 0.02%)     .            .          .           go/src/runtime/alg.go:runtime.nilinterhash [guard-decode]
+    4,761 ( 0.04%)       621 ( 0.02%)     6 ( 0.04%)   .          .           go/src/runtime/mpagealloc.go:runtime.(*pageAlloc).alloc [guard-decode]
+    4,600 ( 0.04%)       600 ( 0.02%)     4 ( 0.02%)   .          .           go/src/encoding/json/jsontext/state.go:encoding/json/jsontext.(*decoderState).ReadValue
+    4,400 ( 0.03%)     1,000 ( 0.03%)     8 ( 0.05%)   .          .           go/src/encoding/json/jsontext/state.go:encoding/json/jsontext.(*state).reset [guard-decode]
+    4,399 ( 0.03%)       498 ( 0.01%)     .            .          .           go/src/runtime/malloc.go:runtime.(*mcache).nextFree [guard-decode]
+    4,316 ( 0.03%)       664 ( 0.02%)    71 ( 0.43%)   .          .           go/src/runtime/mbitmap.go:runtime.(*mspan).nextFreeIndex [guard-decode]
+    4,230 ( 0.03%)       544 ( 0.01%)    12 ( 0.07%)   .          .           go/src/runtime/mheap.go:runtime.(*mheap).allocNeedsZero [guard-decode]
+    4,000 ( 0.03%)       800 ( 0.02%)     4 ( 0.02%)   .          .           go/src/runtime/runtime1.go:runtime.mallocgcSmallNoscan
+    4,000 ( 0.03%)       800 ( 0.02%)     .            .          .           go/src/encoding/json/v2/arshal.go:encoding/json/v2.lookupArshaler [guard-decode]
+    3,819 ( 0.03%)     1,005 ( 0.03%)   203 ( 1.23%)   .          .           go/src/runtime/msize.go:runtime.growslice
+    3,768 ( 0.03%)       866 ( 0.02%)    92 ( 0.56%)   .          .           go/src/runtime/mstats.go:runtime.(*sysMemStat).add [guard-decode]
+    3,735 ( 0.03%)       415 ( 0.01%)     2 ( 0.01%)   .          .           go/src/runtime/mgcpacer.go:runtime.(*gcControllerState).trigger [guard-decode]
+    3,600 ( 0.03%)       800 ( 0.02%)     2 ( 0.01%)   .          .           go/src/runtime/alg.go:runtime.typehash [guard-decode]
+    3,400 ( 0.03%)       400 ( 0.01%)     2 ( 0.01%)   .          .           go/src/encoding/json/internal/jsonwire/decode.go:encoding/json/internal/jsonwire.UnquoteMayCopy [guard-decode]
+    3,320 ( 0.03%)       332 ( 0.01%)     .            .          .           go/src/runtime/mgcpacer.go:runtime.(*gcControllerState).memoryLimitHeapGoal [guard-decode]
+    3,243 ( 0.03%)       207 ( 0.01%)     .            .          .           go/src/runtime/mgcscavenge.go:runtime.(*scavengeIndex).alloc [guard-decode]
+    3,200 ( 0.02%)     1,000 ( 0.03%)     .            .          .           go/src/encoding/json/internal/jsonwire/decode.go:encoding/json/jsontext.(*decoderState).ReadValue
+    3,200 ( 0.02%)       600 ( 0.02%)     2 ( 0.01%)   .          .           go/src/encoding/json/v2/intern.go:encoding/json/v2.makeString [guard-decode]
+    3,180 ( 0.02%)       318 ( 0.01%)     5 ( 0.03%)   .          .           go/src/runtime/mstats.go:runtime.(*consistentHeapStats).acquire [guard-decode]
+    3,154 ( 0.02%)       498 ( 0.01%)    12 ( 0.07%)   .          .           go/src/runtime/mgcsweep.go:runtime.deductSweepCredit [guard-decode]
+    3,043 ( 0.02%)       400 ( 0.01%)     .            .          .           go/src/runtime/mcache.go:runtime.mallocgcSmallNoscan
+    3,000 ( 0.02%)     1,000 ( 0.03%)     .            .          .           go/src/encoding/json/internal/jsonwire/decode.go:encoding/json/jsontext.(*decoderState).PeekKind
+    3,000 ( 0.02%)     1,000 ( 0.03%)     .            .          .           go/src/encoding/json/internal/jsonwire/decode.go:encoding/json/jsontext.Value.Kind
+    3,000 ( 0.02%)       800 ( 0.02%)   200 ( 1.21%)   .          .           go/src/runtime/alg.go:runtime.efaceeq [guard-decode]
+    2,800 ( 0.02%)       400 ( 0.01%)     .            .          .           go/src/encoding/json/jsontext/value.go:encoding/json/jsontext.Value.Kind [guard-decode]
+    2,800 ( 0.02%)       400 ( 0.01%)     .            .          .           go/src/encoding/json/testdata/perf/main.go:main.main.func2 [guard-decode]
+    2,769 ( 0.02%)       568 ( 0.01%)    15 ( 0.09%)   .          .           go/src/runtime/lock_spinbit.go:runtime.unlock2 [guard-decode]
+    2,720 ( 0.02%)       480 ( 0.01%)     4 ( 0.02%)   .          .           go/src/runtime/mcentral.go:runtime.(*mcentral).uncacheSpan [guard-decode]
+    2,587 ( 0.02%)       351 ( 0.01%)     6 ( 0.04%)   .          .           go/src/runtime/mpallocbits.go:runtime.(*pageBits).popcntRange [guard-decode]
+    2,406 ( 0.02%)         .              .            .          .           go/src/runtime/proc.go:sync.runtime_procPin [guard-decode]
+    2,400 ( 0.02%)       800 ( 0.02%)     .            .          .           go/src/encoding/json/internal/jsonwire/ascii_simd_amd64.go:encoding/json/internal/jsonwire.ConsumeSimpleString
+    2,349 ( 0.02%)       243 ( 0.01%)     0           81 ( 7.06%) 2 (18.18%)  go/src/runtime/asm_amd64.s:runtime.systemstack.abi0 [guard-decode]
+    2,212 ( 0.02%)       158 ( 0.00%)     .            .          .           go/src/runtime/mheap.go:runtime.(*mheap).alloc [guard-decode]
+    2,195 ( 0.02%)       163 ( 0.00%)     3 ( 0.02%)   .          .           go/src/runtime/mspanset.go:runtime.(*spanSet).push [guard-decode]
+    2,100 ( 0.02%)       282 ( 0.01%)   138 ( 0.84%)   .          .           go/src/runtime/mpallocbits.go:runtime.(*pageBits).clearRange [guard-decode]
+    2,096 ( 0.02%)       341 ( 0.01%)     7 ( 0.04%)   .          .           go/src/runtime/mheap.go:runtime.(*mheap).allocMSpanLocked [guard-decode]
+    2,067 ( 0.02%)       318 ( 0.01%)     2 ( 0.01%)   .          .           go/src/runtime/mstats.go:runtime.(*consistentHeapStats).release [guard-decode]
+    2,058 ( 0.02%)       320 ( 0.01%)     9 ( 0.05%)  64 ( 5.57%) 1 ( 9.09%)  go/src/runtime/mfixalloc.go:runtime.(*fixalloc).alloc [guard-decode]
+    2,011 ( 0.02%)       202 ( 0.01%)   200 ( 1.21%) 200 (17.42%) 1 ( 9.09%)  go/src/encoding/json/testdata/perf/main.go:main.measure [guard-decode]
+    2,005 ( 0.02%)         .              .            .          .           go/src/runtime/proc.go:sync.runtime_procUnpin [guard-decode]
+    2,000 ( 0.02%)       400 ( 0.01%)   202 ( 1.22%)   .          .           go/src/encoding/json/jsontext/state.go:encoding/json/jsontext.(*decoderState).PeekKind
+    2,000 ( 0.02%)         .              .            .          .           go/src/internal/runtime/maps/runtime_hash64.go:internal/runtime/maps.MemHash64
+    1,965 ( 0.02%)         .              .            .          .           go/src/internal/runtime/sys/intrinsics.go:runtime.(*pallocBits).summarize
+    1,826 ( 0.01%)       415 ( 0.01%)     8 ( 0.05%)   .          .           go/src/runtime/mgc.go:runtime.gcTrigger.test [guard-decode]
+    1,745 ( 0.01%)       211 ( 0.01%)     4 ( 0.02%)   .          .           go/src/runtime/mpallocbits.go:runtime.(*pageBits).setRange [guard-decode]
+    1,600 ( 0.01%)       400 ( 0.01%)     4 ( 0.02%)   .          .           go/src/encoding/json/internal/jsonwire/decode.go:encoding/json/jsontext.(*decoderState).consumeWhitespace
+    1,600 ( 0.01%)       200 ( 0.01%)     .            .          .           go/src/encoding/json/v2/arshal.go:encoding/json/v2.Unmarshal.deferwrap1 [guard-decode]
+    1,600 ( 0.01%)         .              .            .          .           go/src/encoding/json/v2_decode.go:main.main.func2
+    1,581 ( 0.01%)       415 ( 0.01%)     5 ( 0.03%)   .          .           go/src/runtime/mgcpacer.go:runtime.(*gcControllerState).update [guard-decode]
+    1,580 ( 0.01%)       237 ( 0.01%)     .            .          .           go/src/runtime/mcentral.go:runtime.(*mcentral).grow [guard-decode]
+    1,545 ( 0.01%)       245 ( 0.01%)     .            .          .           go/src/runtime/traceruntime.go:runtime.(*mcentral).cacheSpan
+    1,501 ( 0.01%)         .              .            .          .           go/src/runtime/mheap.go:runtime.(*mspan).init [guard-decode]
+    1,491 ( 0.01%)       355 ( 0.01%)     8 ( 0.05%)   .          .           go/src/runtime/lock_spinbit.go:runtime.lock2 [guard-decode]
+    1,456 ( 0.01%)       186 ( 0.00%)     4 ( 0.02%)   .          .           go/src/runtime/mspanset.go:runtime.(*spanSet).pop [guard-decode]
+    1,408 ( 0.01%)       256 ( 0.01%)     3 ( 0.02%)   .          .           go/src/runtime/mheap.go:runtime.recordspan [guard-decode]
+    1,400 ( 0.01%)       200 ( 0.01%)     2 ( 0.01%)   .          .           go/src/encoding/json/jsontext/pools.go:encoding/json/v2.Unmarshal.deferwrap1
+    1,394 ( 0.01%)       257 ( 0.01%)    16 ( 0.10%)   .          .           go/src/runtime/mpallocbits.go:runtime.(*pageCache).allocN
+    1,380 ( 0.01%)       276 ( 0.01%)     4 ( 0.02%)   .          .           go/src/runtime/mgcscavenge.go:runtime.(*scavChunkData).alloc [guard-decode]
+    1,343 ( 0.01%)       158 ( 0.00%)     2 ( 0.01%)   .          .           go/src/runtime/mheap.go:runtime.(*mheap).alloc.func1 [guard-decode]
+    1,328 ( 0.01%)       166 ( 0.00%)     .            .          .           go/src/runtime/mgcpacer.go:runtime.(*gcControllerState).heapGoalInternal [guard-decode]
+    1,237 ( 0.01%)       168 ( 0.00%)     2 ( 0.01%)   .          .           go/src/runtime/mpagecache.go:runtime.(*pageCache).allocN [guard-decode]
+    1,200 ( 0.01%)         .              .            .          .           go/src/encoding/json/internal/jsonflags/flags.go:encoding/json/internal/jsonopts.(*Struct).Join
+    1,200 ( 0.01%)         .              .            .          .           go/src/encoding/json/jsontext/export.go:encoding/json/v2.Unmarshal
+    1,200 ( 0.01%)         .              .            .          .           go/src/runtime/mheap.go:runtime.mallocgcSmallNoscan
+    1,200 ( 0.01%)         .              .            .          .           go/src/runtime/stubs.go:runtime.mallocgcSmallNoscan
+    1,194 ( 0.01%)         .              .            .          .           go/src/internal/runtime/sys/intrinsics.go:runtime.(*pallocBits).findSmallN
+    1,185 ( 0.01%)       316 ( 0.01%)    82 ( 0.50%)   .          .           go/src/runtime/mbitmap.go:runtime.(*mspan).initHeapBits [guard-decode]
+    1,173 ( 0.01%)        69 ( 0.00%)     .            .          .           go/src/runtime/mpallocbits.go:runtime.(*pallocData).allocRange [guard-decode]
+    1,027 ( 0.01%)       237 ( 0.01%)     2 ( 0.01%)   .          .           go/src/runtime/mpagecache.go:runtime.(*pageCache).alloc [guard-decode]
+    1,000 ( 0.01%)         .              .            .          .           go/src/sync/map.go:encoding/json/v2.lookupArshaler
+      880 ( 0.01%)       240 ( 0.01%)     .            .          .           go/src/runtime/mspanset.go:runtime.(*atomicHeadTailIndex).incTail [guard-decode]
+      830 ( 0.01%)       166 ( 0.00%)     .            .          .           go/src/runtime/traceruntime.go:runtime.deductSweepCredit
+      828 ( 0.01%)       207 ( 0.01%)     2 ( 0.01%)   .          .           go/src/runtime/mpallocbits.go:runtime.(*pallocBits).find [guard-decode]
+      800 ( 0.01%)         .              .            .          .           go/src/encoding/json/jsontext/export.go:encoding/json/v2.unmarshalDecode
+      800 ( 0.01%)         .              .            .          .           go/src/encoding/json/jsontext/token.go:encoding/json/jsontext.(*decoderState).ReadValue
+      800 ( 0.01%)         .              .            .          .           go/src/encoding/json/jsontext/token.go:encoding/json/jsontext.(*decoderState).consumeValue
+      800 ( 0.01%)         .              .            .          .           go/src/internal/abi/type.go:runtime.ifaceeq
+      800 ( 0.01%)         .              .            .          .           go/src/sync/atomic/type.go:internal/sync.(*HashTrieMap[go.shape.interface {},go.shape.interface {}]).Load
+      781 ( 0.01%)       142 ( 0.00%)     2 ( 0.01%)   .          .           go/src/runtime/mprof.go:runtime.unlock2
+      730 ( 0.01%)        83 ( 0.00%)     .            .          .           go/src/internal/runtime/atomic/types.go:runtime.(*spanSet).push
+      729 ( 0.01%)        81 ( 0.00%)     4 ( 0.02%)   .          .           go/src/runtime/asm_amd64.s:gosave_systemstack_switch [guard-decode]
+      632 ( 0.00%)       158 ( 0.00%)     .            .          .           go/src/internal/runtime/atomic/types.go:runtime.(*mheap).initSpan
+      630 ( 0.00%)       140 ( 0.00%)     .            .          .           go/src/runtime/mem_linux.go:runtime.sysUsedOS [guard-decode]
+      621 ( 0.00%)        69 ( 0.00%)     4 ( 0.02%)   .          .           go/src/runtime/mpagealloc.go:runtime.(*pallocBits).summarize
+      602 ( 0.00%)         .              .            .          .           go/src/runtime/stubs.go:runtime.growslice
+      600 ( 0.00%)       200 ( 0.01%)     2 ( 0.01%)   .          .           go/src/internal/runtime/maps/memhash_aes.go:internal/runtime/maps.MemHash64 [guard-decode]
+      600 ( 0.00%)         .              .            .          .           go/src/encoding/json/internal/jsonflags/flags.go:encoding/json/internal/jsonflags.Flags.Has [guard-decode]
+      600 ( 0.00%)         .              .            .          .           go/src/encoding/json/internal/jsonwire/decode.go:encoding/json/internal/jsonwire.ValueFlags.IsVerbatim [guard-decode]
+      600 ( 0.00%)         .              .            .          .           go/src/encoding/json/jsontext/token.go:encoding/json/jsontext.(*decoderState).PeekKind
+      557 ( 0.00%)        79 ( 0.00%)     2 ( 0.01%)   .          .           go/src/runtime/mgcsweep.go:runtime.(*mcentral).cacheSpan
+      535 ( 0.00%)        70 ( 0.00%)     .            .          .           go/src/internal/runtime/atomic/types.go:runtime.(*mheap).allocSpan
+      498 ( 0.00%)         .              .            .          .           go/src/runtime/mbitmap.go:runtime.(*mspan).refillAllocCache [guard-decode]
+      481 ( 0.00%)         .              .            .          .           go/src/runtime/asm_amd64.s:runtime.publicationBarrier [guard-decode]
+      477 ( 0.00%)       159 ( 0.00%)     .            .          .           go/src/internal/runtime/atomic/types.go:runtime.(*consistentHeapStats).acquire
+      477 ( 0.00%)       159 ( 0.00%)     .            .          .           go/src/internal/runtime/atomic/types.go:runtime.(*consistentHeapStats).release
+      415 ( 0.00%)        83 ( 0.00%)     .            .          .           go/src/runtime/traceruntime.go:runtime.(*gcControllerState).update
+      400 ( 0.00%)         .              .            .          .           go/src/encoding/json/jsontext/export.go:encoding/json/jsontext.export.Decoder [guard-decode]
+      400 ( 0.00%)         .              .            .          .           go/src/encoding/json/jsontext/token.go:encoding/json/jsontext.Value.Kind
+      400 ( 0.00%)         .              .            .          .           go/src/internal/abi/type.go:encoding/json/v2.unmarshalDecode
+      400 ( 0.00%)         .              .            .          .           go/src/internal/abi/type.go:runtime.efaceeq
+      400 ( 0.00%)         .              .            .          .           go/src/internal/abi/type.go:runtime.nilinterhash
+      400 ( 0.00%)         .              .            .          .           go/src/simd/archsimd/cpu.go:encoding/json/internal/jsonwire.ConsumeSimpleString
+      395 ( 0.00%)         .              .            .          .           go/src/runtime/mgcmark_greenteagc.go:runtime.(*mheap).initSpan
+      345 ( 0.00%)         .              .            .          .           go/src/runtime/mranges.go:runtime.(*pageAlloc).alloc
+      336 ( 0.00%)        85 ( 0.00%)     .            .          .           go/src/internal/runtime/atomic/types.go:runtime.(*gcControllerState).update
+      332 ( 0.00%)         .              .            .          .           go/src/internal/runtime/atomic/types.go:runtime.(*gcControllerState).memoryLimitHeapGoal
+      332 ( 0.00%)         .              .            .          .           go/src/internal/runtime/atomic/types.go:runtime.deductSweepCredit
+      276 ( 0.00%)        69 ( 0.00%)     .            .          .           go/src/internal/runtime/atomic/types.go:runtime.(*scavengeIndex).alloc
+      240 ( 0.00%)         .              .            .          .           go/src/runtime/mheap.go:runtime.(*mcache).refill
+      237 ( 0.00%)        79 ( 0.00%)     .            .          .           go/src/internal/runtime/atomic/types.go:runtime.(*mspan).init
+      207 ( 0.00%)         .              .            .          .           go/src/runtime/lockrank_off.go:runtime.(*mheap).allocSpan
+      201 ( 0.00%)         .              .            .          .           go/src/internal/abi/type.go:runtime.growslice
+      200 ( 0.00%)         .              .            .          .           go/src/encoding/json/internal/jsonflags/flags.go:encoding/json/v2.unmarshalDecode
+      200 ( 0.00%)         .              .            .          .           go/src/encoding/json/jsontext/decode.go:encoding/json/v2.unmarshalDecode
+      200 ( 0.00%)         .              .            .          .           go/src/encoding/json/jsontext/export.go:encoding/json/v2.Unmarshal.deferwrap1
+      200 ( 0.00%)         .              .            .          .           go/src/encoding/json/jsontext/state.go:encoding/json/jsontext.(*decoderState).CheckNextValue
+      200 ( 0.00%)         .              .            .          .           go/src/internal/abi/type.go:reflect.Value.Elem
+      179 ( 0.00%)        34 ( 0.00%)     7 ( 0.04%)   .          .           go/src/runtime/malloc.go:runtime.persistentalloc1 [guard-decode]
+      166 ( 0.00%)         .              .            .          .           go/src/internal/runtime/atomic/types.go:runtime.gcTrigger.test
+      160 ( 0.00%)        80 ( 0.00%)     .            .          .           go/src/internal/runtime/atomic/types.go:runtime.(*mcache).refill
+      158 ( 0.00%)         .              .            .          .           go/src/runtime/mgcmark_greenteagc.go:runtime.(*mspan).initHeapBits
+      158 ( 0.00%)         .              .            .          .           go/src/runtime/mgcsweep.go:runtime.(*mheap).alloc.func1
+      158 ( 0.00%)         .              .            .          .           go/src/runtime/mheap.go:runtime.(*mcentral).grow
+      140 ( 0.00%)         .              .            .          .           go/src/runtime/mem.go:runtime.(*mheap).allocSpan
+      138 ( 0.00%)         .              .            .          .           go/src/runtime/lock_spinbit.go:runtime.(*mheap).allocSpan
+       93 ( 0.00%)        13 ( 0.00%)     5 ( 0.03%)   .          .           go/src/runtime/malloc.go:runtime.mallocgcSmallScanNoHeader [guard-decode]
+       86 ( 0.00%)         9 ( 0.00%)     2 ( 0.01%)   1 ( 0.09%) 1 ( 9.09%)  go/src/sync/pool.go:sync.(*Pool).pinSlow [guard-decode]
+       83 ( 0.00%)         .              .            .          .           go/src/internal/runtime/atomic/types.go:runtime.(*gcControllerState).heapGoalInternal
+       83 ( 0.00%)         .              .            .          .           go/src/internal/runtime/atomic/types.go:runtime.(*gcControllerState).trigger
+       83 ( 0.00%)         .              .            .          .           go/src/runtime/mheap.go:runtime.(*mcentral).cacheSpan
+       83 ( 0.00%)         .              .            .          .           go/src/runtime/mheap.go:runtime.(*mspan).refillAllocCache
+       80 ( 0.00%)         .              .            .          .           go/src/internal/runtime/atomic/types.go:runtime.(*atomicHeadTailIndex).incTail
+       79 ( 0.00%)         .              .            .          .           go/src/internal/runtime/atomic/types.go:runtime.(*mcentral).cacheSpan
+       79 ( 0.00%)         .              .            .          .           go/src/internal/runtime/atomic/types.go:runtime.(*mheap).alloc.func1
+       79 ( 0.00%)         .              .            .          .           go/src/runtime/mbitmap.go:runtime.(*mheap).initSpan
+       79 ( 0.00%)         .              .            .          .           go/src/runtime/mem.go:runtime.(*mheap).initSpan
+       79 ( 0.00%)         .              .            .          .           go/src/runtime/mem_linux.go:runtime.(*mheap).initSpan
+       79 ( 0.00%)         .              .            .          .           go/src/runtime/mgclimit.go:runtime.(*mheap).allocSpan
+       79 ( 0.00%)         .              .            .          .           go/src/runtime/mheap.go:runtime.(*mspan).initHeapBits
+       79 ( 0.00%)         .              .            .          .           go/src/runtime/mpagecache.go:runtime.(*mheap).allocSpan
+       79 ( 0.00%)         .              .            .          .           go/src/runtime/runtime2.go:runtime.(*mheap).allocSpan
+       79 ( 0.00%)         .              .            .          .           go/src/runtime/traceruntime.go:runtime.(*mheap).allocSpan
+       72 ( 0.00%)         3 ( 0.00%)     .            .          .           go/src/runtime/malloc.go:runtime.persistentalloc [guard-decode]
+       64 ( 0.00%)         8 ( 0.00%)     .            .          .           go/src/internal/runtime/atomic/types.go:runtime.(*spanSet).pop
+       62 ( 0.00%)        10 ( 0.00%)     5 ( 0.03%)   .          .           go/src/runtime/malloc_generated.go:runtime.mallocgcSmallScanNoHeaderSC1 [guard-decode]
+       52 ( 0.00%)         7 ( 0.00%)     3 ( 0.02%)   .          .           go/src/sync/pool.go:sync.(*Pool).getSlow [guard-decode]
+       49 ( 0.00%)         4 ( 0.00%)     1 ( 0.01%)   .          .           go/src/runtime/mbitmap.go:runtime.(*mspan).writeHeapBitsSmall [guard-decode]
+       45 ( 0.00%)         3 ( 0.00%)     .            .          .           go/src/runtime/malloc.go:runtime.persistentalloc.func1 [guard-decode]
+       27 ( 0.00%)         3 ( 0.00%)     2 ( 0.01%)   .          .           go/src/runtime/runtime1.go:runtime.persistentalloc1
+       23 ( 0.00%)         5 ( 0.00%)     .            .          .           go/src/runtime/slice.go:runtime.makeslice [guard-decode]
+       19 ( 0.00%)         2 ( 0.00%)     1 ( 0.01%)   .          .           go/src/runtime/mspanset.go:runtime.(*spanSetBlockAlloc).alloc [guard-decode]
+       16 ( 0.00%)         2 ( 0.00%)     1 ( 0.01%)   .          .           go/src/runtime/debug.go:runtime.GOMAXPROCS [guard-decode]
+       14 ( 0.00%)         2 ( 0.00%)     1 ( 0.01%)   1 ( 0.09%) 1 ( 9.09%)  go/src/runtime/asm_amd64.s:runtime.systemstack.abi0'2 [guard-decode]
+       14 ( 0.00%)         2 ( 0.00%)     1 ( 0.01%)   .          .           go/src/sync/poolqueue.go:sync.(*poolChain).popHead [guard-decode]
+       13 ( 0.00%)         2 ( 0.00%)     1 ( 0.01%)   .          .           go/src/sync/poolqueue.go:sync.(*poolChain).popTail [guard-decode]
+       12 ( 0.00%)         .              .            .          .           go/src/runtime/stubs.go:runtime.persistentalloc1
+       11 ( 0.00%)         1 ( 0.00%)     .            .          .           go/src/encoding/json/testdata/perf/main.go:main.main [guard-decode]
+        9 ( 0.00%)         1 ( 0.00%)     1 ( 0.01%)   .          .           go/src/internal/sync/mutex.go:sync.(*Pool).pinSlow
+        9 ( 0.00%)         1 ( 0.00%)     1 ( 0.01%)   .          .           go/src/runtime/atomic_pointer.go:sync/atomic.StorePointer [guard-decode]
+        9 ( 0.00%)         .              .            .          .           go/src/runtime/mbitmap.go:runtime.mallocgcSmallScanNoHeader
+        8 ( 0.00%)         1 ( 0.00%)     1 ( 0.01%)   .          .           go/src/runtime/runtime1.go:runtime.mallocgcSmallScanNoHeader
+        8 ( 0.00%)         1 ( 0.00%)     1 ( 0.01%)   .          .           go/src/runtime/runtime1.go:runtime.mallocgcSmallScanNoHeaderSC1
+        8 ( 0.00%)         1 ( 0.00%)     .            .          .           go/src/sync/pool.go:sync.(*Pool).pinSlow.deferwrap1 [guard-decode]
+        7 ( 0.00%)         1 ( 0.00%)     .            .          .           go/src/runtime/mcache.go:runtime.mallocgcSmallScanNoHeader
+        6 ( 0.00%)         1 ( 0.00%)     1 ( 0.01%)   .          .           go/src/runtime/lfstack.go:runtime.(*lfstack).pop [guard-decode]
+        6 ( 0.00%)         1 ( 0.00%)     .            .          .           go/src/runtime/mcache.go:runtime.mallocgcSmallScanNoHeaderSC1
+        4 ( 0.00%)         1 ( 0.00%)     .            .          .           go/src/runtime/type.go:runtime.(*mspan).writeHeapBitsSmall
+        4 ( 0.00%)         .              .            .          .           go/src/runtime/lockrank_off.go:runtime.GOMAXPROCS
+        3 ( 0.00%)         .              .            .          .           go/src/encoding/json/testdata/perf/callgrind_amd64.s:main.callgrind.abi0 [guard-decode]
+        3 ( 0.00%)         .              .            .          .           go/src/runtime/mheap.go:runtime.mallocgcSmallScanNoHeader
+        3 ( 0.00%)         .              .            .          .           go/src/runtime/stubs.go:runtime.mallocgcSmallScanNoHeader
+        2 ( 0.00%)         1 ( 0.00%)     1 ( 0.01%)   .          .           go/src/internal/sync/mutex.go:sync.(*Pool).pinSlow.deferwrap1
+        2 ( 0.00%)         1 ( 0.00%)     .            .          .           ???:sync/atomic.StoreUintptr [guard-decode]
+        2 ( 0.00%)         1 ( 0.00%)     .            .          .           go/src/sync/mutex.go:sync.(*Pool).pinSlow.deferwrap1
+        2 ( 0.00%)         .              .            .          .           go/src/internal/abi/type.go:runtime.mallocgc
+        2 ( 0.00%)         .              .            .          .           go/src/runtime/lock_spinbit.go:runtime.(*spanSet).push
+        2 ( 0.00%)         .              .            .          .           go/src/runtime/lock_spinbit.go:runtime.GOMAXPROCS
+        2 ( 0.00%)         .              .            .          .           go/src/runtime/lockrank_off.go:runtime.(*spanSet).push
+        2 ( 0.00%)         .              .            .          .           go/src/runtime/mgcmark_greenteagc.go:runtime.(*mspan).writeHeapBitsSmall
+        2 ( 0.00%)         .              .            .          .           go/src/runtime/mheap.go:runtime.(*mspan).writeHeapBitsSmall
+        2 ( 0.00%)         .              .            .          .           go/src/runtime/runtime2.go:runtime.(*mheap).allocMSpanLocked
+        1 ( 0.00%)         .              .            .          .           go/src/runtime/mbitmap.go:runtime.mallocgc
+        1 ( 0.00%)         .              .            .          .           go/src/runtime/stubs.go:runtime.(*mspan).writeHeapBitsSmall
+        1 ( 0.00%)         .              .            .          .           go/src/sync/mutex.go:sync.(*Pool).pinSlow

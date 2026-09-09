@@ -1,0 +1,27 @@
+                              │  final.txt   │             unquote.txt             │
+                              │    sec/op    │    sec/op     vs base               │
+JSON/ASCII32/Unmarshal          143.8n ±  1%   145.0n ±  3%       ~ (p=0.180 n=20)
+JSON/CanadaGeometry/Unmarshal   2.921m ± 17%   2.944m ± 23%       ~ (p=0.640 n=20)
+geomean                         20.49µ         20.67µ        +0.84%
+
+                              │   final.txt   │             unquote.txt              │
+                              │      B/s      │      B/s       vs base               │
+JSON/ASCII32/Unmarshal          225.6Mi ±  1%   223.5Mi ±  3%       ~ (p=0.180 n=20)
+JSON/CanadaGeometry/Unmarshal   88.30Mi ± 15%   87.73Mi ± 19%       ~ (p=0.645 n=20)
+geomean                         141.1Mi         140.0Mi        -0.77%
+
+                              │   final.txt   │             unquote.txt              │
+                              │     B/op      │    B/op      vs base                 │
+JSON/ASCII32/Unmarshal          0.000 ±  0%     0.000 ±  0%       ~ (p=1.000 n=20) ¹
+JSON/CanadaGeometry/Unmarshal   25.00 ± 12%     27.50 ± 27%       ~ (p=0.191 n=20)
+geomean                                     ²                +4.88%                ²
+¹ all samples are equal
+² summaries must be >0 to compute geomean
+
+                              │  final.txt   │             unquote.txt             │
+                              │  allocs/op   │ allocs/op   vs base                 │
+JSON/ASCII32/Unmarshal          0.000 ± 0%     0.000 ± 0%       ~ (p=1.000 n=20) ¹
+JSON/CanadaGeometry/Unmarshal   0.000 ± 0%     0.000 ± 0%       ~ (p=1.000 n=20) ¹
+geomean                                    ²               +0.00%                ²
+¹ all samples are equal
+² summaries must be >0 to compute geomean

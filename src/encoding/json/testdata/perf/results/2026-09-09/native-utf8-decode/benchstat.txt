@@ -1,0 +1,71 @@
+                              │  encode.txt   │              decode.txt              │
+                              │    sec/op     │    sec/op     vs base                │
+JSON/Small/Unmarshal            1030.5n ± 73%   969.5n ± 77%        ~ (p=0.699 n=10)
+JSON/ASCII8/Unmarshal            141.6n ± 19%   140.0n ±  5%        ~ (p=0.579 n=10)
+JSON/ASCII256/Unmarshal          167.7n ±  3%   164.8n ±  7%        ~ (p=0.492 n=10)
+JSON/UTF8Short/Unmarshal         183.1n ± 50%   183.3n ±  4%        ~ (p=0.853 n=10)
+JSON/UTF8Greek/Unmarshal         35.93µ ± 88%   11.42µ ±  6%  -68.21% (p=0.000 n=10)
+JSON/UTF8CJK/Unmarshal           32.20µ ±  8%   14.68µ ± 13%  -54.42% (p=0.000 n=10)
+JSON/UTF8Emoji/Unmarshal        12.912µ ±  8%   6.317µ ± 12%  -51.08% (p=0.000 n=10)
+JSON/UTF8Mixed/Unmarshal         41.93µ ± 25%   17.27µ ± 44%  -58.81% (p=0.000 n=10)
+JSON/StringUnicode/Unmarshal     87.34µ ±  9%   44.13µ ±  8%  -49.47% (p=0.001 n=10)
+JSON/StringEscaped/Unmarshal     444.6µ ± 16%   454.1µ ± 25%        ~ (p=0.739 n=10)
+JSON/GolangSource/Unmarshal      15.87m ± 25%   14.90m ± 20%        ~ (p=0.052 n=10)
+JSON/TwitterStatus/Unmarshal     3.151m ± 31%   2.853m ± 17%   -9.46% (p=0.009 n=10)
+JSON/CanadaGeometry/Unmarshal    2.693m ± 12%   2.517m ±  4%   -6.53% (p=0.002 n=10)
+geomean                          29.81µ         21.07µ        -29.33%
+
+                              │  encode.txt   │               decode.txt                │
+                              │      B/s      │      B/s        vs base                 │
+JSON/Small/Unmarshal            62.03Mi ± 42%    66.08Mi ± 44%         ~ (p=0.739 n=10)
+JSON/ASCII8/Unmarshal           67.35Mi ± 16%    68.12Mi ±  5%         ~ (p=0.565 n=10)
+JSON/ASCII256/Unmarshal         1.433Gi ±  4%    1.458Gi ±  7%         ~ (p=0.529 n=10)
+JSON/UTF8Short/Unmarshal        62.50Mi ± 33%    62.43Mi ±  5%         ~ (p=0.853 n=10)
+JSON/UTF8Greek/Unmarshal        190.4Mi ± 47%    598.7Mi ±  6%  +214.46% (p=0.000 n=10)
+JSON/UTF8CJK/Unmarshal          250.3Mi ±  7%    549.1Mi ± 12%  +119.39% (p=0.000 n=10)
+JSON/UTF8Emoji/Unmarshal        302.8Mi ±  9%    618.8Mi ± 11%  +104.38% (p=0.000 n=10)
+JSON/UTF8Mixed/Unmarshal        232.9Mi ± 20%    566.1Mi ± 31%  +143.03% (p=0.000 n=10)
+JSON/StringUnicode/Unmarshal    197.9Mi ±  8%    391.7Mi ±  9%   +97.87% (p=0.001 n=10)
+JSON/StringEscaped/Unmarshal    90.21Mi ± 14%    88.46Mi ± 20%         ~ (p=0.739 n=10)
+JSON/GolangSource/Unmarshal     116.6Mi ± 20%    124.2Mi ± 16%         ~ (p=0.052 n=10)
+JSON/TwitterStatus/Unmarshal    191.1Mi ± 24%    211.1Mi ± 15%   +10.43% (p=0.009 n=10)
+JSON/CanadaGeometry/Unmarshal   95.75Mi ± 11%   102.44Mi ±  4%    +6.98% (p=0.002 n=10)
+geomean                         161.1Mi          228.0Mi         +41.55%
+
+                              │   encode.txt   │              decode.txt               │
+                              │      B/op      │     B/op      vs base                 │
+JSON/Small/Unmarshal              0.000 ± 0%       0.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII8/Unmarshal             0.000 ± 0%       0.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII256/Unmarshal           0.000 ± 0%       0.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Short/Unmarshal          0.000 ± 0%       0.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Greek/Unmarshal        8.000Ki ± 0%     8.000Ki ± 0%       ~ (p=0.474 n=10)
+JSON/UTF8CJK/Unmarshal          9.250Ki ± 0%     9.250Ki ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Emoji/Unmarshal        4.000Ki ± 0%     4.000Ki ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Mixed/Unmarshal        10.00Ki ± 0%     10.00Ki ± 0%  -0.01% (p=0.011 n=10)
+JSON/StringUnicode/Unmarshal    15.11Ki ± 0%     15.11Ki ± 0%  -0.01% (p=0.000 n=10)
+JSON/StringEscaped/Unmarshal    58.18Ki ± 0%     58.18Ki ± 0%       ~ (p=0.685 n=10)
+JSON/GolangSource/Unmarshal     381.2Ki ± 0%     381.2Ki ± 0%       ~ (p=0.465 n=10)
+JSON/TwitterStatus/Unmarshal    204.5Ki ± 0%     204.5Ki ± 0%  -0.01% (p=0.011 n=10)
+JSON/CanadaGeometry/Unmarshal     41.00 ± 2%       39.00 ± 3%  -4.88% (p=0.001 n=10)
+geomean                                      ²                 -0.39%                ²
+¹ all samples are equal
+² summaries must be >0 to compute geomean
+
+                              │  encode.txt   │              decode.txt              │
+                              │   allocs/op   │  allocs/op   vs base                 │
+JSON/Small/Unmarshal             0.000 ± 0%      0.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII8/Unmarshal            0.000 ± 0%      0.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII256/Unmarshal          0.000 ± 0%      0.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Short/Unmarshal         0.000 ± 0%      0.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Greek/Unmarshal         1.000 ± 0%      1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8CJK/Unmarshal           1.000 ± 0%      1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Emoji/Unmarshal         1.000 ± 0%      1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Mixed/Unmarshal         1.000 ± 0%      1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/StringUnicode/Unmarshal     49.00 ± 0%      49.00 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/StringEscaped/Unmarshal     167.0 ± 0%      167.0 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/GolangSource/Unmarshal     11.71k ± 0%     11.71k ± 0%       ~ (p=1.000 n=10)
+JSON/TwitterStatus/Unmarshal    2.530k ± 0%     2.530k ± 0%       ~ (p=1.000 n=10) ¹
+JSON/CanadaGeometry/Unmarshal    0.000 ± 0%      0.000 ± 0%       ~ (p=1.000 n=10) ¹
+geomean                                     ²                +0.00%                ²
+¹ all samples are equal
+² summaries must be >0 to compute geomean

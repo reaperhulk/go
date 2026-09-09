@@ -1,0 +1,69 @@
+                            │  before.txt   │              encode.txt               │
+                            │    sec/op     │    sec/op      vs base                │
+JSON/Small/Marshal             520.2n ±  4%   533.4n ±   5%   +2.53% (p=0.027 n=10)
+JSON/ASCII8/Marshal            125.7n ±  5%   126.5n ±   5%        ~ (p=0.724 n=10)
+JSON/ASCII256/Marshal          227.1n ±  7%   230.2n ±  61%        ~ (p=0.853 n=10)
+JSON/UTF8Short/Marshal         138.9n ±  5%   143.4n ±   9%        ~ (p=0.325 n=10)
+JSON/UTF8Greek/Marshal        23.304µ ± 11%   6.500µ ±  10%  -72.11% (p=0.000 n=10)
+JSON/UTF8CJK/Marshal          19.467µ ± 15%   8.182µ ±   6%  -57.97% (p=0.000 n=10)
+JSON/UTF8Emoji/Marshal         7.741µ ± 63%   3.646µ ±   8%  -52.90% (p=0.000 n=10)
+JSON/UTF8Mixed/Marshal        27.766µ ± 10%   9.189µ ±   2%  -66.90% (p=0.000 n=10)
+JSON/StringUnicode/Marshal     49.36µ ± 50%   24.25µ ±  14%  -50.87% (p=0.002 n=10)
+JSON/StringEscaped/Marshal     50.00µ ± 97%   24.74µ ± 164%  -50.52% (p=0.035 n=10)
+JSON/GolangSource/Marshal      7.059m ± 16%   6.935m ±  14%        ~ (p=0.631 n=10)
+JSON/TwitterStatus/Marshal     1.399m ± 15%   1.457m ±  39%        ~ (p=1.000 n=10)
+JSON/CanadaGeometry/Marshal    1.841m ± 68%   1.605m ± 189%        ~ (p=0.481 n=10)
+geomean                        16.88µ         11.10µ         -34.26%
+
+                            │  before.txt   │               encode.txt                │
+                            │      B/s      │      B/s        vs base                 │
+JSON/Small/Marshal            122.8Mi ±  4%    119.8Mi ±  5%    -2.48% (p=0.029 n=10)
+JSON/ASCII8/Marshal           75.88Mi ±  5%    75.39Mi ±  5%         ~ (p=0.739 n=10)
+JSON/ASCII256/Marshal         1.058Gi ±  6%    1.044Gi ± 38%         ~ (p=0.853 n=10)
+JSON/UTF8Short/Marshal        82.43Mi ±  5%    79.78Mi ±  8%         ~ (p=0.325 n=10)
+JSON/UTF8Greek/Marshal        293.4Mi ± 10%   1051.9Mi ±  9%  +258.49% (p=0.000 n=10)
+JSON/UTF8CJK/Marshal          414.6Mi ± 18%    985.1Mi ±  5%  +137.60% (p=0.000 n=10)
+JSON/UTF8Emoji/Marshal        504.9Mi ± 39%   1072.0Mi ±  7%  +112.33% (p=0.000 n=10)
+JSON/UTF8Mixed/Marshal        351.8Mi ± 11%   1063.0Mi ±  3%  +202.13% (p=0.000 n=10)
+JSON/StringUnicode/Marshal    351.6Mi ± 33%    712.8Mi ± 12%  +102.72% (p=0.002 n=10)
+JSON/StringEscaped/Marshal    810.8Mi ± 50%   1634.3Mi ± 62%  +101.57% (p=0.035 n=10)
+JSON/GolangSource/Marshal     262.2Mi ± 14%    266.8Mi ± 12%         ~ (p=0.631 n=10)
+JSON/TwitterStatus/Marshal    430.6Mi ± 13%    413.5Mi ± 28%         ~ (p=1.000 n=10)
+JSON/CanadaGeometry/Marshal   140.5Mi ± 41%    160.9Mi ± 65%         ~ (p=0.481 n=10)
+geomean                       284.9Mi          433.0Mi         +52.00%
+
+                            │  before.txt  │              encode.txt               │
+                            │     B/op     │     B/op      vs base                 │
+JSON/Small/Marshal              80.00 ± 0%     80.00 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII8/Marshal             16.00 ± 0%     16.00 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII256/Marshal           288.0 ± 0%     288.0 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Short/Marshal          16.00 ± 0%     16.00 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Greek/Marshal        8.000Ki ± 0%   8.000Ki ± 0%       ~ (p=1.000 n=10)
+JSON/UTF8CJK/Marshal          9.250Ki ± 0%   9.250Ki ± 0%       ~ (p=1.000 n=10)
+JSON/UTF8Emoji/Marshal        4.750Ki ± 0%   4.750Ki ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Mixed/Marshal        10.63Ki ± 0%   10.62Ki ± 0%  -0.01% (p=0.000 n=10)
+JSON/StringUnicode/Marshal    18.01Ki ± 0%   18.01Ki ± 0%  -0.02% (p=0.000 n=10)
+JSON/StringEscaped/Marshal    18.01Ki ± 0%   18.01Ki ± 0%  -0.02% (p=0.001 n=10)
+JSON/GolangSource/Marshal     2.056Mi ± 3%   2.054Mi ± 1%       ~ (p=0.511 n=10)
+JSON/TwitterStatus/Marshal    508.1Ki ± 0%   507.7Ki ± 1%       ~ (p=0.753 n=10)
+JSON/CanadaGeometry/Marshal   277.5Ki ± 2%   277.1Ki ± 2%       ~ (p=0.434 n=10)
+geomean                       5.179Ki        5.178Ki       -0.03%
+¹ all samples are equal
+
+                            │ before.txt │             encode.txt              │
+                            │ allocs/op  │ allocs/op   vs base                 │
+JSON/Small/Marshal            1.000 ± 0%   1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII8/Marshal           1.000 ± 0%   1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII256/Marshal         1.000 ± 0%   1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Short/Marshal        1.000 ± 0%   1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Greek/Marshal        1.000 ± 0%   1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8CJK/Marshal          1.000 ± 0%   1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Emoji/Marshal        1.000 ± 0%   1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Mixed/Marshal        1.000 ± 0%   1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/StringUnicode/Marshal    1.000 ± 0%   1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/StringEscaped/Marshal    1.000 ± 0%   1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/GolangSource/Marshal     2.000 ± 0%   2.000 ± 0%       ~ (p=1.000 n=10)
+JSON/TwitterStatus/Marshal    89.00 ± 0%   89.00 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/CanadaGeometry/Marshal   1.000 ± 0%   1.000 ± 0%       ~ (p=1.000 n=10) ¹
+geomean                       1.490        1.490       +0.00%
+¹ all samples are equal

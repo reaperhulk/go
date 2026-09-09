@@ -1,0 +1,25 @@
+                       │ original.txt │              final.txt              │
+                       │    sec/op    │    sec/op     vs base               │
+JSON/Small/Marshal       552.9n ±  7%   559.5n ± 20%       ~ (p=0.659 n=20)
+JSON/ASCII4096/Marshal   1.012µ ± 18%   1.001µ ±  7%       ~ (p=0.723 n=20)
+geomean                  748.0n         748.6n        +0.08%
+
+                       │ original.txt  │              final.txt               │
+                       │      B/s      │      B/s       vs base               │
+JSON/Small/Marshal       115.6Mi ±  7%   114.2Mi ± 17%       ~ (p=0.659 n=20)
+JSON/ASCII4096/Marshal   3.771Gi ± 15%   3.811Gi ±  7%       ~ (p=0.738 n=20)
+geomean                  668.1Mi         667.5Mi        -0.08%
+
+                       │ original.txt │               final.txt               │
+                       │     B/op     │     B/op      vs base                 │
+JSON/Small/Marshal         80.00 ± 0%     80.00 ± 0%       ~ (p=1.000 n=20) ¹
+JSON/ASCII4096/Marshal   4.750Ki ± 0%   4.750Ki ± 0%       ~ (p=1.000 n=20) ¹
+geomean                    623.8          623.8       +0.00%
+¹ all samples are equal
+
+                       │ original.txt │              final.txt              │
+                       │  allocs/op   │ allocs/op   vs base                 │
+JSON/Small/Marshal         1.000 ± 0%   1.000 ± 0%       ~ (p=1.000 n=20) ¹
+JSON/ASCII4096/Marshal     1.000 ± 0%   1.000 ± 0%       ~ (p=1.000 n=20) ¹
+geomean                    1.000        1.000       +0.00%
+¹ all samples are equal

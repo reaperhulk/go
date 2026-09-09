@@ -1,0 +1,1 @@
+BenchmarkJSON/StringUnicode/Unmarshal    36336	     98456 ns/op	 184.08 MB/s	   15473 B/op	      49 allocs/op

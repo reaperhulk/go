@@ -1,0 +1,59 @@
+                         │  scalar.txt   │             original.txt             │               final.txt               │
+                         │    sec/op     │    sec/op     vs base                │    sec/op      vs base                │
+JSON/Small/Marshal          526.2n ± 17%   523.5n ± 10%        ~ (p=0.631 n=10)    544.8n ± 11%        ~ (p=0.912 n=10)
+JSON/Small/Unmarshal        851.9n ± 28%   919.8n ±  5%   +7.97% (p=0.035 n=10)    876.0n ±  3%        ~ (p=0.190 n=10)
+JSON/ASCII8/Marshal         129.0n ±  8%   126.0n ±  4%   -2.29% (p=0.043 n=10)    130.0n ± 88%        ~ (p=0.870 n=10)
+JSON/ASCII8/Unmarshal       128.3n ±  4%   148.0n ±  5%  +15.39% (p=0.000 n=10)    138.6n ± 17%   +7.99% (p=0.000 n=10)
+JSON/ASCII32/Marshal        165.1n ±  5%   138.2n ±  9%  -16.27% (p=0.000 n=10)    141.2n ± 29%  -14.45% (p=0.022 n=10)
+JSON/ASCII32/Unmarshal      160.2n ± 21%   145.0n ±  4%   -9.49% (p=0.001 n=10)    139.2n ± 11%  -13.10% (p=0.000 n=10)
+JSON/ASCII256/Marshal       456.8n ±  6%   213.5n ± 26%  -53.26% (p=0.000 n=10)    238.9n ± 69%  -47.70% (p=0.000 n=10)
+JSON/ASCII256/Unmarshal     453.6n ±  5%   167.6n ±  6%  -63.05% (p=0.000 n=10)    165.5n ±  9%  -63.53% (p=0.000 n=10)
+JSON/ASCII4096/Marshal     4391.5n ±  3%   922.4n ± 19%  -79.00% (p=0.000 n=10)   1009.0n ± 10%  -77.02% (p=0.000 n=10)
+JSON/ASCII4096/Unmarshal    6.089µ ± 13%   1.449µ ± 14%  -76.21% (p=0.000 n=10)    1.456µ ± 20%  -76.08% (p=0.000 n=10)
+geomean                     505.4n         311.5n        -38.36%                   315.7n        -37.54%
+
+                         │  scalar.txt   │              original.txt               │                final.txt                │
+                         │      B/s      │      B/s        vs base                 │      B/s        vs base                 │
+JSON/Small/Marshal         121.4Mi ± 15%    122.1Mi ±  9%         ~ (p=0.631 n=10)    117.3Mi ± 10%         ~ (p=0.912 n=10)
+JSON/Small/Unmarshal       75.01Mi ± 22%    69.47Mi ±  5%    -7.38% (p=0.035 n=10)    72.94Mi ±  3%         ~ (p=0.190 n=10)
+JSON/ASCII8/Marshal        73.95Mi ±  7%    75.66Mi ±  4%    +2.31% (p=0.043 n=10)    73.33Mi ± 47%         ~ (p=0.853 n=10)
+JSON/ASCII8/Unmarshal      74.33Mi ±  4%    64.41Mi ±  5%   -13.34% (p=0.000 n=10)    68.84Mi ± 14%    -7.39% (p=0.000 n=10)
+JSON/ASCII32/Marshal       196.4Mi ±  5%    234.7Mi ±  9%   +19.46% (p=0.000 n=10)    229.7Mi ± 23%   +16.91% (p=0.023 n=10)
+JSON/ASCII32/Unmarshal     202.4Mi ± 17%    223.6Mi ±  4%   +10.49% (p=0.001 n=10)    232.8Mi ± 10%   +15.06% (p=0.000 n=10)
+JSON/ASCII256/Marshal      538.7Mi ±  6%   1152.4Mi ± 21%  +113.92% (p=0.000 n=10)   1030.4Mi ± 41%   +91.28% (p=0.000 n=10)
+JSON/ASCII256/Unmarshal    542.4Mi ±  4%   1468.3Mi ±  6%  +170.67% (p=0.000 n=10)   1487.0Mi ±  8%  +174.13% (p=0.000 n=10)
+JSON/ASCII4096/Marshal     889.9Mi ±  3%   4237.2Mi ± 16%  +376.14% (p=0.000 n=10)   3874.5Mi ±  9%  +335.38% (p=0.000 n=10)
+JSON/ASCII4096/Unmarshal   641.9Mi ± 11%   2698.4Mi ± 12%  +320.37% (p=0.000 n=10)   2683.8Mi ± 17%  +318.10% (p=0.000 n=10)
+geomean                    225.0Mi          365.0Mi         +62.23%                   360.2Mi         +60.11%
+
+                         │   scalar.txt   │             original.txt              │               final.txt               │
+                         │      B/op      │     B/op      vs base                 │     B/op      vs base                 │
+JSON/Small/Marshal           80.00 ± 0%       80.00 ± 0%       ~ (p=1.000 n=10) ¹     80.00 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/Small/Unmarshal         0.000 ± 0%       0.000 ± 0%       ~ (p=1.000 n=10) ¹     0.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII8/Marshal          16.00 ± 0%       16.00 ± 0%       ~ (p=1.000 n=10) ¹     16.00 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII8/Unmarshal        0.000 ± 0%       0.000 ± 0%       ~ (p=1.000 n=10) ¹     0.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII32/Marshal         48.00 ± 0%       48.00 ± 0%       ~ (p=1.000 n=10) ¹     48.00 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII32/Unmarshal       0.000 ± 0%       0.000 ± 0%       ~ (p=1.000 n=10) ¹     0.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII256/Marshal        288.0 ± 0%       288.0 ± 0%       ~ (p=1.000 n=10) ¹     288.0 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII256/Unmarshal      0.000 ± 0%       0.000 ± 0%       ~ (p=1.000 n=10) ¹     0.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII4096/Marshal     4.750Ki ± 0%     4.750Ki ± 0%       ~ (p=1.000 n=10) ¹   4.750Ki ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII4096/Unmarshal   4.000Ki ± 0%     4.000Ki ± 0%       ~ (p=1.000 n=10) ¹   4.000Ki ± 0%       ~ (p=1.000 n=10) ¹
+geomean                                 ²                 +0.00%                ²                 +0.00%                ²
+¹ all samples are equal
+² summaries must be >0 to compute geomean
+
+                         │  scalar.txt  │            original.txt             │              final.txt              │
+                         │  allocs/op   │ allocs/op   vs base                 │ allocs/op   vs base                 │
+JSON/Small/Marshal         1.000 ± 0%     1.000 ± 0%       ~ (p=1.000 n=10) ¹   1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/Small/Unmarshal       0.000 ± 0%     0.000 ± 0%       ~ (p=1.000 n=10) ¹   0.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII8/Marshal        1.000 ± 0%     1.000 ± 0%       ~ (p=1.000 n=10) ¹   1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII8/Unmarshal      0.000 ± 0%     0.000 ± 0%       ~ (p=1.000 n=10) ¹   0.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII32/Marshal       1.000 ± 0%     1.000 ± 0%       ~ (p=1.000 n=10) ¹   1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII32/Unmarshal     0.000 ± 0%     0.000 ± 0%       ~ (p=1.000 n=10) ¹   0.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII256/Marshal      1.000 ± 0%     1.000 ± 0%       ~ (p=1.000 n=10) ¹   1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII256/Unmarshal    0.000 ± 0%     0.000 ± 0%       ~ (p=1.000 n=10) ¹   0.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII4096/Marshal     1.000 ± 0%     1.000 ± 0%       ~ (p=1.000 n=10) ¹   1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII4096/Unmarshal   1.000 ± 0%     1.000 ± 0%       ~ (p=1.000 n=10) ¹   1.000 ± 0%       ~ (p=1.000 n=10) ¹
+geomean                               ²               +0.00%                ²               +0.00%                ²
+¹ all samples are equal
+² summaries must be >0 to compute geomean
