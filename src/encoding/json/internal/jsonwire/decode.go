@@ -142,6 +142,9 @@ func ConsumeStringResumable(flags *ValueFlags, b []byte, resumeOffset int, valid
 		}
 		for uint(len(b)) > uint(n) && noEscape(b[n]) {
 			n++
+			if len(b)-n >= 32 && b[n] < utf8.RuneSelf && escapeASCII[b[n]] == 0 {
+				n += consumeASCIIPrefix(b[n:])
+			}
 		}
 		if uint(len(b)) <= uint(n) {
 			return n, io.ErrUnexpectedEOF
