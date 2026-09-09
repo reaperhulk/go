@@ -1,0 +1,30 @@
+                                │ before.txt  │             cache.txt              │
+                                │   sec/op    │   sec/op     vs base               │
+JSON/StringEnums/UnmarshalFresh   219.7µ ± 4%   201.8µ ± 5%  -8.12% (p=0.000 n=10)
+JSON/Records/UnmarshalFresh       364.5µ ± 4%   363.5µ ± 6%       ~ (p=0.796 n=10)
+geomean                           283.0µ        270.9µ       -4.27%
+
+                                │  before.txt  │              cache.txt               │
+                                │     B/s      │      B/s       vs base               │
+JSON/StringEnums/UnmarshalFresh   96.22Mi ± 4%   104.73Mi ± 5%  +8.85% (p=0.000 n=10)
+JSON/Records/UnmarshalFresh       75.60Mi ± 4%    75.79Mi ± 6%       ~ (p=0.796 n=10)
+geomean                           85.29Mi         89.09Mi       +4.46%
+
+                                │ before.txt  │             cache.txt              │
+                                │ cpu-sec/op  │ cpu-sec/op   vs base               │
+JSON/StringEnums/UnmarshalFresh   220.2µ ± 4%   202.2µ ± 5%  -8.20% (p=0.000 n=10)
+JSON/Records/UnmarshalFresh       366.1µ ± 4%   364.7µ ± 6%       ~ (p=0.853 n=10)
+geomean                           283.9µ        271.5µ       -4.36%
+
+                                │  before.txt  │              cache.txt               │
+                                │     B/op     │     B/op      vs base                │
+JSON/StringEnums/UnmarshalFresh   50.15Ki ± 0%   42.15Ki ± 0%  -15.95% (p=0.000 n=10)
+JSON/Records/UnmarshalFresh       78.86Ki ± 0%   78.86Ki ± 0%        ~ (p=1.000 n=10)
+geomean                           62.89Ki        57.66Ki        -8.32%
+
+                                │  before.txt  │               cache.txt               │
+                                │  allocs/op   │  allocs/op   vs base                  │
+JSON/StringEnums/UnmarshalFresh   1034.00 ± 0%    10.00 ± 0%  -99.03% (p=0.000 n=10)
+JSON/Records/UnmarshalFresh        1.034k ± 0%   1.034k ± 0%        ~ (p=1.000 n=10) ¹
+geomean                            1.034k         101.7       -90.17%
+¹ all samples are equal

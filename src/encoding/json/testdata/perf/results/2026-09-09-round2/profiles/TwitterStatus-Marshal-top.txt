@@ -1,0 +1,86 @@
+File: utf8-decode2
+Build ID: e58781af6871b0b83e2f283ccdcc381e8461c1a1
+Type: cpu
+Time: 2026-09-09 14:56:42 CDT
+Duration: 3.81s, Total samples = 3.81s (  100%)
+Showing nodes accounting for 3.54s, 92.91% of 3.81s total
+Dropped 67 nodes (cum <= 0.02s)
+      flat  flat%   sum%        cum   cum%
+     0.80s 21.00% 21.00%      3.64s 95.54%  encoding/json/v2.makeStructArshaler.func2
+     0.41s 10.76% 31.76%      0.90s 23.62%  encoding/json/internal/jsonwire.AppendQuote
+     0.31s  8.14% 39.90%      0.31s  8.14%  runtime.memmove
+     0.20s  5.25% 45.14%      0.20s  5.25%  encoding/json/internal/jsonwire.consumeUTF8PrefixAVX2
+     0.16s  4.20% 49.34%      0.23s  6.04%  reflect.Value.Field
+     0.14s  3.67% 53.02%      0.14s  3.67%  encoding/json/internal/jsonflags.Flags.Get (partial-inline)
+     0.14s  3.67% 56.69%      1.14s 29.92%  encoding/json/v2.makeStringArshaler.func1
+     0.10s  2.62% 59.32%      0.23s  6.04%  encoding/json/v2.makeBoolArshaler.func1
+     0.10s  2.62% 61.94%      0.10s  2.62%  unicode/utf8.decodeRuneSlow
+     0.08s  2.10% 64.04%      3.64s 95.54%  encoding/json/v2.makeSliceArshaler.func2
+     0.07s  1.84% 65.88%      0.07s  1.84%  internal/abi.Name.IsExported (inline)
+     0.07s  1.84% 67.72%      0.07s  1.84%  internal/strconv.formatBase10
+     0.06s  1.57% 69.29%      0.06s  1.57%  encoding/json/jsontext.(*stateEntry).Increment (partial-inline)
+     0.06s  1.57% 70.87%      0.23s  6.04%  gcWriteBarrier
+     0.05s  1.31% 72.18%      0.06s  1.57%  encoding/json/internal/jsonwire.consumeASCIIPrefixAVX2
+     0.05s  1.31% 73.49%      0.08s  2.10%  runtime.findObject
+     0.04s  1.05% 74.54%      0.27s  7.09%  encoding/json/jsontext.(*Encoder).WriteToken (partial-inline)
+     0.04s  1.05% 75.59%      0.23s  6.04%  encoding/json/jsontext.(*encoderState).WriteToken
+     0.04s  1.05% 76.64%      0.05s  1.31%  encoding/json/jsontext.Token.Kind (inline)
+     0.04s  1.05% 77.69%      0.15s  3.94%  internal/strconv.AppendUint
+     0.04s  1.05% 78.74%      0.04s  1.05%  reflect.Value.IsNil (partial-inline)
+     0.04s  1.05% 79.79%      0.06s  1.57%  runtime.tryDeferToSpanScan
+     0.04s  1.05% 80.84%      0.14s  3.67%  unicode/utf8.DecodeRune (inline)
+     0.03s  0.79% 81.63%      0.04s  1.05%  encoding/json/jsontext.stateEntry.needImplicitColon (inline)
+     0.03s  0.79% 82.41%      0.07s  1.84%  encoding/json/jsontext.stateMachine.MayAppendDelim (partial-inline)
+     0.03s  0.79% 83.20%      0.25s  6.56%  encoding/json/v2.makeIntArshaler.func1
+     0.03s  0.79% 83.99%      1.49s 39.11%  encoding/json/v2.makePointerArshaler.func2
+     0.03s  0.79% 84.78%      0.03s  0.79%  internal/strconv.numDigits (inline)
+     0.03s  0.79% 85.56%      0.03s  0.79%  reflect.Value.Bool
+     0.03s  0.79% 86.35%      0.17s  4.46%  runtime.wbBufFlush1
+     0.03s  0.79% 87.14%      0.03s  0.79%  sync.(*Once).Do (partial-inline)
+     0.02s  0.52% 87.66%      0.02s  0.52%  encoding/json/internal/jsonwire.appendEscapedASCII
+     0.02s  0.52% 88.19%      0.03s  0.79%  encoding/json/jsontext.(*encoderState).AppendRaw
+     0.02s  0.52% 88.71%      0.02s  0.52%  encoding/json/jsontext.(*stateMachine).popObject (inline)
+     0.02s  0.52% 89.24%      0.02s  0.52%  encoding/json/jsontext.stateEntry.Length
+     0.02s  0.52% 89.76%      0.02s  0.52%  encoding/json/jsontext.stateEntry.NeedObjectName (partial-inline)
+     0.02s  0.52% 90.29%      0.02s  0.52%  internal/strconv.AppendBool (inline)
+     0.02s  0.52% 90.81%      0.02s  0.52%  reflect.Value.Index
+     0.02s  0.52% 91.34%      0.02s  0.52%  reflect.Value.String
+     0.01s  0.26% 91.60%      0.07s  1.84%  encoding/json/internal/jsonwire.consumeASCIIPrefix (inline)
+     0.01s  0.26% 91.86%      0.04s  1.05%  encoding/json/v2.marshalArrayAny
+     0.01s  0.26% 92.13%      0.16s  4.20%  internal/strconv.AppendInt
+     0.01s  0.26% 92.39%      0.24s  6.30%  runtime.systemstack
+     0.01s  0.26% 92.65%      0.03s  0.79%  strconv.AppendBool
+     0.01s  0.26% 92.91%      0.17s  4.46%  strconv.AppendInt (inline)
+         0     0% 92.91%      0.15s  3.94%  bytes.Clone (inline)
+         0     0% 92.91%      3.80s 99.74%  encoding/json.Marshal (inline)
+         0     0% 92.91%      0.02s  0.52%  encoding/json/internal/jsonwire.AppendFloat
+         0     0% 92.91%      0.20s  5.25%  encoding/json/internal/jsonwire.consumeUTF8Prefix (inline)
+         0     0% 92.91%      0.02s  0.52%  encoding/json/jsontext.Token.appendNumber
+         0     0% 92.91%      3.80s 99.74%  encoding/json/v2.Marshal
+         0     0% 92.91%      0.14s  3.67%  encoding/json/v2.makeInterfaceArshaler.func1
+         0     0% 92.91%      0.05s  1.31%  encoding/json/v2.makeMapArshaler.func2
+         0     0% 92.91%      3.64s 95.54%  encoding/json/v2.marshalEncode
+         0     0% 92.91%      0.04s  1.05%  encoding/json/v2.marshalObjectAny
+         0     0% 92.91%      0.05s  1.31%  encoding/json/v2.marshalValueAny
+         0     0% 92.91%      0.02s  0.52%  internal/strconv.AppendFloat
+         0     0% 92.91%      0.02s  0.52%  internal/strconv.ftoa64
+         0     0% 92.91%      3.80s 99.74%  main.main.func1
+         0     0% 92.91%      3.80s 99.74%  main.main.func3
+         0     0% 92.91%      0.03s  0.79%  reflect.Value.MapIndex
+         0     0% 92.91%      0.03s  0.79%  reflect.copyVal
+         0     0% 92.91%      0.03s  0.79%  reflect.unsafe_New
+         0     0% 92.91%      0.03s  0.79%  runtime.deductAssistCredit
+         0     0% 92.91%      0.04s  1.05%  runtime.gcAssistAlloc
+         0     0% 92.91%      0.04s  1.05%  runtime.gcAssistAlloc.func2
+         0     0% 92.91%      0.04s  1.05%  runtime.gcAssistAlloc1
+         0     0% 92.91%      0.04s  1.05%  runtime.gcDrainN
+         0     0% 92.91%      0.04s  1.05%  runtime.growslice
+         0     0% 92.91%      0.07s  1.84%  runtime.mallocgc
+         0     0% 92.91%      0.02s  0.52%  runtime.mallocgcSmallScanNoHeaderSC4
+         0     0% 92.91%      0.02s  0.52%  runtime.mallocgcSmallScanSlowPath
+         0     0% 92.91%      0.02s  0.52%  runtime.markroot
+         0     0% 92.91%      0.17s  4.46%  runtime.wbBufFlush
+         0     0% 92.91%      0.17s  4.46%  runtime.wbBufFlush.func1
+         0     0% 92.91%      0.02s  0.52%  strconv.AppendFloat (inline)
+         0     0% 92.91%      3.80s 99.74%  testing.(*B).run1.func1
+         0     0% 92.91%      3.80s 99.74%  testing.(*B).runN

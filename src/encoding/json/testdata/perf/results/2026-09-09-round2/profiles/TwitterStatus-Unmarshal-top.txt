@@ -1,0 +1,115 @@
+File: utf8-decode2
+Build ID: e58781af6871b0b83e2f283ccdcc381e8461c1a1
+Type: cpu
+Time: 2026-09-09 14:56:34 CDT
+Duration: 4s, Total samples = 3.92s (97.96%)
+Showing nodes accounting for 3.63s, 92.60% of 3.92s total
+Dropped 57 nodes (cum <= 0.02s)
+      flat  flat%   sum%        cum   cum%
+     0.43s 10.97% 10.97%      0.44s 11.22%  encoding/json/internal/jsonwire.ConsumeWhitespace (inline)
+     0.30s  7.65% 18.62%      0.60s 15.31%  encoding/json/internal/jsonwire.ConsumeSimpleString
+     0.26s  6.63% 25.26%      0.28s  7.14%  encoding/json/internal/jsonwire.consumeASCIIPrefixAVX2
+     0.22s  5.61% 30.87%      0.97s 24.74%  encoding/json/jsontext.(*decoderState).consumeObject
+     0.19s  4.85% 35.71%      0.23s  5.87%  encoding/json/internal/jsonwire.consumeUTF8PrefixAVX2
+     0.18s  4.59% 40.31%      0.83s 21.17%  encoding/json/jsontext.(*decoderState).ReadValue
+     0.13s  3.32% 43.62%      0.39s  9.95%  encoding/json/jsontext.(*decoderState).PeekKind
+     0.13s  3.32% 46.94%      2.92s 74.49%  encoding/json/v2.makeStructArshaler.func3
+     0.12s  3.06% 50.00%      0.23s  5.87%  encoding/json/internal/jsonwire.AppendUnquote
+     0.12s  3.06% 53.06%      0.46s 11.73%  runtime.mapaccess2_faststr (partial-inline)
+     0.10s  2.55% 55.61%      1.53s 39.03%  encoding/json/jsontext.(*decoderState).consumeValue
+     0.10s  2.55% 58.16%      0.10s  2.55%  memeqbody
+     0.08s  2.04% 60.20%      0.08s  2.04%  internal/runtime/maps.memHashAES
+     0.08s  2.04% 62.24%      0.08s  2.04%  unicode/utf8.decodeRuneSlow
+     0.06s  1.53% 63.78%      0.15s  3.83%  encoding/json/jsontext.(*decoderState).ReadToken
+     0.06s  1.53% 65.31%      0.06s  1.53%  encoding/json/jsontext.Kind.normalize (inline)
+     0.05s  1.28% 66.58%      0.05s  1.28%  internal/abi.Name.IsExported (inline)
+     0.05s  1.28% 67.86%      0.05s  1.28%  runtime.memmove
+     0.04s  1.02% 68.88%      0.27s  6.89%  encoding/json/internal/jsonwire.UnquoteMayCopy
+     0.04s  1.02% 69.90%      0.32s  8.16%  encoding/json/internal/jsonwire.consumeASCIIPrefix (inline)
+     0.04s  1.02% 70.92%      0.04s  1.02%  internal/runtime/maps.ctrlGroup.matchH2 (inline)
+     0.04s  1.02% 71.94%      0.04s  1.02%  runtime.tryDeferToSpanScan
+     0.04s  1.02% 72.96%      0.04s  1.02%  simd/archsimd.LoadUint8x32 (inline)
+     0.03s  0.77% 73.72%      0.03s  0.77%  encoding/json/internal/jsonwire.ConsumeSimpleNumber (inline)
+     0.03s  0.77% 74.49%      0.03s  0.77%  encoding/json/jsontext.stateEntry.NeedObjectName (inline)
+     0.03s  0.77% 75.26%      0.86s 21.94%  encoding/json/v2.makeStringArshaler.func2
+     0.03s  0.77% 76.02%      0.03s  0.77%  internal/runtime/maps.(*Map).directoryAt (inline)
+     0.03s  0.77% 76.79%      0.05s  1.28%  internal/runtime/maps.(*Map).getWithoutKeySmallFastStr
+     0.03s  0.77% 77.55%      0.03s  0.77%  internal/runtime/maps.(*groupReference).key (inline)
+     0.03s  0.77% 78.32%      0.03s  0.77%  internal/runtime/maps.(*groupsReference).group (inline)
+     0.03s  0.77% 79.08%      0.03s  0.77%  runtime.(*spanInlineMarkBits).init
+     0.02s  0.51% 79.59%      0.02s  0.51%  encoding/json/internal/jsonflags.Flags.Get
+     0.02s  0.51% 80.10%      0.02s  0.51%  encoding/json/internal/jsonflags.Flags.Has
+     0.02s  0.51% 80.61%      0.30s  7.65%  encoding/json/internal/jsonwire.ConsumeStringResumable
+     0.02s  0.51% 81.12%      0.02s  0.51%  encoding/json/internal/jsonwire.ParseUint
+     0.02s  0.51% 81.63%      0.97s 24.74%  encoding/json/jsontext.(*decoderState).consumeArray
+     0.02s  0.51% 82.14%      0.02s  0.51%  encoding/json/jsontext.(*stateEntry).Increment (inline)
+     0.02s  0.51% 82.65%      0.02s  0.51%  encoding/json/jsontext.(*stateMachine).popArray (inline)
+     0.02s  0.51% 83.16%      0.02s  0.51%  encoding/json/jsontext.stateEntry.needImplicitComma (inline)
+     0.02s  0.51% 83.67%      0.05s  1.28%  gcWriteBarrier
+     0.02s  0.51% 84.18%      0.02s  0.51%  internal/strconv.ParseUint
+     0.02s  0.51% 84.69%      0.07s  1.79%  reflect.Value.Field
+     0.02s  0.51% 85.20%      0.02s  0.51%  reflect.Value.SetInt
+     0.02s  0.51% 85.71%      0.02s  0.51%  runtime.asyncPreempt
+     0.02s  0.51% 86.22%      0.02s  0.51%  runtime.gcWriteBarrier1
+     0.02s  0.51% 86.73%      0.21s  5.36%  runtime.mallocgc
+     0.02s  0.51% 87.24%      0.05s  1.28%  runtime.mallocgcTinySC2
+     0.02s  0.51% 87.76%      0.03s  0.77%  runtime.mallocgcTinySlowPath
+     0.02s  0.51% 88.27%      0.02s  0.51%  runtime.memclrNoHeapPointers
+     0.02s  0.51% 88.78%      0.02s  0.51%  simd/archsimd.BroadcastUint8x32 (inline)
+     0.01s  0.26% 89.03%      0.31s  7.91%  encoding/json/jsontext.(*decoderState).consumeString
+     0.01s  0.26% 89.29%      0.04s  1.02%  encoding/json/jsontext.stateMachine.needDelim (inline)
+     0.01s  0.26% 89.54%      0.09s  2.30%  encoding/json/v2.makeBoolArshaler.func2
+     0.01s  0.26% 89.80%      0.14s  3.57%  encoding/json/v2.makeIntArshaler.func2
+     0.01s  0.26% 90.05%      0.08s  2.04%  encoding/json/v2.makeInterfaceArshaler.func2
+     0.01s  0.26% 90.31%      1.25s 31.89%  encoding/json/v2.makePointerArshaler.func3
+     0.01s  0.26% 90.56%      0.26s  6.63%  encoding/json/v2.makeString
+     0.01s  0.26% 90.82%      0.02s  0.51%  reflect.Value.Index
+     0.01s  0.26% 91.07%      0.02s  0.51%  reflect.Value.MapIndex
+     0.01s  0.26% 91.33%      0.05s  1.28%  reflect.Value.Set
+     0.01s  0.26% 91.58%      0.02s  0.51%  runtime.(*sweepLocked).sweep
+     0.01s  0.26% 91.84%      0.03s  0.77%  runtime.growslice
+     0.01s  0.26% 92.09%      0.06s  1.53%  runtime.mallocgcSmallNoscan
+     0.01s  0.26% 92.35%      0.46s 11.73%  runtime.mapaccess1_faststr
+     0.01s  0.26% 92.60%      0.02s  0.51%  runtime.scanObject
+         0     0% 92.60%      3.90s 99.49%  encoding/json.Unmarshal (inline)
+         0     0% 92.60%      0.23s  5.87%  encoding/json/internal/jsonwire.consumeUTF8Prefix (inline)
+         0     0% 92.60%      0.39s  9.95%  encoding/json/jsontext.(*Decoder).PeekKind (partial-inline)
+         0     0% 92.60%      0.15s  3.83%  encoding/json/jsontext.(*Decoder).ReadToken (partial-inline)
+         0     0% 92.60%      0.97s 24.74%  encoding/json/jsontext.(*decoderState).CheckNextValue
+         0     0% 92.60%      0.02s  0.51%  encoding/json/jsontext.(*stateMachine).appendLiteral (inline)
+         0     0% 92.60%      3.90s 99.49%  encoding/json/v2.Unmarshal
+         0     0% 92.60%      0.05s  1.28%  encoding/json/v2.makeMapArshaler.func3
+         0     0% 92.60%      2.91s 74.23%  encoding/json/v2.makeSliceArshaler.func3
+         0     0% 92.60%      0.02s  0.51%  encoding/json/v2.newAddressableValue
+         0     0% 92.60%      3.90s 99.49%  encoding/json/v2.unmarshalDecode
+         0     0% 92.60%      0.02s  0.51%  internal/strconv.ParseInt
+         0     0% 92.60%      3.90s 99.49%  main.main.func2
+         0     0% 92.60%      3.90s 99.49%  main.main.func3
+         0     0% 92.60%      0.02s  0.51%  reflect.New
+         0     0% 92.60%      0.02s  0.51%  reflect.Value.SetString
+         0     0% 92.60%      0.02s  0.51%  reflect.typedmemmove
+         0     0% 92.60%      0.02s  0.51%  reflect.unsafe_New
+         0     0% 92.60%      0.07s  1.79%  runtime.(*mcache).nextFree
+         0     0% 92.60%      0.06s  1.53%  runtime.(*mcache).refill
+         0     0% 92.60%      0.04s  1.02%  runtime.(*mcentral).cacheSpan
+         0     0% 92.60%      0.03s  0.77%  runtime.(*mcentral).grow
+         0     0% 92.60%      0.03s  0.77%  runtime.(*mspan).initHeapBits
+         0     0% 92.60%      0.03s  0.77%  runtime.(*mspan).initInlineMarkBits (inline)
+         0     0% 92.60%      0.02s  0.51%  runtime.deductAssistCredit
+         0     0% 92.60%      0.04s  1.02%  runtime.gcAssistAlloc
+         0     0% 92.60%      0.04s  1.02%  runtime.gcAssistAlloc.func2
+         0     0% 92.60%      0.04s  1.02%  runtime.gcAssistAlloc1
+         0     0% 92.60%      0.04s  1.02%  runtime.gcDrainN
+         0     0% 92.60%      0.03s  0.77%  runtime.mallocgcSmallNoScanSC7
+         0     0% 92.60%      0.03s  0.77%  runtime.mallocgcSmallNoScanSlowPath
+         0     0% 92.60%      0.22s  5.61%  runtime.slicebytetostring
+         0     0% 92.60%      0.08s  2.04%  runtime.systemstack
+         0     0% 92.60%      0.02s  0.51%  runtime.typedmemmove
+         0     0% 92.60%      0.03s  0.77%  runtime.wbBufFlush
+         0     0% 92.60%      0.03s  0.77%  runtime.wbBufFlush.func1
+         0     0% 92.60%      0.03s  0.77%  runtime.wbBufFlush1
+         0     0% 92.60%      0.04s  1.02%  slices.Grow[go.shape.[]uint8,go.shape.uint8] (inline)
+         0     0% 92.60%      0.02s  0.51%  strconv.ParseInt
+         0     0% 92.60%      3.90s 99.49%  testing.(*B).run1.func1
+         0     0% 92.60%      3.90s 99.49%  testing.(*B).runN
+         0     0% 92.60%      0.08s  2.04%  unicode/utf8.DecodeRune (inline)

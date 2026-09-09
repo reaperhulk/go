@@ -1,0 +1,79 @@
+File: final-selected
+Build ID: 5485143755be39b360f232a5547fb3dd90d14aaa
+Type: cpu
+Time: 2026-09-09 15:24:49 CDT
+Duration: 3.29s, Total samples = 3.29s (  100%)
+Showing nodes accounting for 3.18s, 96.66% of 3.29s total
+Dropped 39 nodes (cum <= 0.02s)
+      flat  flat%   sum%        cum   cum%
+     2.26s 68.69% 68.69%      2.57s 78.12%  encoding/json/internal/jsonwire.consumeUTF8PrefixAVX512
+     0.27s  8.21% 76.90%      0.27s  8.21%  simd/archsimd.BroadcastUint8x64 (inline)
+     0.24s  7.29% 84.19%      0.24s  7.29%  runtime.memmove
+     0.08s  2.43% 86.63%      0.10s  3.04%  runtime.typePointers.next
+     0.05s  1.52% 88.15%      0.07s  2.13%  runtime.scanblock
+     0.04s  1.22% 89.36%      0.15s  4.56%  runtime.scanObject
+     0.03s  0.91% 90.27%      0.03s  0.91%  runtime.asyncPreempt
+     0.03s  0.91% 91.19%      0.03s  0.91%  runtime.findObject
+     0.02s  0.61% 91.79%      1.33s 40.43%  encoding/json/jsontext.(*decoderState).CheckNextValue
+     0.02s  0.61% 92.40%      0.02s  0.61%  runtime.(*lfstack).pop
+     0.02s  0.61% 93.01%      0.02s  0.61%  runtime.arenaIndex (inline)
+     0.02s  0.61% 93.62%      0.02s  0.61%  runtime.futex
+     0.02s  0.61% 94.22%      0.02s  0.61%  runtime.typePointers.nextFast (inline)
+     0.02s  0.61% 94.83%      0.02s  0.61%  simd/archsimd.LoadUint8x64 (inline)
+     0.01s   0.3% 95.14%      3.20s 97.26%  encoding/json/v2.unmarshalDecode
+     0.01s   0.3% 95.44%      3.24s 98.48%  main.main.func2
+     0.01s   0.3% 95.74%      0.02s  0.61%  runtime.(*pageAlloc).update
+     0.01s   0.3% 96.05%      0.03s  0.91%  runtime.schedule
+     0.01s   0.3% 96.35%      0.04s  1.22%  runtime.wbBufFlush.func1
+     0.01s   0.3% 96.66%      0.03s  0.91%  runtime.wbBufFlush1
+         0     0% 96.66%      3.23s 98.18%  encoding/json.Unmarshal (inline)
+         0     0% 96.66%      2.58s 78.42%  encoding/json/internal/jsonwire.ConsumeStringResumable
+         0     0% 96.66%      2.57s 78.12%  encoding/json/internal/jsonwire.consumeUTF8Prefix (inline)
+         0     0% 96.66%      2.57s 78.12%  encoding/json/internal/jsonwire.consumeUTF8PrefixSIMD
+         0     0% 96.66%      1.29s 39.21%  encoding/json/jsontext.(*decoderState).ReadValue
+         0     0% 96.66%      2.58s 78.42%  encoding/json/jsontext.(*decoderState).consumeString
+         0     0% 96.66%      2.59s 78.72%  encoding/json/jsontext.(*decoderState).consumeValue
+         0     0% 96.66%      0.03s  0.91%  encoding/json/jsontext.(*decoderState).reset
+         0     0% 96.66%      0.03s  0.91%  encoding/json/jsontext.export.GetBufferedDecoder (inline)
+         0     0% 96.66%      0.03s  0.91%  encoding/json/jsontext.getBufferedDecoder
+         0     0% 96.66%      3.23s 98.18%  encoding/json/v2.Unmarshal
+         0     0% 96.66%      0.57s 17.33%  encoding/json/v2.makeString
+         0     0% 96.66%      1.86s 56.53%  encoding/json/v2.makeStringArshaler.func2
+         0     0% 96.66%      3.24s 98.48%  main.main.func3
+         0     0% 96.66%      0.08s  2.43%  runtime.(*mcache).nextFree
+         0     0% 96.66%      0.08s  2.43%  runtime.(*mcache).refill
+         0     0% 96.66%      0.07s  2.13%  runtime.(*mcentral).cacheSpan
+         0     0% 96.66%      0.02s  0.61%  runtime.(*mcentral).grow
+         0     0% 96.66%      0.02s  0.61%  runtime.(*mheap).alloc
+         0     0% 96.66%      0.02s  0.61%  runtime.(*mheap).alloc.func1
+         0     0% 96.66%      0.02s  0.61%  runtime.(*mheap).allocSpan
+         0     0% 96.66%      0.02s  0.61%  runtime.(*spanSet).push
+         0     0% 96.66%      0.02s  0.61%  runtime.(*spanSetBlockAlloc).alloc
+         0     0% 96.66%      0.04s  1.22%  runtime.(*sweepLocked).sweep
+         0     0% 96.66%      0.03s  0.91%  runtime.(*wbBuf).get2 (inline)
+         0     0% 96.66%      0.03s  0.91%  runtime.bulkBarrierPreWrite
+         0     0% 96.66%      0.25s  7.60%  runtime.deductAssistCredit
+         0     0% 96.66%      0.05s  1.52%  runtime.deductSweepCredit
+         0     0% 96.66%      0.02s  0.61%  runtime.futexsleep
+         0     0% 96.66%      0.25s  7.60%  runtime.gcAssistAlloc
+         0     0% 96.66%      0.25s  7.60%  runtime.gcAssistAlloc.func2
+         0     0% 96.66%      0.25s  7.60%  runtime.gcAssistAlloc1
+         0     0% 96.66%      0.25s  7.60%  runtime.gcDrainN
+         0     0% 96.66%      0.02s  0.61%  runtime.heapArenaOf (inline)
+         0     0% 96.66%      0.02s  0.61%  runtime.mPark (inline)
+         0     0% 96.66%      0.33s 10.03%  runtime.mallocgc
+         0     0% 96.66%      0.08s  2.43%  runtime.mallocgcSmallNoscan
+         0     0% 96.66%      0.08s  2.43%  runtime.markroot
+         0     0% 96.66%      0.07s  2.13%  runtime.markrootBlock
+         0     0% 96.66%      0.03s  0.91%  runtime.mcall
+         0     0% 96.66%      0.02s  0.61%  runtime.notesleep
+         0     0% 96.66%      0.02s  0.61%  runtime.park_m
+         0     0% 96.66%      0.57s 17.33%  runtime.slicebytetostring
+         0     0% 96.66%      0.02s  0.61%  runtime.stoplockedm
+         0     0% 96.66%      0.06s  1.82%  runtime.sweepone
+         0     0% 96.66%      0.32s  9.73%  runtime.systemstack
+         0     0% 96.66%      0.02s  0.61%  runtime.tryDeferToSpanScan
+         0     0% 96.66%      0.04s  1.22%  runtime.wbBufFlush
+         0     0% 96.66%      0.03s  0.91%  runtime.wbMove
+         0     0% 96.66%      3.24s 98.48%  testing.(*B).run1.func1
+         0     0% 96.66%      3.24s 98.48%  testing.(*B).runN

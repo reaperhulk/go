@@ -1,0 +1,123 @@
+                             │   cache.txt   │               final.txt               │
+                             │    sec/op     │    sec/op      vs base                │
+JSON/UTF8Greek/Marshal          6.339µ ± 10%   4.853µ ±   4%  -23.44% (p=0.000 n=10)
+JSON/UTF8Greek/Unmarshal       11.325µ ± 12%   9.113µ ±  23%  -19.53% (p=0.003 n=10)
+JSON/UTF8CJK/Marshal           11.427µ ± 29%   7.231µ ±  23%  -36.72% (p=0.002 n=10)
+JSON/UTF8CJK/Unmarshal         14.330µ ±  4%   9.481µ ±   7%  -33.84% (p=0.000 n=10)
+JSON/UTF8Emoji/Marshal          3.446µ ±  5%   2.626µ ±   6%  -23.78% (p=0.000 n=10)
+JSON/UTF8Emoji/Unmarshal        6.291µ ±  4%   4.669µ ±   4%  -25.79% (p=0.000 n=10)
+JSON/UTF8Mixed/Marshal          8.650µ ±  3%   6.572µ ±   7%  -24.02% (p=0.000 n=10)
+JSON/UTF8Mixed/Unmarshal        15.92µ ±  4%   10.98µ ± 150%  -31.04% (p=0.023 n=10)
+JSON/StringUnicode/Marshal      20.52µ ± 10%   16.43µ ±   5%  -19.93% (p=0.000 n=10)
+JSON/StringUnicode/Unmarshal    39.16µ ±  3%   31.98µ ±   7%  -18.34% (p=0.000 n=10)
+JSON/TwitterStatus/Marshal      1.302m ±  4%   1.338m ±   4%        ~ (p=0.063 n=10)
+JSON/TwitterStatus/Unmarshal    2.824m ±  6%   2.806m ±   9%        ~ (p=0.631 n=10)
+JSON/Records/Marshal            150.7µ ±  3%   149.2µ ±  46%        ~ (p=0.579 n=10)
+JSON/Records/Unmarshal          274.1µ ±  3%   278.8µ ±  49%        ~ (p=0.089 n=10)
+JSON/UnicodeRuns/Marshal        1.280µ ±  5%   1.282µ ±   7%        ~ (p=0.425 n=10)
+JSON/UnicodeRuns/Unmarshal      1.881µ ±  4%   1.854µ ±   7%        ~ (p=0.926 n=10)
+JSON/Small/Marshal              534.3n ±  2%   538.5n ±  69%        ~ (p=0.247 n=10)
+JSON/Small/Unmarshal            933.9n ±  6%   914.7n ±   3%   -2.06% (p=0.029 n=10)
+JSON/ASCII4096/Marshal          986.9n ± 15%   981.5n ±   3%        ~ (p=0.971 n=10)
+JSON/ASCII4096/Unmarshal        1.361µ ± 10%   1.414µ ±  63%        ~ (p=0.190 n=10)
+geomean                         12.36µ         10.66µ         -13.76%
+
+                             │   cache.txt    │               final.txt                │
+                             │      B/s       │      B/s        vs base                │
+JSON/UTF8Greek/Marshal          1.053Gi ±  9%    1.376Gi ±  4%  +30.62% (p=0.000 n=10)
+JSON/UTF8Greek/Unmarshal        603.8Mi ± 10%    752.1Mi ± 19%  +24.55% (p=0.003 n=10)
+JSON/UTF8CJK/Marshal            705.3Mi ± 41%   1114.8Mi ± 30%  +58.05% (p=0.002 n=10)
+JSON/UTF8CJK/Unmarshal          562.4Mi ±  4%    850.0Mi ±  6%  +51.14% (p=0.000 n=10)
+JSON/UTF8Emoji/Marshal          1.108Gi ±  5%    1.453Gi ±  5%  +31.20% (p=0.000 n=10)
+JSON/UTF8Emoji/Unmarshal        621.4Mi ±  4%    837.2Mi ±  4%  +34.72% (p=0.000 n=10)
+JSON/UTF8Mixed/Marshal          1.103Gi ±  3%    1.451Gi ±  7%  +31.61% (p=0.000 n=10)
+JSON/UTF8Mixed/Unmarshal        613.4Mi ±  4%    889.5Mi ± 60%  +45.02% (p=0.023 n=10)
+JSON/StringUnicode/Marshal      842.5Mi ±  9%   1052.2Mi ±  5%  +24.89% (p=0.000 n=10)
+JSON/StringUnicode/Unmarshal    441.3Mi ±  3%    540.5Mi ±  6%  +22.46% (p=0.000 n=10)
+JSON/TwitterStatus/Marshal      462.7Mi ±  3%    450.1Mi ±  3%        ~ (p=0.063 n=10)
+JSON/TwitterStatus/Unmarshal    213.2Mi ±  5%    214.6Mi ±  9%        ~ (p=0.631 n=10)
+JSON/Records/Marshal            182.8Mi ±  3%    184.6Mi ± 31%        ~ (p=0.592 n=10)
+JSON/Records/Unmarshal         100.54Mi ±  3%    98.83Mi ± 33%        ~ (p=0.089 n=10)
+JSON/UnicodeRuns/Marshal        3.018Gi ±  6%    3.012Gi ±  6%        ~ (p=0.393 n=10)
+JSON/UnicodeRuns/Unmarshal      2.053Gi ±  4%    2.083Gi ±  7%        ~ (p=0.971 n=10)
+JSON/Small/Marshal              119.6Mi ±  2%    118.7Mi ± 41%        ~ (p=0.247 n=10)
+JSON/Small/Unmarshal            68.43Mi ±  6%    69.85Mi ±  3%   +2.08% (p=0.029 n=10)
+JSON/ASCII4096/Marshal          3.867Gi ± 13%    3.889Gi ±  3%        ~ (p=0.971 n=10)
+JSON/ASCII4096/Unmarshal        2.804Gi ±  9%    2.701Gi ± 39%        ~ (p=0.190 n=10)
+geomean                         610.3Mi          707.8Mi        +15.97%
+
+                             │   cache.txt   │               final.txt               │
+                             │  cpu-sec/op   │  cpu-sec/op    vs base                │
+JSON/UTF8Greek/Marshal          6.365µ ± 10%   4.878µ ±   4%  -23.36% (p=0.000 n=10)
+JSON/UTF8Greek/Unmarshal       11.380µ ± 12%   9.156µ ±  22%  -19.54% (p=0.002 n=10)
+JSON/UTF8CJK/Marshal           11.513µ ± 30%   7.265µ ±  23%  -36.90% (p=0.002 n=10)
+JSON/UTF8CJK/Unmarshal         14.399µ ±  4%   9.544µ ±   7%  -33.72% (p=0.000 n=10)
+JSON/UTF8Emoji/Marshal          3.457µ ±  5%   2.639µ ±   6%  -23.66% (p=0.000 n=10)
+JSON/UTF8Emoji/Unmarshal        6.344µ ±  4%   4.699µ ±   4%  -25.94% (p=0.000 n=10)
+JSON/UTF8Mixed/Marshal          8.696µ ±  3%   6.617µ ±   7%  -23.91% (p=0.000 n=10)
+JSON/UTF8Mixed/Unmarshal        15.97µ ±  5%   11.05µ ± 150%  -30.84% (p=0.023 n=10)
+JSON/StringUnicode/Marshal      20.60µ ± 13%   16.48µ ±   5%  -19.97% (p=0.000 n=10)
+JSON/StringUnicode/Unmarshal    39.34µ ±  3%   32.12µ ±   7%  -18.35% (p=0.000 n=10)
+JSON/TwitterStatus/Marshal      1.305m ±  4%   1.342m ±   4%        ~ (p=0.063 n=10)
+JSON/TwitterStatus/Unmarshal    2.830m ±  6%   2.814m ±  10%        ~ (p=0.631 n=10)
+JSON/Records/Marshal            151.2µ ±  3%   149.8µ ±  46%        ~ (p=0.631 n=10)
+JSON/Records/Unmarshal          274.9µ ±  3%   279.3µ ±  49%        ~ (p=0.089 n=10)
+JSON/UnicodeRuns/Marshal        1.285µ ±  5%   1.290µ ±   7%        ~ (p=0.494 n=10)
+JSON/UnicodeRuns/Unmarshal      1.888µ ±  3%   1.862µ ±   7%        ~ (p=0.781 n=10)
+JSON/Small/Marshal              536.6n ±  2%   541.5n ±  69%        ~ (p=0.247 n=10)
+JSON/Small/Unmarshal            938.1n ±  6%   918.6n ±   3%   -2.09% (p=0.035 n=10)
+JSON/ASCII4096/Marshal          996.5n ±  9%   984.5n ±   3%        ~ (p=0.987 n=10)
+JSON/ASCII4096/Unmarshal        1.374µ ± 11%   1.423µ ±  62%        ~ (p=0.143 n=10)
+geomean                         12.42µ         10.71µ         -13.77%
+
+                             │   cache.txt    │               final.txt               │
+                             │      B/op      │     B/op      vs base                 │
+JSON/UTF8Greek/Marshal         8.000Ki ± 0%     8.000Ki ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Greek/Unmarshal       8.000Ki ± 0%     8.000Ki ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8CJK/Marshal           9.250Ki ± 0%     9.250Ki ± 0%       ~ (p=1.000 n=10)
+JSON/UTF8CJK/Unmarshal         9.250Ki ± 0%     9.250Ki ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Emoji/Marshal         4.750Ki ± 0%     4.750Ki ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Emoji/Unmarshal       4.000Ki ± 0%     4.000Ki ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Mixed/Marshal         10.62Ki ± 0%     10.62Ki ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Mixed/Unmarshal       10.00Ki ± 0%     10.00Ki ± 0%       ~ (p=1.000 n=10) ¹
+JSON/StringUnicode/Marshal     18.00Ki ± 0%     18.00Ki ± 0%  -0.01% (p=0.000 n=10)
+JSON/StringUnicode/Unmarshal   15.11Ki ± 0%     15.11Ki ± 0%       ~ (p=1.000 n=10) ¹
+JSON/TwitterStatus/Marshal     507.3Ki ± 0%     507.7Ki ± 0%       ~ (p=0.078 n=10)
+JSON/TwitterStatus/Unmarshal   204.5Ki ± 0%     204.5Ki ± 0%       ~ (p=0.781 n=10)
+JSON/Records/Marshal           32.06Ki ± 0%     32.06Ki ± 0%       ~ (p=0.925 n=10)
+JSON/Records/Unmarshal         3.223Ki ± 0%     3.223Ki ± 0%       ~ (p=0.543 n=10)
+JSON/UnicodeRuns/Marshal       4.750Ki ± 0%     4.750Ki ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UnicodeRuns/Unmarshal     4.750Ki ± 0%     4.750Ki ± 0%       ~ (p=1.000 n=10) ¹
+JSON/Small/Marshal               80.00 ± 0%       80.00 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/Small/Unmarshal             0.000 ± 0%       0.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII4096/Marshal         4.750Ki ± 0%     4.750Ki ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII4096/Unmarshal       4.000Ki ± 0%     4.000Ki ± 0%       ~ (p=1.000 n=10) ¹
+geomean                                     ²                 +0.00%                ²
+¹ all samples are equal
+² summaries must be >0 to compute geomean
+
+                             │   cache.txt   │              final.txt               │
+                             │   allocs/op   │  allocs/op   vs base                 │
+JSON/UTF8Greek/Marshal          1.000 ± 0%      1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Greek/Unmarshal        1.000 ± 0%      1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8CJK/Marshal            1.000 ± 0%      1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8CJK/Unmarshal          1.000 ± 0%      1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Emoji/Marshal          1.000 ± 0%      1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Emoji/Unmarshal        1.000 ± 0%      1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Mixed/Marshal          1.000 ± 0%      1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UTF8Mixed/Unmarshal        1.000 ± 0%      1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/StringUnicode/Marshal      1.000 ± 0%      1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/StringUnicode/Unmarshal    49.00 ± 0%      49.00 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/TwitterStatus/Marshal      89.00 ± 0%      89.00 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/TwitterStatus/Unmarshal   2.533k ± 0%     2.533k ± 0%       ~ (p=1.000 n=10)
+JSON/Records/Marshal            1.000 ± 0%      1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/Records/Unmarshal          256.0 ± 0%      256.0 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UnicodeRuns/Marshal        1.000 ± 0%      1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/UnicodeRuns/Unmarshal      1.000 ± 0%      1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/Small/Marshal              1.000 ± 0%      1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/Small/Unmarshal            0.000 ± 0%      0.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII4096/Marshal          1.000 ± 0%      1.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII4096/Unmarshal        1.000 ± 0%      1.000 ± 0%       ~ (p=1.000 n=10) ¹
+geomean                                    ²                +0.00%                ²
+¹ all samples are equal
+² summaries must be >0 to compute geomean

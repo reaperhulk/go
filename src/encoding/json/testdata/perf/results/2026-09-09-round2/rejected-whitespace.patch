@@ -1,0 +1,8 @@
+diff --git a/src/encoding/json/internal/jsonwire/decode.go b/src/encoding/json/internal/jsonwire/decode.go
+index 2f3868b4..db48a4a8 100644
+--- a/src/encoding/json/internal/jsonwire/decode.go
++++ b/src/encoding/json/internal/jsonwire/decode.go
+@@ -35 +35,2 @@ func ConsumeWhitespace(b []byte) (n int) {
+-	for len(b) > n && (b[n] == ' ' || b[n] == '\t' || b[n] == '\r' || b[n] == '\n') {
++	const whitespace = uint64(1)<<' ' | uint64(1)<<'\t' | uint64(1)<<'\r' | uint64(1)<<'\n'
++	for len(b) > n && b[n] <= ' ' && (uint64(1)<<b[n])&whitespace != 0 {

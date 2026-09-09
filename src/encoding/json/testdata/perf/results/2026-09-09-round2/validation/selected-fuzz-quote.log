@@ -1,0 +1,12 @@
+fuzz: elapsed: 0s, gathering baseline coverage: 0/78 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 78/78 completed, now fuzzing with 2 workers
+fuzz: elapsed: 3s, execs: 7091 (2362/sec), new interesting: 1 (total: 79)
+fuzz: elapsed: 6s, execs: 41283 (11403/sec), new interesting: 2 (total: 80)
+fuzz: elapsed: 9s, execs: 41283 (0/sec), new interesting: 2 (total: 80)
+fuzz: elapsed: 12s, execs: 41283 (0/sec), new interesting: 2 (total: 80)
+fuzz: elapsed: 15s, execs: 114982 (24560/sec), new interesting: 4 (total: 82)
+fuzz: elapsed: 18s, execs: 114982 (0/sec), new interesting: 4 (total: 82)
+fuzz: elapsed: 21s, execs: 114982 (0/sec), new interesting: 4 (total: 82)
+fuzz: elapsed: 21s, execs: 114982 (0/sec), new interesting: 4 (total: 82)
+PASS
+ok  	encoding/json/internal/jsonwire	21.025s

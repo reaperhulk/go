@@ -1,0 +1,47 @@
+                              │  before.txt  │             whitespace.txt             │
+                              │    sec/op    │     sec/op      vs base                │
+JSON/Small/Unmarshal            943.1n ± 77%   1181.0n ±  65%        ~ (p=0.165 n=10)
+JSON/Records/Unmarshal          299.5µ ± 55%    317.1µ ±  22%        ~ (p=0.971 n=10)
+JSON/RecordsPretty/Unmarshal    329.7µ ± 86%    333.2µ ±  91%        ~ (p=0.739 n=10)
+JSON/ASCII8/Unmarshal           186.0n ± 47%    150.8n ±  61%  -18.90% (p=0.035 n=10)
+JSON/GolangSource/Unmarshal     17.75m ± 30%    17.16m ±  41%        ~ (p=0.796 n=10)
+JSON/TwitterStatus/Unmarshal    2.842m ± 15%    2.820m ± 118%        ~ (p=0.631 n=10)
+JSON/CanadaGeometry/Unmarshal   2.645m ± 49%    2.528m ±  11%        ~ (p=0.631 n=10)
+geomean                         156.6µ          156.5µ          -0.06%
+
+                              │  before.txt   │             whitespace.txt             │
+                              │      B/s      │      B/s        vs base                │
+JSON/Small/Unmarshal            67.78Mi ± 44%    54.15Mi ± 39%        ~ (p=0.165 n=10)
+JSON/Records/Unmarshal          91.99Mi ± 35%    86.89Mi ± 18%        ~ (p=0.971 n=10)
+JSON/RecordsPretty/Unmarshal    134.3Mi ± 46%    132.5Mi ± 48%        ~ (p=0.739 n=10)
+JSON/ASCII8/Unmarshal           52.16Mi ± 33%    63.22Mi ± 38%  +21.22% (p=0.035 n=10)
+JSON/GolangSource/Unmarshal     104.3Mi ± 23%    107.9Mi ± 29%        ~ (p=0.796 n=10)
+JSON/TwitterStatus/Unmarshal    211.9Mi ± 13%    213.6Mi ± 54%        ~ (p=0.631 n=10)
+JSON/CanadaGeometry/Unmarshal   97.58Mi ± 33%   102.02Mi ± 10%        ~ (p=0.631 n=10)
+geomean                         99.15Mi          98.92Mi         -0.24%
+
+                              │   before.txt    │             whitespace.txt             │
+                              │      B/op       │     B/op       vs base                 │
+JSON/Small/Unmarshal              0.000 ±  0%       0.000 ±  0%       ~ (p=1.000 n=10) ¹
+JSON/Records/Unmarshal          3.223Ki ±  0%     3.223Ki ±  0%       ~ (p=0.559 n=10)
+JSON/RecordsPretty/Unmarshal    3.223Ki ±  0%     3.223Ki ±  0%       ~ (p=0.910 n=10)
+JSON/ASCII8/Unmarshal             0.000 ±  0%       0.000 ±  0%       ~ (p=1.000 n=10) ¹
+JSON/GolangSource/Unmarshal     381.2Ki ±  0%     381.2Ki ±  0%       ~ (p=0.956 n=10)
+JSON/TwitterStatus/Unmarshal    204.5Ki ±  0%     204.5Ki ±  0%       ~ (p=0.466 n=10)
+JSON/CanadaGeometry/Unmarshal     41.00 ± 39%       39.00 ± 10%       ~ (p=0.534 n=10)
+geomean                                       ²                  -0.71%                ²
+¹ all samples are equal
+² summaries must be >0 to compute geomean
+
+                              │  before.txt   │            whitespace.txt            │
+                              │   allocs/op   │  allocs/op   vs base                 │
+JSON/Small/Unmarshal             0.000 ± 0%      0.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/Records/Unmarshal           256.0 ± 0%      256.0 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/RecordsPretty/Unmarshal     256.0 ± 0%      256.0 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/ASCII8/Unmarshal            0.000 ± 0%      0.000 ± 0%       ~ (p=1.000 n=10) ¹
+JSON/GolangSource/Unmarshal     11.71k ± 0%     11.71k ± 0%       ~ (p=0.263 n=10)
+JSON/TwitterStatus/Unmarshal    2.530k ± 0%     2.530k ± 0%       ~ (p=1.000 n=10)
+JSON/CanadaGeometry/Unmarshal    0.000 ± 0%      0.000 ± 0%       ~ (p=1.000 n=10) ¹
+geomean                                     ²                +0.00%                ²
+¹ all samples are equal
+² summaries must be >0 to compute geomean

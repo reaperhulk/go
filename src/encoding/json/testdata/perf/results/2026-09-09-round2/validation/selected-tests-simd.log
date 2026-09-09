@@ -1,0 +1,9 @@
+ok  	encoding/json	2.088s
+?   	encoding/json/internal	[no test files]
+ok  	encoding/json/internal/jsonflags	0.011s
+ok  	encoding/json/internal/jsonopts	0.014s
+?   	encoding/json/internal/jsontest	[no test files]
+ok  	encoding/json/internal/jsonwire	2.989s
+ok  	encoding/json/jsontext	1.706s
+ok  	encoding/json/v2	1.143s
+ok  	simd/archsimd	0.007s

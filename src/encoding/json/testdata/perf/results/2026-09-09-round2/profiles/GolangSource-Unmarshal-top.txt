@@ -1,0 +1,88 @@
+File: utf8-decode2
+Build ID: e58781af6871b0b83e2f283ccdcc381e8461c1a1
+Type: cpu
+Time: 2026-09-09 14:56:38 CDT
+Duration: 3.28s, Total samples = 3.28s (  100%)
+Showing nodes accounting for 3.09s, 94.21% of 3.28s total
+Dropped 36 nodes (cum <= 0.02s)
+      flat  flat%   sum%        cum   cum%
+     0.24s  7.32%  7.32%      0.53s 16.16%  encoding/json/internal/jsonwire.ConsumeSimpleString
+     0.24s  7.32% 14.63%      0.92s 28.05%  encoding/json/jsontext.(*decoderState).ReadValue
+     0.20s  6.10% 20.73%      0.20s  6.10%  encoding/json/internal/jsonwire.ConsumeWhitespace (inline)
+     0.19s  5.79% 26.52%      0.24s  7.32%  encoding/json/internal/jsonwire.consumeASCIIPrefixAVX2
+     0.16s  4.88% 31.40%      0.16s  4.88%  encoding/json/internal/jsonwire.ParseUint
+     0.16s  4.88% 36.28%      0.34s 10.37%  encoding/json/jsontext.(*decoderState).PeekKind
+     0.16s  4.88% 41.16%      1.11s 33.84%  encoding/json/jsontext.(*decoderState).consumeValue
+     0.13s  3.96% 45.12%      0.13s  3.96%  encoding/json/internal/jsonwire.ConsumeSimpleNumber (inline)
+     0.12s  3.66% 48.78%      2.67s 81.40%  encoding/json/v2.makeStructArshaler.func3
+     0.10s  3.05% 51.83%      0.58s 17.68%  encoding/json/jsontext.(*decoderState).consumeObject
+     0.10s  3.05% 54.88%      0.10s  3.05%  encoding/json/jsontext.Kind.normalize (inline)
+     0.09s  2.74% 57.62%      0.09s  2.74%  encoding/json/internal/jsonwire.ConsumeNumberResumable
+     0.09s  2.74% 60.37%      0.16s  4.88%  encoding/json/jsontext.(*decoderState).ReadToken
+     0.07s  2.13% 62.50%      0.47s 14.33%  encoding/json/v2.makeUintArshaler.func2
+     0.05s  1.52% 64.02%      0.05s  1.52%  encoding/json/jsontext.stateEntry.needImplicitComma (inline)
+     0.05s  1.52% 65.55%      0.18s  5.49%  internal/runtime/maps.(*Map).getWithoutKeySmallFastStr
+     0.05s  1.52% 67.07%      0.05s  1.52%  internal/strconv.readFloat
+     0.05s  1.52% 68.60%      0.05s  1.52%  simd/archsimd.BroadcastUint8x32 (inline)
+     0.04s  1.22% 69.82%      0.28s  8.54%  encoding/json/internal/jsonwire.consumeASCIIPrefix (inline)
+     0.04s  1.22% 71.04%      0.20s  6.10%  encoding/json/jsontext.(*Decoder).ReadToken (partial-inline)
+     0.04s  1.22% 72.26%      0.13s  3.96%  encoding/json/v2.makeIntArshaler.func2
+     0.04s  1.22% 73.48%      0.11s  3.35%  encoding/json/v2.makeString
+     0.04s  1.22% 74.70%      0.04s  1.22%  runtime.asyncPreempt
+     0.04s  1.22% 75.91%      0.25s  7.62%  runtime.mapaccess1_faststr
+     0.03s  0.91% 76.83%      0.03s  0.91%  encoding/json/jsontext.(*decodeBuffer).invalidatePreviousRead (inline)
+     0.03s  0.91% 77.74%      0.03s  0.91%  encoding/json/jsontext.(*stateMachine).pushArray (inline)
+     0.03s  0.91% 78.66%      0.06s  1.83%  encoding/json/jsontext.Value.Kind (partial-inline)
+     0.03s  0.91% 79.57%      0.04s  1.22%  internal/runtime/maps.memHashFallback
+     0.03s  0.91% 80.49%      0.04s  1.22%  internal/strconv.parseFloat64
+     0.03s  0.91% 81.40%      0.03s  0.91%  memeqbody
+     0.03s  0.91% 82.32%      0.03s  0.91%  reflect.Value.SetFloat
+     0.03s  0.91% 83.23%      0.21s  6.40%  runtime.mapaccess2_faststr (inline)
+     0.03s  0.91% 84.15%      0.03s  0.91%  runtime.memmove
+     0.02s  0.61% 84.76%      0.02s  0.61%  encoding/json/internal/jsonwire.UnquoteMayCopy
+     0.02s  0.61% 85.37%      0.36s 10.98%  encoding/json/jsontext.(*Decoder).PeekKind (partial-inline)
+     0.02s  0.61% 85.98%      0.31s  9.45%  encoding/json/v2.makeFloatArshaler.func2
+     0.02s  0.61% 86.59%      0.19s  5.79%  encoding/json/v2.makeStringArshaler.func2
+     0.02s  0.61% 87.20%      0.02s  0.61%  internal/abi.Name.IsExported (inline)
+     0.02s  0.61% 87.80%      0.02s  0.61%  internal/runtime/maps.(*groupReference).key (inline)
+     0.02s  0.61% 88.41%      0.02s  0.61%  internal/runtime/maps.memHashAES
+     0.02s  0.61% 89.02%      0.02s  0.61%  reflect.Value.Cap (inline)
+     0.02s  0.61% 89.63%      0.02s  0.61%  reflect.Value.SetString
+     0.02s  0.61% 90.24%      0.02s  0.61%  runtime.mallocgcSmallNoScanSC3
+     0.02s  0.61% 90.85%      0.02s  0.61%  runtime.memequal
+     0.01s   0.3% 91.16%      0.58s 17.68%  encoding/json/jsontext.(*decoderState).consumeArray
+     0.01s   0.3% 91.46%      0.10s  3.05%  encoding/json/jsontext.(*decoderState).consumeNumber
+     0.01s   0.3% 91.77%      0.02s  0.61%  encoding/json/jsontext.Token.Kind (partial-inline)
+     0.01s   0.3% 92.07%      0.02s  0.61%  encoding/json/jsontext.stateEntry.needObjectValue (inline)
+     0.01s   0.3% 92.38%      2.67s 81.40%  encoding/json/v2.makeSliceArshaler.func3
+     0.01s   0.3% 92.68%      0.11s  3.35%  internal/strconv.ParseFloat
+     0.01s   0.3% 92.99%      0.10s  3.05%  internal/strconv.atof64
+     0.01s   0.3% 93.29%      0.05s  1.52%  reflect.Value.Set
+     0.01s   0.3% 93.60%      0.02s  0.61%  reflect.typedmemmove
+     0.01s   0.3% 93.90%      0.02s  0.61%  runtime.mallocgcSmallNoScanSC5
+     0.01s   0.3% 94.21%      0.12s  3.66%  strconv.ParseFloat
+         0     0% 94.21%      0.02s  0.61%  encoding/json.Marshal (inline)
+         0     0% 94.21%      3.25s 99.09%  encoding/json.Unmarshal (inline)
+         0     0% 94.21%      0.58s 17.68%  encoding/json/jsontext.(*decoderState).CheckNextValue
+         0     0% 94.21%      0.02s  0.61%  encoding/json/jsontext.(*stateMachine).appendLiteral (inline)
+         0     0% 94.21%      0.02s  0.61%  encoding/json/jsontext.(*stateMachine).appendNumber (inline)
+         0     0% 94.21%      0.02s  0.61%  encoding/json/jsontext.stateEntry.needImplicitColon (inline)
+         0     0% 94.21%      0.07s  2.13%  encoding/json/jsontext.stateMachine.needDelim (inline)
+         0     0% 94.21%      0.02s  0.61%  encoding/json/v2.Marshal
+         0     0% 94.21%      3.25s 99.09%  encoding/json/v2.Unmarshal
+         0     0% 94.21%      0.02s  0.61%  encoding/json/v2.makePointerArshaler.func2
+         0     0% 94.21%      2.67s 81.40%  encoding/json/v2.makePointerArshaler.func3
+         0     0% 94.21%      0.02s  0.61%  encoding/json/v2.makeSliceArshaler.func2
+         0     0% 94.21%      0.02s  0.61%  encoding/json/v2.makeStructArshaler.func2
+         0     0% 94.21%      0.02s  0.61%  encoding/json/v2.marshalEncode
+         0     0% 94.21%      3.25s 99.09%  encoding/json/v2.unmarshalDecode
+         0     0% 94.21%      0.10s  3.05%  internal/strconv.parseFloatPrefix
+         0     0% 94.21%      0.02s  0.61%  main.main
+         0     0% 94.21%      3.25s 99.09%  main.main.func2
+         0     0% 94.21%      3.25s 99.09%  main.main.func3
+         0     0% 94.21%      0.03s  0.91%  reflect.Value.Field
+         0     0% 94.21%      0.02s  0.61%  runtime.main
+         0     0% 94.21%      0.04s  1.22%  runtime.mallocgc
+         0     0% 94.21%      0.05s  1.52%  runtime.slicebytetostring
+         0     0% 94.21%      3.25s 99.09%  testing.(*B).run1.func1
+         0     0% 94.21%      3.25s 99.09%  testing.(*B).runN

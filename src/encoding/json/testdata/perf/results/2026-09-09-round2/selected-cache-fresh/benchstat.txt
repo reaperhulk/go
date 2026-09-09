@@ -1,0 +1,30 @@
+                                │  before.txt  │              cache.txt               │
+                                │    sec/op    │    sec/op     vs base                │
+JSON/StringEnums/UnmarshalFresh   255.5µ ± 29%   196.5µ ± 49%  -23.11% (p=0.029 n=10)
+JSON/Records/UnmarshalFresh       358.2µ ± 24%   371.1µ ± 15%        ~ (p=0.912 n=10)
+geomean                           302.5µ         270.0µ        -10.75%
+
+                                │  before.txt   │               cache.txt                │
+                                │      B/s      │      B/s        vs base                │
+JSON/StringEnums/UnmarshalFresh   82.96Mi ± 23%   107.58Mi ± 33%  +29.68% (p=0.029 n=10)
+JSON/Records/UnmarshalFresh       76.92Mi ± 19%    74.35Mi ± 13%        ~ (p=0.912 n=10)
+geomean                           79.88Mi          89.44Mi        +11.96%
+
+                                │  before.txt  │              cache.txt               │
+                                │  cpu-sec/op  │  cpu-sec/op   vs base                │
+JSON/StringEnums/UnmarshalFresh   255.6µ ± 29%   197.3µ ± 54%  -22.81% (p=0.043 n=10)
+JSON/Records/UnmarshalFresh       359.1µ ± 25%   371.2µ ± 15%        ~ (p=0.971 n=10)
+geomean                           303.0µ         270.6µ        -10.68%
+
+                                │  before.txt  │              cache.txt               │
+                                │     B/op     │     B/op      vs base                │
+JSON/StringEnums/UnmarshalFresh   50.15Ki ± 0%   42.15Ki ± 0%  -15.95% (p=0.000 n=10)
+JSON/Records/UnmarshalFresh       78.86Ki ± 0%   78.86Ki ± 0%        ~ (p=0.120 n=10)
+geomean                           62.89Ki        57.66Ki        -8.32%
+
+                                │  before.txt  │               cache.txt               │
+                                │  allocs/op   │  allocs/op   vs base                  │
+JSON/StringEnums/UnmarshalFresh   1034.00 ± 0%    10.00 ± 0%  -99.03% (p=0.000 n=10)
+JSON/Records/UnmarshalFresh        1.034k ± 0%   1.034k ± 0%        ~ (p=1.000 n=10) ¹
+geomean                            1.034k         101.7       -90.17%
+¹ all samples are equal

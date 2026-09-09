@@ -1,0 +1,64 @@
+                             │  before.txt   │              cache.txt               │
+                             │    sec/op     │    sec/op      vs base               │
+JSON/StringEnums/Unmarshal     287.2µ ± 271%   272.3µ ± 200%       ~ (p=0.684 n=10)
+JSON/Records/Unmarshal         284.1µ ±  20%   287.8µ ±  19%       ~ (p=0.739 n=10)
+JSON/RecordsPretty/Unmarshal   315.1µ ±  10%   311.4µ ±   9%       ~ (p=0.971 n=10)
+JSON/Small/Unmarshal           937.0n ±   5%   925.0n ±   5%       ~ (p=0.739 n=10)
+JSON/ASCII8/Unmarshal          141.4n ±  82%   138.8n ±   6%       ~ (p=0.247 n=10)
+JSON/TwitterStatus/Unmarshal   2.897m ±   6%   2.823m ±   5%       ~ (p=0.579 n=10)
+JSON/GolangSource/Unmarshal    15.32m ±   3%   14.62m ±   2%  -4.57% (p=0.000 n=10)
+JSON/StringUnicode/Unmarshal   39.76µ ±  35%   42.26µ ±  39%       ~ (p=0.529 n=10)
+geomean                        93.83µ          92.72µ         -1.18%
+
+                             │  before.txt   │              cache.txt               │
+                             │      B/s      │      B/s       vs base               │
+JSON/StringEnums/Unmarshal     73.94Mi ± 73%   78.06Mi ± 67%       ~ (p=0.684 n=10)
+JSON/Records/Unmarshal         96.99Mi ± 17%   95.79Mi ± 16%       ~ (p=0.739 n=10)
+JSON/RecordsPretty/Unmarshal   140.1Mi ±  9%   141.8Mi ±  8%       ~ (p=0.971 n=10)
+JSON/Small/Unmarshal           68.20Mi ±  5%   69.08Mi ±  5%       ~ (p=0.739 n=10)
+JSON/ASCII8/Unmarshal          67.47Mi ± 45%   68.74Mi ±  6%       ~ (p=0.247 n=10)
+JSON/TwitterStatus/Unmarshal   207.9Mi ±  5%   213.3Mi ±  5%       ~ (p=0.579 n=10)
+JSON/GolangSource/Unmarshal    120.8Mi ±  3%   126.6Mi ±  2%  +4.80% (p=0.000 n=10)
+JSON/StringUnicode/Unmarshal   434.7Mi ± 26%   409.0Mi ± 28%       ~ (p=0.529 n=10)
+geomean                        122.4Mi         123.9Mi        +1.21%
+
+                             │  before.txt   │              cache.txt               │
+                             │  cpu-sec/op   │  cpu-sec/op    vs base               │
+JSON/StringEnums/Unmarshal     285.6µ ± 274%   272.1µ ± 205%       ~ (p=0.684 n=10)
+JSON/Records/Unmarshal         284.6µ ±  21%   288.4µ ±  19%       ~ (p=0.739 n=10)
+JSON/RecordsPretty/Unmarshal   316.1µ ±  10%   312.4µ ±   9%       ~ (p=0.971 n=10)
+JSON/Small/Unmarshal           941.4n ±   5%   929.8n ±   5%       ~ (p=0.684 n=10)
+JSON/ASCII8/Unmarshal          142.1n ±  82%   139.4n ±   6%       ~ (p=0.225 n=10)
+JSON/TwitterStatus/Unmarshal   2.897m ±   6%   2.829m ±   5%       ~ (p=0.436 n=10)
+JSON/GolangSource/Unmarshal    15.35m ±   3%   14.65m ±   2%  -4.51% (p=0.000 n=10)
+JSON/StringUnicode/Unmarshal   39.94µ ±  35%   42.42µ ±  39%       ~ (p=0.529 n=10)
+geomean                        94.01µ          92.98µ         -1.09%
+
+                             │   before.txt    │                cache.txt                 │
+                             │      B/op       │      B/op       vs base                  │
+JSON/StringEnums/Unmarshal     8196.000 ± 0%       3.000 ± 267%  -99.96% (p=0.000 n=10)
+JSON/Records/Unmarshal          3.223Ki ± 0%     3.223Ki ±   0%        ~ (p=0.211 n=10)
+JSON/RecordsPretty/Unmarshal    3.223Ki ± 0%     3.224Ki ±   0%        ~ (p=0.370 n=10)
+JSON/Small/Unmarshal              0.000 ± 0%       0.000 ±   0%        ~ (p=1.000 n=10) ¹
+JSON/ASCII8/Unmarshal             0.000 ± 0%       0.000 ±   0%        ~ (p=1.000 n=10) ¹
+JSON/TwitterStatus/Unmarshal    204.5Ki ± 0%     204.5Ki ±   0%   +0.03% (p=0.000 n=10)
+JSON/GolangSource/Unmarshal     381.2Ki ± 0%     380.8Ki ±   0%   -0.10% (p=0.000 n=10)
+JSON/StringUnicode/Unmarshal    15.11Ki ± 0%     15.11Ki ±   0%        ~ (p=0.737 n=10)
+geomean                                      ²                   -62.81%                ²
+¹ all samples are equal
+² summaries must be >0 to compute geomean
+
+                             │  before.txt   │                cache.txt                 │
+                             │   allocs/op   │  allocs/op   vs base                     │
+JSON/StringEnums/Unmarshal     1.024k ± 0%     0.000k ± 0%  -100.00% (p=0.000 n=10)
+JSON/Records/Unmarshal          256.0 ± 0%      256.0 ± 0%         ~ (p=1.000 n=10) ¹
+JSON/RecordsPretty/Unmarshal    256.0 ± 0%      256.0 ± 0%         ~ (p=1.000 n=10) ¹
+JSON/Small/Unmarshal            0.000 ± 0%      0.000 ± 0%         ~ (p=1.000 n=10) ¹
+JSON/ASCII8/Unmarshal           0.000 ± 0%      0.000 ± 0%         ~ (p=1.000 n=10) ¹
+JSON/TwitterStatus/Unmarshal   2.530k ± 0%     2.533k ± 0%    +0.12% (p=0.000 n=10)
+JSON/GolangSource/Unmarshal    11.71k ± 0%     11.67k ± 0%    -0.31% (p=0.000 n=10)
+JSON/StringUnicode/Unmarshal    49.00 ± 0%      49.00 ± 0%         ~ (p=1.000 n=10) ¹
+geomean                                    ²                ?                       ² ³
+¹ all samples are equal
+² summaries must be >0 to compute geomean
+³ ratios must be >0 to compute geomean

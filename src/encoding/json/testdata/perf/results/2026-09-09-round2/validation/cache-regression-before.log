@@ -1,0 +1,5 @@
+--- FAIL: TestInternEightByteStrings (0.00s)
+    intern_test.go:52: repeated eight-byte strings: 8 allocations per pass
+FAIL
+FAIL	encoding/json/v2	0.005s
+FAIL
