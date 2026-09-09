@@ -9,6 +9,7 @@ import (
 	"go/constant"
 	"go/token"
 	"internal/goexperiment"
+	"strings"
 
 	"cmd/compile/internal/base"
 	"cmd/compile/internal/ir"
@@ -458,8 +459,12 @@ func (b *batch) paramTag(fn *ir.Func, narg int, f *types.Field) string {
 			if diagnose && f.Sym != nil {
 				base.WarnfAt(f.Pos, "%v does not escape", name())
 			}
-			esc.AddMutator(0)
-			esc.AddCallee(0)
+			// SIMD load intrinsics only read their source memory. Preserving
+			// that fact permits zero-copy string-to-byte-slice conversions.
+			if fn.Sym().Pkg.Path != "simd/archsimd" || !strings.HasPrefix(fn.Sym().Name, "Load") {
+				esc.AddMutator(0)
+				esc.AddCallee(0)
+			}
 		} else {
 			if diagnose && f.Sym != nil {
 				base.WarnfAt(f.Pos, "leaking param: %v", name())
