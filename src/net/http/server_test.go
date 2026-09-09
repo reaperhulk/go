@@ -7,12 +7,36 @@
 package http
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"net/url"
 	"regexp"
 	"testing"
 	"time"
 )
+
+func BenchmarkServerChunkWriter(b *testing.B) {
+	for _, size := range []int{1024, 32 << 10} {
+		b.Run(fmt.Sprint(size), func(b *testing.B) {
+			w := chunkWriter{
+				res: &response{
+					req:  &Request{Method: "GET"},
+					conn: &conn{bufw: bufio.NewWriter(io.Discard)},
+				},
+				wroteHeader: true,
+				chunking:    true,
+			}
+			data := make([]byte, size)
+			b.ReportAllocs()
+			for b.Loop() {
+				if _, err := w.Write(data); err != nil {
+					b.Fatal(err)
+				}
+			}
+		})
+	}
+}
 
 func TestServerTLSHandshakeTimeout(t *testing.T) {
 	tests := []struct {

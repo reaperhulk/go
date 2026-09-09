@@ -3717,6 +3717,34 @@ func TestServerBufferedChunking(t *testing.T) {
 	}
 }
 
+func TestServerChunkedSizes(t *testing.T) {
+	sizes := []int{0, 1, 15, 16, 255, 256, 4095, 4096, 65535, 65536}
+	conn := newTestConn()
+	conn.readBuf.WriteString("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n")
+	go Serve(&oneConnListener{conn}, HandlerFunc(func(w ResponseWriter, r *Request) {
+		w.(Flusher).Flush()
+		for _, size := range sizes {
+			if _, err := w.Write(bytes.Repeat([]byte("x"), size)); err != nil {
+				t.Error(err)
+				return
+			}
+			w.(Flusher).Flush()
+		}
+	}))
+	<-conn.closec
+	var want strings.Builder
+	want.WriteString("\r\n\r\n")
+	for _, size := range sizes {
+		if size > 0 {
+			fmt.Fprintf(&want, "%x\r\n%s\r\n", size, strings.Repeat("x", size))
+		}
+	}
+	want.WriteString("0\r\n\r\n")
+	if !strings.HasSuffix(conn.writeBuf.String(), want.String()) {
+		t.Fatal("incorrect chunked response encoding")
+	}
+}
+
 // Tests that the server flushes its response headers out when it's
 // ignoring the response body and waits a bit before forcefully
 // closing the TCP connection, causing the client to get a RST.
@@ -5968,6 +5996,27 @@ func BenchmarkServerHandlerNoType(b *testing.B) {
 		w.Header().Set("Content-Length", strconv.Itoa(len(response)))
 		w.Write(response)
 	}))
+}
+
+func BenchmarkServerHandlerChunked(b *testing.B) {
+	for _, size := range []int{1024, 32 << 10} {
+		for _, chunks := range []int{1, 16} {
+			b.Run(fmt.Sprintf("Size=%d/Chunks=%d", size, chunks), func(b *testing.B) {
+				data := bytes.Repeat([]byte("x"), size)
+				benchmarkHandler(b, HandlerFunc(func(w ResponseWriter, r *Request) {
+					w.Header().Set("Content-Type", "application/octet-stream")
+					w.(Flusher).Flush()
+					for range chunks {
+						if _, err := w.Write(data); err != nil {
+							b.Error(err)
+							return
+						}
+						w.(Flusher).Flush()
+					}
+				}))
+			})
+		}
+	}
 }
 
 // Neither a Content-Type or Content-Length, so sniffed and counted.

@@ -384,7 +384,10 @@ func (cw *chunkWriter) Write(p []byte) (n int, err error) {
 		return len(p), nil
 	}
 	if cw.chunking {
-		_, err = fmt.Fprintf(cw.res.conn.bufw, "%x\r\n", len(p))
+		// Reuse the Content-Length scratch buffer after writing the headers.
+		buf := strconv.AppendUint(cw.res.clenBuf[:0], uint64(len(p)), 16)
+		buf = append(buf, '\r', '\n')
+		_, err = cw.res.conn.bufw.Write(buf)
 		if err != nil {
 			cw.res.conn.rwc.Close()
 			return
