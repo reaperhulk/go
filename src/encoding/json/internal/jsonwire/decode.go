@@ -162,6 +162,9 @@ func ConsumeStringResumable(flags *ValueFlags, b []byte, resumeOffset int, valid
 		// all normal sequences at this point must be 2 bytes or larger.
 		case rn > 1:
 			n += rn
+			if len(b)-n >= 32 {
+				n += consumeUTF8Prefix(b[n:])
+			}
 		// Handle escape sequence.
 		case r == '\\':
 			flags.Join(stringNonVerbatim)
