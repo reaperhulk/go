@@ -59,17 +59,34 @@ func TestUTF8PrefixEveryRune(t *testing.T) {
 
 func TestUTF8PrefixByteBoundaries(t *testing.T) {
 	for _, s := range []string{"é", "世", "😀", "é a世😀"} {
-		b := bytes.Repeat([]byte(s), 40)
+		b := bytes.Repeat([]byte(s), 80)
 		for end := 0; end <= len(b); end++ {
 			checkUTF8Prefix(t, b[:end])
 		}
-		for pos := 0; pos < 68; pos++ {
+		for pos := 0; pos < 132; pos++ {
 			old := b[pos]
 			for c := 0; c < 256; c++ {
 				b[pos] = byte(c)
 				checkUTF8Prefix(t, b)
 			}
 			b[pos] = old
+		}
+	}
+}
+
+func TestUTF8PrefixBlockBoundaries(t *testing.T) {
+	for _, pos := range []int{31, 32, 61, 62, 63, 64, 125, 126, 127, 128} {
+		prefix := bytes.Repeat([]byte("é"), pos/2)
+		if pos%2 != 0 {
+			prefix = append(prefix, 'a')
+		}
+		for _, suffix := range []string{
+			"世", "😀", "\u2028", "\u2029", "\"", "\\", "\x00",
+			"\xc0\x80", "\xe0\x80\x80", "\xed\xa0\x80",
+			"\xf0\x80\x80\x80", "\xf4\x90\x80\x80", "\xf5\x80\x80\x80",
+		} {
+			b := append(append(bytes.Clone(prefix), suffix...), bytes.Repeat([]byte("a"), 68)...)
+			checkUTF8Prefix(t, b)
 		}
 	}
 }
