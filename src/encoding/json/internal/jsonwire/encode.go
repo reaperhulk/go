@@ -67,6 +67,7 @@ func AppendQuote(dst, src []byte, flags *jsonflags.Flags) ([]byte, error) {
 	var hasInvalidUTF8 bool
 	dst = slices.Grow(dst, len(`"`)+len(src)+len(`"`))
 	dst = append(dst, '"')
+	n = consumeASCIIPrefix(src)
 	for uint(len(src)) > uint(n) {
 		if c := src[n]; c < utf8.RuneSelf {
 			// Handle single-byte ASCII.
