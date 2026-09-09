@@ -280,6 +280,9 @@ func AppendUnquote(dst, src []byte) (v []byte, err error) {
 		}
 		for uint(len(src)) > uint(n) && noEscape(src[n]) {
 			n++
+			if len(src)-n >= 32 && src[n] < utf8.RuneSelf && escapeASCII[src[n]] == 0 {
+				n += consumeASCIIPrefix(src[n:])
+			}
 		}
 		if uint(len(src)) <= uint(n) {
 			dst = append(dst, src[i:n]...)
