@@ -67,14 +67,17 @@ func AppendQuote(dst, src []byte, flags *jsonflags.Flags) ([]byte, error) {
 	var hasInvalidUTF8 bool
 	dst = slices.Grow(dst, len(`"`)+len(src)+len(`"`))
 	dst = append(dst, '"')
-	n = consumeASCIIPrefix(src)
 	for uint(len(src)) > uint(n) {
 		if c := src[n]; c < utf8.RuneSelf {
 			// Handle single-byte ASCII.
-			n++
 			if escapeASCII[c] == 0 {
+				n += consumeASCIIPrefix(src[n:])
+				for uint(len(src)) > uint(n) && src[n] < utf8.RuneSelf && escapeASCII[src[n]] == 0 {
+					n++
+				}
 				continue // no escaping possibly needed
 			}
+			n++
 			// Handle escaping of single-byte ASCII.
 			if !(c == '<' || c == '>' || c == '&') || flags.Get(jsonflags.EscapeForHTML) {
 				dst = append(dst, src[i:n-1]...)

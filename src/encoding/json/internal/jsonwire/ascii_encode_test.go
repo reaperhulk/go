@@ -28,6 +28,9 @@ func TestAppendQuoteASCIIPrefix(t *testing.T) {
 				quoted, wantErr := AppendQuote(nil, []byte(suffix), &flags)
 				want := append(append([]byte{'"'}, prefix...), quoted[1:]...)
 				src := append(bytes.Clone(prefix), suffix...)
+				// Exercise later ASCII runs as well as the initial prefix.
+				src = bytes.Repeat(src, 3)
+				want = append(append([]byte{'"'}, bytes.Repeat(want[1:len(want)-1], 3)...), '"')
 				got, gotErr := AppendQuote(nil, src, &flags)
 				if !bytes.Equal(got, want) || gotErr != wantErr {
 					t.Fatalf("size=%d suffix=%q flags=%v: got (%q,%v), want (%q,%v)", size, suffix, opts, got, gotErr, want, wantErr)
