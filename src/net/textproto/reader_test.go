@@ -276,7 +276,7 @@ func TestReadMIMEHeaderBytes(t *testing.T) {
 		}
 	}
 	for i := 0; i <= 0xff; i++ {
-		s := "Foo: foo" + string(rune(i)) + "bar\r\n\r\n"
+		s := "Foo: foo" + string([]byte{byte(i)}) + "bar\r\n\r\n"
 		r := reader(s)
 		wantErr := true
 		switch {
@@ -507,6 +507,8 @@ func BenchmarkReadMIMEHeader(b *testing.B) {
 	}{
 		{"client_headers", clientHeaders},
 		{"server_headers", serverHeaders},
+		{"authorization_1KiB", "Authorization: Bearer " + strings.Repeat("x", 1024) + "\r\n\r\n"},
+		{"authorization_4KiB", "Authorization: Bearer " + strings.Repeat("x", 4096) + "\r\n\r\n"},
 	} {
 		b.Run(set.name, func(b *testing.B) {
 			var buf bytes.Buffer
