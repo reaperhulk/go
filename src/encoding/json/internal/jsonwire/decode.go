@@ -95,9 +95,10 @@ func ConsumeLiteral(b []byte, lit string) (n int, err error) {
 // non-zero then we know that the string would be encoded the same way
 // under both v1 or v2 escape semantics.
 func ConsumeSimpleString(b []byte) (n int) {
-	// NOTE: The arguments and logic are kept simple to keep this inlinable.
+	// Keep the scalar path simple so it is inlinable without SIMD.
 	if len(b) > 0 && b[0] == '"' {
 		n++
+		n += consumeASCIIPrefix(b[n:])
 		for len(b) > n && b[n] < utf8.RuneSelf && escapeASCII[b[n]] == 0 {
 			n++
 		}
