@@ -16,6 +16,53 @@ import (
 	"testing"
 )
 
+func BenchmarkReadMessageBody(b *testing.B) {
+	for _, response := range []bool{false, true} {
+		for _, chunked := range []bool{false, true} {
+			b.Run(fmt.Sprintf("Response=%t/Chunked=%t", response, chunked), func(b *testing.B) {
+				wire := "POST / HTTP/1.1\r\nHost: example.com\r\n"
+				if response {
+					wire = "HTTP/1.1 200 OK\r\n"
+				}
+				data := strings.Repeat("x", 1024)
+				if chunked {
+					wire += "Transfer-Encoding: chunked\r\n\r\n400\r\n" + data + "\r\n0\r\n\r\n"
+				} else {
+					wire += "Content-Length: 1024\r\n\r\n" + data
+				}
+				src := strings.NewReader(wire)
+				r := bufio.NewReader(src)
+				b.ReportAllocs()
+				for b.Loop() {
+					src.Reset(wire)
+					r.Reset(src)
+					var body io.ReadCloser
+					if response {
+						res, err := ReadResponse(r, nil)
+						if err != nil {
+							b.Fatal(err)
+						}
+						body = res.Body
+					} else {
+						req, err := ReadRequest(r)
+						if err != nil {
+							b.Fatal(err)
+						}
+						body = req.Body
+					}
+					n, err := io.Copy(io.Discard, body)
+					if err != nil || n != 1024 {
+						b.Fatalf("Read body = %d, %v", n, err)
+					}
+					if err := body.Close(); err != nil {
+						b.Fatal(err)
+					}
+				}
+			})
+		}
+	}
+}
+
 func TestBodyReadBadTrailer(t *testing.T) {
 	b := &body{
 		src: strings.NewReader("foobar"),
