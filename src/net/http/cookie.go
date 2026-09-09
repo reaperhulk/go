@@ -117,12 +117,11 @@ func ParseCookie(line string) ([]*Cookie, error) {
 // ParseSetCookie parses a Set-Cookie header value and returns a cookie.
 // It returns an error on syntax error.
 func ParseSetCookie(line string) (*Cookie, error) {
-	parts := strings.Split(textproto.TrimString(line), ";")
-	if len(parts) == 1 && parts[0] == "" {
+	first, rest, hasAttributes := strings.Cut(textproto.TrimString(line), ";")
+	if !hasAttributes && first == "" {
 		return nil, errBlankCookie
 	}
-	parts[0] = textproto.TrimString(parts[0])
-	name, value, ok := strings.Cut(parts[0], "=")
+	name, value, ok := strings.Cut(textproto.TrimString(first), "=")
 	if !ok {
 		return nil, errEqualNotFoundInCookie
 	}
@@ -140,20 +139,20 @@ func ParseSetCookie(line string) (*Cookie, error) {
 		Quoted: quoted,
 		Raw:    line,
 	}
-	for i := 1; i < len(parts); i++ {
-		parts[i] = textproto.TrimString(parts[i])
-		if len(parts[i]) == 0 {
+	for part := range strings.SplitSeq(rest, ";") {
+		part = textproto.TrimString(part)
+		if len(part) == 0 {
 			continue
 		}
 
-		attr, val, _ := strings.Cut(parts[i], "=")
+		attr, val, _ := strings.Cut(part, "=")
 		lowerAttr, isASCII := ascii.ToLower(attr)
 		if !isASCII {
 			continue
 		}
 		val, _, ok = parseCookieValue(val, false)
 		if !ok {
-			c.Unparsed = append(c.Unparsed, parts[i])
+			c.Unparsed = append(c.Unparsed, part)
 			continue
 		}
 
@@ -213,7 +212,7 @@ func ParseSetCookie(line string) (*Cookie, error) {
 			c.Partitioned = true
 			continue
 		}
-		c.Unparsed = append(c.Unparsed, parts[i])
+		c.Unparsed = append(c.Unparsed, part)
 	}
 	return c, nil
 }
