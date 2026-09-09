@@ -36,6 +36,7 @@ func main() {
 	name := flag.String("case", "Small", "Small, ASCII8/32/256/4096, EscapeRuns, UnicodeRuns, or a jsontest fixture name")
 	action := flag.String("op", "Unmarshal", "Marshal or Unmarshal")
 	n := flag.Int("n", 100, "iterations inside main.measure")
+	fresh := flag.Bool("fresh", false, "allocate a fresh Unmarshal destination per operation")
 	native := flag.Bool("native", false, "use testing.Benchmark instead of fixed iterations")
 	profile := flag.String("cpuprofile", "", "native CPU profile output")
 	testing.Init()
@@ -56,7 +57,12 @@ func main() {
 			check(err)
 		}
 	case "Unmarshal":
-		op = func() { check(json.Unmarshal(data, dst)) }
+		op = func() {
+			if *fresh {
+				dst = reflect.New(reflect.TypeOf(value).Elem()).Interface()
+			}
+			check(json.Unmarshal(data, dst))
+		}
 	default:
 		panic("unknown operation")
 	}
@@ -78,11 +84,19 @@ func main() {
 		r := testing.Benchmark(func(b *testing.B) {
 			b.ReportAllocs()
 			b.SetBytes(int64(len(data)))
+			startCPU := processCPUTime()
 			for b.Loop() {
 				op()
 			}
+			if endCPU := processCPUTime(); startCPU >= 0 {
+				b.ReportMetric(float64(endCPU-startCPU)/float64(b.N), "cpu-ns/op")
+			}
 		})
-		fmt.Printf("BenchmarkJSON/%s/%s %s\t%s\n", *name, *action, r.String(), r.MemString())
+		opName := *action
+		if *fresh && *action == "Unmarshal" {
+			opName += "Fresh"
+		}
+		fmt.Printf("BenchmarkJSON/%s/%s %s\t%s\n", *name, opName, r.String(), r.MemString())
 	} else {
 		callgrind(0x43540004) // START_INSTRUMENTATION
 		measure(*n, op)
@@ -113,6 +127,37 @@ func fixture(name string) ([]byte, any) {
 		}
 		s := strings.Repeat(strings.Repeat("a", 256)+separator, 16)
 		value = &s
+	case name == "StringEnums":
+		type record struct {
+			ID     int    `json:"id"`
+			Role   string `json:"role"`
+			Status string `json:"status"`
+			Plan   string `json:"plan"`
+			Region string `json:"region"`
+		}
+		rows := make([]record, 256)
+		roles := []string{"customer", "operator"}
+		statuses := []string{"approved", "rejected"}
+		plans := []string{"business", "personal"}
+		regions := []string{"us-west2", "us-east1"}
+		for i := range rows {
+			rows[i] = record{i, roles[i%2], statuses[i/2%2], plans[i/4%2], regions[i/8%2]}
+		}
+		value = &rows
+	case name == "Records" || name == "RecordsPretty":
+		type record struct {
+			ID     int      `json:"id"`
+			Name   string   `json:"name"`
+			Email  string   `json:"email"`
+			Active bool     `json:"active"`
+			Score  int      `json:"score"`
+			Tags   []string `json:"tags"`
+		}
+		rows := make([]record, 256)
+		for i := range rows {
+			rows[i] = record{i, "gopher" + strconv.Itoa(i), "gopher@example.com", i%3 != 0, i * 7, []string{"go", "json", "simd"}}
+		}
+		value = &rows
 	case name == "Small":
 		value = &struct {
 			ID     int      `json:"id"`
@@ -145,6 +190,11 @@ func fixture(name string) ([]byte, any) {
 	}
 	data, err := json.Marshal(value)
 	check(err)
+	if name == "RecordsPretty" {
+		var pretty bytes.Buffer
+		check(json.Indent(&pretty, data, "", "  "))
+		data = pretty.Bytes()
+	}
 	return data, value
 }
 

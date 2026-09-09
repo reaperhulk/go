@@ -14,6 +14,7 @@ p.add_argument("--out", type=Path, required=True)
 p.add_argument("--valgrind", help="Callgrind executable; omit for native Go benchmarks")
 p.add_argument("--repeat", type=int, default=3)
 p.add_argument("--benchtime", default="200ms")
+p.add_argument("--fresh", action="store_true", help="allocate fresh decode destinations")
 p.add_argument("--scale", type=int, default=1, help="multiply fixed iteration counts")
 p.add_argument("--cases", default="Small,ASCII8,ASCII32,ASCII256,ASCII4096,EscapeRuns,UnicodeRuns,GolangSource,StringEscaped,StringUnicode,TwitterStatus,CanadaGeometry")
 p.add_argument("--ops", default="Marshal,Unmarshal")
@@ -35,6 +36,8 @@ for case in args.cases.split(","):
             for label, binary in order:
                 stem = args.out / f"{case}-{op}-{repeat}-{label}"
                 cmd = [binary, "-case", case, "-op", op]
+                if args.fresh:
+                    cmd += ["-fresh"]
                 if args.valgrind:
                     cmd = [args.valgrind, "--tool=callgrind", "--instr-atstart=no",
                            "--cache-sim=no",

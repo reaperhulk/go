@@ -59,7 +59,10 @@ go tool pprof -top /tmp/json-after /tmp/json-cpu.pprof
 ```
 
 Native runs use `testing.Benchmark`/`B.Loop`, normal GC, and report time, bytes,
-and allocations. The runner reverses binary order on alternate repetitions.
+and allocations. On Linux they additionally report process CPU nanoseconds per
+operation using `getrusage`, including user/system time across runtime threads
+and GC work. This excludes time waiting to be scheduled but does not eliminate
+CPU frequency, cache, or virtualization noise; retain wall-time results too. The runner reverses binary order on alternate repetitions.
 Use a fresh output directory for each run. Record the CPU, toolchain version,
 experiment flags, source revisions, and commands with the results. Report
 inconclusive time differences honestly; instruction reductions alone are not
@@ -80,4 +83,18 @@ See [simdjson's UTF-8 validator](https://github.com/simdjson/simdjson/blob/maste
 and [Keiser and Lemire's UTF-8 validation paper](https://arxiv.org/abs/2010.03090)
 for the motivation for block validation. This prototype uses explicit lead and
 continuation masks. The optimized path currently targets experimental amd64 AVX2;
-other configurations retain their scalar paths.
+AVX-512-capable CPUs use 64-byte UTF-8 blocks, with AVX2 handling 32-byte tails.
+Other configurations retain their scalar paths.
+
+## Object-array workloads
+
+`Records` is a compact array of 256 ASCII records with short names, email,
+booleans, integers, and tags (about 29 KB). `RecordsPretty` indents the same
+values. `StringEnums` is a 22 KB array of 256 records containing repeated
+8-byte role, status, plan, and region values. These exercise short fields
+inside complete documents rather than standalone JSON strings.
+
+Pass `--fresh` to the runner to allocate a new destination for each Unmarshal.
+This includes reflection/destination creation in the measured operation and
+reports `UnmarshalFresh`. The default reuses the destination. Both modes still
+warm the operation and use the same decoder pooling behavior.
