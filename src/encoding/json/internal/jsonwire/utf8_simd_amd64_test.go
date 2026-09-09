@@ -8,6 +8,8 @@ package jsonwire
 
 import (
 	"bytes"
+	"encoding/json/internal/jsonflags"
+	"io"
 	"simd/archsimd"
 	"testing"
 	"unicode/utf8"
@@ -99,3 +101,44 @@ func FuzzUTF8Prefix(f *testing.F) {
 	f.Fuzz(func(t *testing.T, b []byte) { checkUTF8Prefix(t, b) })
 }
 
+func FuzzQuoteUTF8(f *testing.F) {
+	f.Add(string(bytes.Repeat([]byte("é世😀"), 20)), byte(0))
+	f.Add("\xe0\x80\x80<&>\u2028\u2029\xff\n", byte(3))
+	f.Fuzz(func(t *testing.T, s string, option byte) {
+		opts := []jsonflags.Bools{0, jsonflags.EscapeForHTML, jsonflags.EscapeForJS, jsonflags.AnyEscape | jsonflags.AllowInvalidUTF8}
+		var flags jsonflags.Flags
+		flags.Set(opts[int(option)%len(opts)] | 1)
+		b := []byte(s)
+		want := []byte{'"'}
+		var wantErr error
+		for i := 0; i < len(b); {
+			_, size := utf8.DecodeRune(b[i:])
+			// Individual runes always take the scalar quoting path.
+			part, err := AppendQuote(nil, b[i:i+size], &flags)
+			want = append(want, part[1:len(part)-1]...)
+			if err != nil {
+				wantErr = err
+			}
+			i += size
+		}
+		want = append(want, '"')
+		got, err := AppendQuote(nil, b, &flags)
+		if !bytes.Equal(got, want) || err != wantErr {
+			t.Fatalf("quote %x: got (%q,%v), want (%q,%v)", b, got, err, want, wantErr)
+		}
+		// One-byte increments exercise the scalar decoder and its flags;
+		// the full input exercises block validation and must agree.
+		var scalarFlags, blockFlags ValueFlags
+		n := 0
+		for end := 1; end <= len(want); end++ {
+			n, err = ConsumeStringResumable(&scalarFlags, want[:end], n, true)
+			if err != nil && err != io.ErrUnexpectedEOF {
+				t.Fatal(err)
+			}
+		}
+		m, blockErr := ConsumeString(&blockFlags, want, true)
+		if m != n || blockErr != err || blockFlags != scalarFlags {
+			t.Fatalf("consume %q: block (%d,%v,%v), scalar (%d,%v,%v)", want, m, blockErr, blockFlags, n, err, scalarFlags)
+		}
+	})
+}

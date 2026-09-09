@@ -89,6 +89,9 @@ func AppendQuote(dst, src []byte, flags *jsonflags.Flags) ([]byte, error) {
 			r, rn := utf8.DecodeRune(src[n:])
 			n += rn
 			if r != utf8.RuneError && r != '\u2028' && r != '\u2029' {
+				if len(src)-n >= 32 {
+					n += consumeUTF8Prefix(src[n:])
+				}
 				continue // no escaping possibly needed
 			}
 			// Handle escaping of multi-byte Unicode.
