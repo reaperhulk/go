@@ -413,3 +413,29 @@ func BenchmarkTransferWrite(b *testing.B) {
 		}
 	}
 }
+
+func BenchmarkTransferWriterCopy(b *testing.B) {
+	for _, mode := range []string{"WriterTo", "ReaderFrom", "Buffered"} {
+		b.Run(mode, func(b *testing.B) {
+			payload := strings.Repeat("x", 1024)
+			body := strings.NewReader(payload)
+			var src io.Reader = body
+			var dst io.Writer = io.Discard
+			if mode != "WriterTo" {
+				src = struct{ io.Reader }{body}
+			}
+			if mode == "Buffered" {
+				dst = writerOnly{dst}
+			}
+			var tw transferWriter
+			b.ReportAllocs()
+			for b.Loop() {
+				body.Reset(payload)
+				n, err := tw.doBodyCopy(dst, src)
+				if n != int64(len(payload)) || err != nil {
+					b.Fatalf("copied %d bytes, err=%v", n, err)
+				}
+			}
+		})
+	}
+}
