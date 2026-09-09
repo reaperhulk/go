@@ -30,7 +30,9 @@ func makeString(c *stringCache, b []byte) string {
 	// This ensures hashing a string is a constant time operation.
 	var h uint32
 	switch {
-	case len(b) >= 8:
+	case len(b) > 8:
+		// At exactly eight bytes, equal prefix and suffix hashes cancel.
+		// Let the four-byte case hash the two halves once instead.
 		lo := binary.LittleEndian.Uint64(b[:8])
 		hi := binary.LittleEndian.Uint64(b[len(b)-8:])
 		h = hash64(uint32(lo), uint32(lo>>32)) ^ hash64(uint32(hi), uint32(hi>>32))

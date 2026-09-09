@@ -35,6 +35,24 @@ func TestIntern(t *testing.T) {
 
 var sink string
 
+func TestInternEightByteStrings(t *testing.T) {
+	values := [][]byte{
+		[]byte("customer"), []byte("operator"), []byte("approved"), []byte("rejected"),
+		[]byte("business"), []byte("personal"), []byte("us-west2"), []byte("us-east1"),
+	}
+	var sc stringCache
+	allocs := testing.AllocsPerRun(10, func() {
+		for _, value := range values {
+			sink = makeString(&sc, value)
+		}
+	})
+	// Some collisions are acceptable, but the cache should retain most of
+	// this small working set rather than allocating every string again.
+	if allocs > float64(len(values)/2) {
+		t.Fatalf("repeated eight-byte strings: %v allocations per pass", allocs)
+	}
+}
+
 func BenchmarkIntern(b *testing.B) {
 	datasetStrings := func(name string) (out [][]byte) {
 		var data []byte
