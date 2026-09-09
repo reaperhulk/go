@@ -582,6 +582,20 @@ func (r *Request) WriteProxy(w io.Writer) error {
 	return r.write(w, true, nil, nil)
 }
 
+func writeStrings(w io.Writer, ss ...string) error {
+	sw, ok := w.(io.StringWriter)
+	if !ok {
+		_, err := io.WriteString(w, strings.Join(ss, ""))
+		return err
+	}
+	for _, s := range ss {
+		if _, err := sw.WriteString(s); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // errMissingHost is returned by Write when there is no Host or URL present in
 // the Request.
 var errMissingHost = errors.New("http: Request.Write on Request with no Host or URL set")
@@ -680,13 +694,13 @@ func (r *Request) write(w io.Writer, usingProxy bool, extraHeaders Header, waitF
 		w = bw
 	}
 
-	_, err = fmt.Fprintf(w, "%s %s HTTP/1.1\r\n", valueOrDefault(r.Method, "GET"), ruri)
+	err = writeStrings(w, valueOrDefault(r.Method, "GET"), " ", ruri, " HTTP/1.1\r\n")
 	if err != nil {
 		return err
 	}
 
 	// Header lines
-	_, err = fmt.Fprintf(w, "Host: %s\r\n", host)
+	err = writeStrings(w, "Host: ", host, "\r\n")
 	if err != nil {
 		return err
 	}
@@ -703,7 +717,7 @@ func (r *Request) write(w io.Writer, usingProxy bool, extraHeaders Header, waitF
 	if userAgent != "" {
 		userAgent = headerNewlineToSpace.Replace(userAgent)
 		userAgent = textproto.TrimString(userAgent)
-		_, err = fmt.Fprintf(w, "User-Agent: %s\r\n", userAgent)
+		err = writeStrings(w, "User-Agent: ", userAgent, "\r\n")
 		if err != nil {
 			return err
 		}

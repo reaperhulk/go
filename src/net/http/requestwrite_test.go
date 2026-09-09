@@ -30,6 +30,34 @@ type reqWriteTest struct {
 	WantError error // wanted error from Request.Write
 }
 
+func BenchmarkRequestWrite(b *testing.B) {
+	for _, method := range []string{"GET", "POST"} {
+		b.Run(method, func(b *testing.B) {
+			body := strings.NewReader("request body")
+			req, err := NewRequest(method, "http://example.com/resource", nil)
+			if err != nil {
+				b.Fatal(err)
+			}
+			req.Header.Set("Accept", "application/json")
+			if method == "POST" {
+				req.Body = io.NopCloser(body)
+				req.ContentLength = int64(body.Len())
+			}
+			w := bufio.NewWriter(io.Discard)
+			b.ReportAllocs()
+			for b.Loop() {
+				body.Reset("request body")
+				if err := req.Write(w); err != nil {
+					b.Fatal(err)
+				}
+				if err := w.Flush(); err != nil {
+					b.Fatal(err)
+				}
+			}
+		})
+	}
+}
+
 var reqWriteTests = []reqWriteTest{
 	// HTTP/1.1 => chunked coding; no body; no trailer
 	0: {
@@ -974,6 +1002,11 @@ func (f writerFunc) Write(p []byte) (int, error) { return f(p) }
 
 // TestRequestWriteError tests the Write err != nil checks in (*Request).write.
 func TestRequestWriteError(t *testing.T) {
+	t.Run("Writer", func(t *testing.T) { testRequestWriteError(t, false) })
+	t.Run("StringWriter", func(t *testing.T) { testRequestWriteError(t, true) })
+}
+
+func testRequestWriteError(t *testing.T, useStringWriter bool) {
 	failAfter, writeCount := 0, 0
 	errFail := errors.New("fake write failure")
 
@@ -997,12 +1030,21 @@ func TestRequestWriteError(t *testing.T) {
 	}
 
 	req, _ := NewRequest("GET", "http://example.com/", nil)
-	const writeCalls = 4 // number of Write calls in current implementation
+	var dst io.Writer = w
+	writeCalls := 4
+	if useStringWriter {
+		dst = struct {
+			io.Writer
+			io.StringWriter
+			io.ByteWriter
+		}{w, stringWriter{w}, w}
+		writeCalls = 11
+	}
 	sawGood := false
 	for n := 0; n <= writeCalls+2; n++ {
 		failAfter = n
 		writeCount = 0
-		err := req.Write(w)
+		err := req.Write(dst)
 		var wantErr error
 		if n < writeCalls {
 			wantErr = errFail
