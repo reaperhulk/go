@@ -8,7 +8,11 @@ GOEXPERIMENT=simd go build -o /tmp/json-perf encoding/json/testdata/perf
 
 The harness uses `encoding/json` with JSON v2 enabled. It includes short fields,
 ASCII lengths, repeated ASCII runs separated by escapes or Unicode, and the
-existing typed `jsontest` corpus. Unmarshal reuses its destination. Both operations
+existing typed `jsontest` corpus. The `UTF8Short`, `UTF8Greek`, `UTF8CJK`,
+`UTF8Emoji`, and `UTF8Mixed` cases exercise dense multibyte text, including Arabic.
+Select them with `--cases`. `StringEscaped` and `StringUnicode` represent the same
+values with different wire escaping, so their Marshal workloads are identical.
+Unmarshal reuses its destination. Both operations
 are warmed for 20 iterations and checked against an expected result. This is a
 steady-state benchmark; cold caches and fresh destinations are separate workloads.
 
@@ -63,3 +67,17 @@ proof of proportional speedups on real CPUs.
 
 Method references: [Callgrind collection controls](https://valgrind.org/docs/manual/cl-manual.html)
 and [Go diagnostics](https://go.dev/doc/diagnostics).
+
+## UTF-8 validation experiment
+
+The experimental AVX2 validator classifies 32 bytes at a time and checks required
+continuation positions with bit masks. It rejects overlong encodings, surrogates,
+and values above U+10FFFF. It returns only complete runes and stops before JSON,
+HTML, or JavaScript escaping. Invalid input and tails retain scalar error handling.
+All loads are within the source slice; no padding or unsafe pointers are required.
+
+See [simdjson's UTF-8 validator](https://github.com/simdjson/simdjson/blob/master/src/generic/stage1/utf8_lookup4_algorithm.h)
+and [Keiser and Lemire's UTF-8 validation paper](https://arxiv.org/abs/2010.03090)
+for the motivation for block validation. This prototype uses explicit lead and
+continuation masks. The optimized path currently targets experimental amd64 AVX2;
+other configurations retain their scalar paths.

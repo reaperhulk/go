@@ -120,6 +120,19 @@ func fixture(name string) ([]byte, any) {
 			Active bool     `json:"active"`
 			Tags   []string `json:"tags"`
 		}{42, "gopher", true, []string{"go", "json", "simd"}}
+	case strings.HasPrefix(name, "UTF8"):
+		texts := map[string]string{
+			"UTF8Short": "世界😀",
+			"UTF8Greek": strings.Repeat("Καλημέρα κόσμε ", 256),
+			"UTF8CJK":   strings.Repeat("你好世界こんにちは世界", 256),
+			"UTF8Emoji": strings.Repeat("😀🌍🚀🎉", 256),
+			"UTF8Mixed": strings.Repeat("Hello 世界 مرحبا κόσμε 😀 ", 256),
+		}
+		s, ok := texts[name]
+		if !ok {
+			panic("unknown fixture: " + name)
+		}
+		value = &s
 	default:
 		for _, entry := range jsontest.Data {
 			if entry.Name == name && entry.New != nil {

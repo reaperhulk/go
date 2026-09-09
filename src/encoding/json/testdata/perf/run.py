@@ -27,7 +27,7 @@ if args.valgrind:
     env.update(GOGC="off", GODEBUG="asyncpreemptoff=1")
 rows = []
 for case in args.cases.split(","):
-    n = 200 if case in {"Small", "EscapeRuns", "UnicodeRuns"} or case.startswith("ASCII") else 3
+    n = 200 if case in {"Small", "EscapeRuns", "UnicodeRuns"} or case.startswith(("ASCII", "UTF8")) else 3
     n *= args.scale
     for op in args.ops.split(","):
         for repeat in range(args.repeat):
