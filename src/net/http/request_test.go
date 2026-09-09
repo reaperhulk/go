@@ -28,6 +28,20 @@ import (
 	"testing"
 )
 
+func BenchmarkRequestAddCookie(b *testing.B) {
+	for _, existing := range []string{"", "other=value"} {
+		b.Run("Existing="+existing, func(b *testing.B) {
+			r := &Request{Header: Header{"Cookie": {existing}}}
+			c := &Cookie{Name: "session", Value: "abc123"}
+			b.ReportAllocs()
+			for b.Loop() {
+				r.Header["Cookie"][0] = existing
+				r.AddCookie(c)
+			}
+		})
+	}
+}
+
 func TestQuery(t *testing.T) {
 	req := &Request{Method: "GET"}
 	req.URL, _ = url.Parse("http://www.google.com/search?q=foo&q=bar")
