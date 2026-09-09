@@ -371,3 +371,71 @@ func TestParseContentLength(t *testing.T) {
 		}
 	}
 }
+
+func BenchmarkTransferWrite(b *testing.B) {
+	for _, response := range []bool{false, true} {
+		for _, size := range []int{0, 1024} {
+			b.Run(fmt.Sprintf("Response=%t/Body=%d", response, size), func(b *testing.B) {
+				payload := strings.Repeat("x", size)
+				body := strings.NewReader(payload)
+				req, err := NewRequest("GET", "http://example.com/", nil)
+				if err != nil {
+					b.Fatal(err)
+				}
+				if size > 0 {
+					req.Method = "POST"
+					req.Body = io.NopCloser(body)
+					req.ContentLength = int64(size)
+				}
+				write := req.Write
+				if response {
+					resp := &Response{
+						StatusCode:    StatusOK,
+						ProtoMajor:    1,
+						ProtoMinor:    1,
+						Body:          req.Body,
+						ContentLength: int64(size),
+					}
+					write = resp.Write
+				}
+				w := bufio.NewWriter(io.Discard)
+				b.ReportAllocs()
+				for b.Loop() {
+					body.Reset(payload)
+					if err := write(w); err != nil {
+						b.Fatal(err)
+					}
+					if err := w.Flush(); err != nil {
+						b.Fatal(err)
+					}
+				}
+			})
+		}
+	}
+}
+
+func BenchmarkTransferWriterCopy(b *testing.B) {
+	for _, mode := range []string{"WriterTo", "ReaderFrom", "Buffered"} {
+		b.Run(mode, func(b *testing.B) {
+			payload := strings.Repeat("x", 1024)
+			body := strings.NewReader(payload)
+			var src io.Reader = body
+			var dst io.Writer = io.Discard
+			if mode != "WriterTo" {
+				src = struct{ io.Reader }{body}
+			}
+			if mode == "Buffered" {
+				dst = writerOnly{dst}
+			}
+			var tw transferWriter
+			b.ReportAllocs()
+			for b.Loop() {
+				body.Reset(payload)
+				n, err := tw.doBodyCopy(dst, src)
+				if n != int64(len(payload)) || err != nil {
+					b.Fatalf("copied %d bytes, err=%v", n, err)
+				}
+			}
+		})
+	}
+}
