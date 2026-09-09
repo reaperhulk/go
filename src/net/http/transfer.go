@@ -585,7 +585,16 @@ func readTransfer(msg any, r *bufio.Reader, maxTrailerHeaders int64) (err error)
 	case realLength == 0:
 		t.Body = NoBody
 	case realLength > 0:
-		t.Body = &body{src: io.LimitReader(r, realLength), closing: t.Close}
+		// Allocate the body and its LimitedReader together.
+		b := &struct {
+			body
+			lr io.LimitedReader
+		}{
+			body: body{closing: t.Close},
+			lr:   io.LimitedReader{R: r, N: realLength},
+		}
+		b.body.src = &b.lr
+		t.Body = &b.body
 	default:
 		// realLength < 0, i.e. "Content-Length" not mentioned in header
 		if t.Close {
@@ -827,14 +836,14 @@ type body struct {
 	src               io.Reader
 	hdr               any           // non-nil (Response or Request) value means read trailer
 	r                 *bufio.Reader // underlying wire-format reader for the trailer
-	closing           bool          // is the connection to be closed after reading body?
-	doEarlyClose      bool          // whether Close should stop early
 	maxTrailerHeaders int64         // how many trailer header values are allowed
 
-	mu       sync.Mutex // guards following, and calls to Read and Close
-	sawEOF   bool
-	closed   bool
-	onHitEOF func() // if non-nil, func to call when EOF is Read
+	mu           sync.Mutex // guards sawEOF, closed, onHitEOF, and calls to Read and Close
+	onHitEOF     func()     // if non-nil, func to call when EOF is Read
+	sawEOF       bool
+	closed       bool
+	closing      bool // is the connection to be closed after reading body?
+	doEarlyClose bool // whether Close should stop early
 }
 
 // ErrBodyReadAfterClose is returned when reading a [Request] or [Response]
