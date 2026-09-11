@@ -601,7 +601,10 @@ func (d *decoderState) ReadToken() (Token, error) {
 	case '0':
 		// NOTE: Since JSON numbers are not self-terminating,
 		// we need to make sure that the next byte is not part of a number.
-		if n = jsonwire.ConsumeSimpleNumber(d.buf[pos:]); n == 0 || d.needMore(pos+n) {
+		if n = jsonwire.ConsumeSimpleNumber(d.buf[pos:]); n == 0 {
+			n = jsonwire.ConsumeNumberFast(d.buf[pos:])
+		}
+		if n == 0 || d.needMore(pos+n) {
 			oldAbsPos := d.baseOffset + int64(pos)
 			pos, err = d.consumeNumber(pos)
 			newAbsPos := d.baseOffset + int64(pos)
@@ -884,7 +887,10 @@ func (d *decoderState) consumeValue(flags *jsonwire.ValueFlags, pos, depth int) 
 		case '0':
 			// NOTE: Since JSON numbers are not self-terminating,
 			// we need to make sure that the next byte is not part of a number.
-			if n = jsonwire.ConsumeSimpleNumber(d.buf[pos:]); n == 0 || d.needMore(pos+n) {
+			if n = jsonwire.ConsumeSimpleNumber(d.buf[pos:]); n == 0 {
+				n = jsonwire.ConsumeNumberFast(d.buf[pos:])
+			}
+			if n == 0 || d.needMore(pos+n) {
 				return d.consumeNumber(pos)
 			}
 		case '{':

@@ -7,6 +7,7 @@
 package jsonwire
 
 import (
+	"bytes"
 	"errors"
 	"io"
 	"math"
@@ -395,5 +396,59 @@ func TestParseUint(t *testing.T) {
 				t.Errorf("ParseUint(%q) = (%v, %v), want (%v, %v)", tt.in, got, gotOk, tt.want, tt.wantOk)
 			}
 		})
+	}
+}
+
+// TestConsumeNumberFast checks that ConsumeNumberFast agrees with
+// ConsumeNumber on every input of TestConsumeNumber and on inputs that are
+// well-formed only up to a point: it reports the same length exactly when
+// ConsumeNumber reports no error, and 0 otherwise.
+func TestConsumeNumberFast(t *testing.T) {
+	inputs := []string{
+		"", "-", "0", "-0", "01", "1", "-1", "123", "1.", "1.5", "-1.5", "1.5.", "1e", "1e+", "1e-",
+		"1e5", "1E+5", "1e-05", "1.5e10", "-1.5E-10x", "1.5e10,", "0.0", "0e0", "0.", ".5", "+1",
+		"1x", "1.5x", "1e5x", "1.e5", "1e5.5", "12345678901234567890", "-0.000000000000000001e+308",
+	}
+	for _, in := range inputs {
+		want, err := ConsumeNumber([]byte(in))
+		if err != nil {
+			want = 0
+		}
+		if got := ConsumeNumberFast([]byte(in)); got != want {
+			t.Errorf("ConsumeNumberFast(%q) = %d, want %d (ConsumeNumber err: %v)", in, got, want, err)
+		}
+	}
+}
+
+func FuzzConsumeNumberFast(f *testing.F) {
+	f.Add([]byte("-12.5e+3,"))
+	f.Add([]byte("0"))
+	f.Add([]byte("1e"))
+	f.Fuzz(func(t *testing.T, b []byte) {
+		want, err := ConsumeNumber(b)
+		if err != nil {
+			want = 0
+		}
+		if got := ConsumeNumberFast(b); got != want {
+			t.Fatalf("ConsumeNumberFast(%q) = %d, want %d (ConsumeNumber err: %v)", b, got, want, err)
+		}
+	})
+}
+
+// TestSkipDigits checks the eight-at-a-time digit scan against the obvious
+// loop for every run length up to a few words, terminated by every byte.
+func TestSkipDigits(t *testing.T) {
+	for n := range 40 {
+		for c := range 256 {
+			b := append(bytes.Repeat([]byte("7"), n), byte(c))
+			b = append(b, bytes.Repeat([]byte("8"), 20)...)
+			want := 0
+			for want < len(b) && '0' <= b[want] && b[want] <= '9' {
+				want++
+			}
+			if got := skipDigits(b, 0); got != want {
+				t.Fatalf("skipDigits(%d digits, then %#02x) = %d, want %d", n, c, got, want)
+			}
+		}
 	}
 }

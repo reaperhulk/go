@@ -9,6 +9,7 @@ package jsonwire
 import (
 	"io"
 	"math"
+	"math/bits"
 	"slices"
 	"strconv"
 	"unicode/utf16"
@@ -502,6 +503,86 @@ func ConsumeSimpleNumber(b []byte) (n int) {
 		}
 	}
 	return 0
+}
+
+// ConsumeNumberFast consumes the next JSON number per RFC 7159, section 6,
+// when all of it is present in b. It returns 0 if b does not begin with a
+// well-formed number, or ends before the number provably does, in which case
+// [ConsumeNumber] should be called to report the error or resume later.
+//
+// It accepts exactly the numbers that ConsumeNumber accepts, and consumes the
+// same bytes, but without the resumable state machine; it exists because the
+// decoder's inlinable [ConsumeSimpleNumber] only covers non-negative integers,
+// so every other number was paying for the state machine.
+//
+// Note that JSON numbers are not self-terminating: if the entire input is
+// consumed, the caller must consider whether unread data could continue it.
+func ConsumeNumberFast(b []byte) (n int) {
+	if uint(len(b)) > uint(n) && b[n] == '-' {
+		n++
+	}
+	// Integer part: a single zero, or a non-zero digit followed by digits.
+	if uint(len(b)) <= uint(n) {
+		return 0
+	}
+	switch c := b[n]; {
+	case c == '0':
+		n++
+	case '1' <= c && c <= '9':
+		n = skipDigits(b, n+1)
+	default:
+		return 0
+	}
+	// Fractional part: a period followed by at least one digit.
+	if uint(len(b)) > uint(n) && b[n] == '.' {
+		n++
+		if m := skipDigits(b, n); m == n {
+			return 0
+		} else {
+			n = m
+		}
+	}
+	// Exponent part: e or E, an optional sign, and at least one digit.
+	if uint(len(b)) > uint(n) && (b[n] == 'e' || b[n] == 'E') {
+		n++
+		if uint(len(b)) > uint(n) && (b[n] == '+' || b[n] == '-') {
+			n++
+		}
+		if m := skipDigits(b, n); m == n {
+			return 0
+		} else {
+			n = m
+		}
+	}
+	return n
+}
+
+// skipDigits returns the index of the first byte of b at or after n that is
+// not a decimal digit, or len(b). Runs of digits in real documents are often
+// long enough (coordinates, timestamps, identifiers) to be worth examining
+// eight at a time: XOR with '0' maps digits to 0-9 and everything else
+// higher, and the exact byte-compare idiom then flags the bytes above 9.
+func skipDigits(b []byte, n int) int {
+	const (
+		ones  = 0x0101010101010101
+		lo7   = 0x7f7f7f7f7f7f7f7f
+		hi1   = 0x8080808080808080
+		zeros = '0' * ones
+		bump  = (0x7f - 9) * ones // adding this carries into bit 7 for values above 9
+	)
+	for len(b)-n >= 8 {
+		x := uint64(b[n]) | uint64(b[n+1])<<8 | uint64(b[n+2])<<16 | uint64(b[n+3])<<24 |
+			uint64(b[n+4])<<32 | uint64(b[n+5])<<40 | uint64(b[n+6])<<48 | uint64(b[n+7])<<56
+		y := x ^ zeros
+		if nonDigit := ((y & lo7) + bump | y) & hi1; nonDigit != 0 {
+			return n + bits.TrailingZeros64(nonDigit)/8
+		}
+		n += 8
+	}
+	for uint(len(b)) > uint(n) && '0' <= b[n] && b[n] <= '9' {
+		n++
+	}
+	return n
 }
 
 type ConsumeNumberState uint
