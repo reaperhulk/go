@@ -13,6 +13,7 @@ import (
 	"testing"
 
 	"encoding/json/internal/jsonflags"
+	"encoding/json/internal/jsonperf"
 )
 
 // scanLengths are the run lengths that the scanners are measured over.
@@ -56,9 +57,11 @@ func benchScan(b *testing.B, input func(n int) []byte, fn func([]byte)) {
 					size := max(len(src), 1)
 					b.SetBytes(int64(size))
 					b.ReportAllocs()
-					for b.Loop() {
-						fn(src)
-					}
+					jsonperf.Measure(b, size, func() {
+						for b.Loop() {
+							fn(src)
+						}
+					})
 				})
 			}
 		})

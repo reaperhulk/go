@@ -22,6 +22,7 @@ import (
 	jsonv1 "encoding/json"
 
 	jsonv1in2 "encoding/json"
+	"encoding/json/internal/jsonperf"
 	"encoding/json/internal/jsontest"
 	"encoding/json/jsontext"
 	jsonv2 "encoding/json/v2"
@@ -641,9 +642,11 @@ func runTestOrBench(tb testing.TB, name string, numBytes int64, run func(tb test
 			b.ResetTimer()
 			b.ReportAllocs()
 			b.SetBytes(numBytes)
-			for range b.N {
-				run(b)
-			}
+			jsonperf.Measure(b, int(numBytes), func() {
+				for range b.N {
+					run(b)
+				}
+			})
 		})
 	}
 }

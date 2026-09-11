@@ -860,6 +860,9 @@ var depsRules = `
 	FMT, compress/gzip, embed, encoding/binary
 	< encoding/json/internal/jsontest;
 
+	FMT, syscall, testing
+	< encoding/json/internal/jsonperf;
+
 	CGO, internal/syscall/unix
 	< net/internal/cgotest;
 
