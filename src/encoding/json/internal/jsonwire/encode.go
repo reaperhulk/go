@@ -39,7 +39,12 @@ func NeedEscape(src []byte) bool {
 			if escapeASCII[c] > 0 {
 				return true
 			}
-			i++
+			// A run of bytes that need no escaping begins here.
+			if m := scanEscapeByteWindow(src, i+1); m == i+1+shortScan {
+				i = m + indexEscapeByteLong(src[m:]) // run outlasted the window
+			} else {
+				i = m
+			}
 		} else {
 			r, rn := utf8.DecodeRune(src[i:])
 			if r == utf8.RuneError || r == '\u2028' || r == '\u2029' {
@@ -72,7 +77,13 @@ func AppendQuote(dst, src []byte, flags *jsonflags.Flags) ([]byte, error) {
 			// Handle single-byte ASCII.
 			n++
 			if escapeASCII[c] == 0 {
-				continue // no escaping possibly needed
+				// A run of bytes that need no escaping begins here.
+				if m := scanEscapeByteWindow(src, n); m == n+shortScan {
+					n = m + indexEscapeByteLong(src[m:]) // run outlasted the window
+				} else {
+					n = m
+				}
+				continue
 			}
 			// Handle escaping of single-byte ASCII.
 			if !(c == '<' || c == '>' || c == '&') || flags.Get(jsonflags.EscapeForHTML) {

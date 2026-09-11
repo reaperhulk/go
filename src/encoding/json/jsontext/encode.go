@@ -688,7 +688,11 @@ func (e *encoderState) reformatValue(dst []byte, src Value, depth int) ([]byte, 
 		}
 		return append(dst, "true"...), len("true"), nil
 	case '"':
-		if n := jsonwire.ConsumeSimpleString(src); n > 0 {
+		n, long := jsonwire.ConsumeShortSimpleString(src)
+		if long {
+			n = jsonwire.ConsumeSimpleStringResume(src, n)
+		}
+		if n > 0 {
 			dst = append(dst, src[:n]...) // copy simple strings verbatim
 			return dst, n, nil
 		}
@@ -751,7 +755,10 @@ func (e *encoderState) reformatObject(dst []byte, src Value, depth int) ([]byte,
 		if uint(len(src)) <= uint(n) {
 			return dst, n, io.ErrUnexpectedEOF
 		}
-		m := jsonwire.ConsumeSimpleString(src[n:])
+		m, long := jsonwire.ConsumeShortSimpleString(src[n:])
+		if long {
+			m = jsonwire.ConsumeSimpleStringResume(src[n:], m)
+		}
 		isVerbatim := m > 0
 		if isVerbatim {
 			dst = append(dst, src[n:n+m]...)

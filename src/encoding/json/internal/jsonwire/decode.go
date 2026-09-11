@@ -95,16 +95,51 @@ func ConsumeLiteral(b []byte, lit string) (n int, err error) {
 // non-zero then we know that the string would be encoded the same way
 // under both v1 or v2 escape semantics.
 func ConsumeSimpleString(b []byte) (n int) {
-	// NOTE: The arguments and logic are kept simple to keep this inlinable.
 	if len(b) > 0 && b[0] == '"' {
-		n++
-		for len(b) > n && b[n] < utf8.RuneSelf && escapeASCII[b[n]] == 0 {
-			n++
+		n = scanEscapeByteWindow(b, 1)
+		if n == 1+shortScan {
+			n += indexEscapeByteLong(b[n:]) // run outlasted the window
 		}
 		if uint(len(b)) > uint(n) && b[n] == '"' {
 			n++
 			return n
 		}
+	}
+	return 0
+}
+
+// ConsumeShortSimpleString is [ConsumeSimpleString] restricted to strings
+// whose contents fit within the inline scan window. For such a string it
+// returns n as [ConsumeSimpleString] would, with long false. Otherwise it
+// returns 0, or, if it gave up only because the string outran the window, the
+// offset it stopped at with long true, which [ConsumeSimpleStringResume]
+// carries on from. A caller that gets 0 with long false must fall back exactly
+// as it would for any other complicated string.
+//
+// It exists because, unlike [ConsumeSimpleString], it is small enough to
+// inline. That matters a great deal: most JSON strings are object names and
+// other short values, for which a call costs more than the entire scan.
+func ConsumeShortSimpleString(b []byte) (n int, long bool) {
+	// NOTE: The arguments and logic are kept simple to keep this inlinable.
+	if len(b) > 0 && b[0] == '"' {
+		n = scanEscapeByteWindow(b, 1)
+		if uint(len(b)) > uint(n) && b[n] == '"' {
+			return n + 1, false
+		}
+		if n == 1+shortScan {
+			return n, true
+		}
+	}
+	return 0, false
+}
+
+// ConsumeSimpleStringResume finishes a [ConsumeShortSimpleString] that stopped
+// at the end of its window, where n is the offset it reported. It returns what
+// [ConsumeSimpleString] would have returned for the whole string.
+func ConsumeSimpleStringResume(b []byte, n int) int {
+	n += indexEscapeByteLong(b[n:])
+	if uint(len(b)) > uint(n) && b[n] == '"' {
+		return n + 1
 	}
 	return 0
 }
@@ -135,19 +170,27 @@ func ConsumeStringResumable(flags *ValueFlags, b []byte, resumeOffset int, valid
 
 	// Consume every character in the string.
 	for uint(len(b)) > uint(n) {
-		// Optimize for long sequences of unescaped characters.
-		noEscape := func(c byte) bool {
-			return c < utf8.RuneSelf && ' ' <= c && c != '\\' && c != '"'
-		}
-		for uint(len(b)) > uint(n) && noEscape(b[n]) {
-			n++
-		}
-		if uint(len(b)) <= uint(n) {
-			return n, io.ErrUnexpectedEOF
+		// Optimize for long sequences of unescaped characters. The class
+		// lookup guards the window scan so that text which leaves the fast
+		// path on nearly every byte, such as non-ASCII text, never sets one
+		// up, and the range check before it keeps that text off the table
+		// load too. The window path goes back around the loop rather than
+		// falling through: with a single way into the code below, the
+		// compiler keeps c in a register instead of reloading and
+		// re-checking b[n] at a join, which costs non-ASCII text a few
+		// instructions per rune. Running out of input is the loop's exit.
+		c := b[n]
+		if c < utf8.RuneSelf && stringByteTable[c] == 0 {
+			if m := scanStringByteWindow(b, n+1); m == n+1+shortScan {
+				n = m + indexStringByteLong(b[m:]) // run outlasted the window
+			} else {
+				n = m
+			}
+			continue
 		}
 
 		// Check for terminating double quote.
-		if b[n] == '"' {
+		if c == '"' {
 			n++
 			return n, nil
 		}
@@ -270,20 +313,20 @@ func AppendUnquote(dst, src []byte) (v []byte, err error) {
 
 	// Consume every character in the string.
 	for uint(len(src)) > uint(n) {
-		// Optimize for long sequences of unescaped characters.
-		noEscape := func(c byte) bool {
-			return c < utf8.RuneSelf && ' ' <= c && c != '\\' && c != '"'
-		}
-		for uint(len(src)) > uint(n) && noEscape(src[n]) {
-			n++
-		}
-		if uint(len(src)) <= uint(n) {
-			dst = append(dst, src[i:n]...)
-			return dst, io.ErrUnexpectedEOF
+		// Optimize for long sequences of unescaped characters; see
+		// ConsumeStringResumable for the shape of this loop.
+		c := src[n]
+		if c < utf8.RuneSelf && stringByteTable[c] == 0 {
+			if m := scanStringByteWindow(src, n+1); m == n+1+shortScan {
+				n = m + indexStringByteLong(src[m:]) // run outlasted the window
+			} else {
+				n = m
+			}
+			continue
 		}
 
 		// Check for terminating double quote.
-		if src[n] == '"' {
+		if c == '"' {
 			dst = append(dst, src[i:n]...)
 			n++
 			if n < len(src) {

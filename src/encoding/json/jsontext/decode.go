@@ -565,7 +565,11 @@ func (d *decoderState) ReadToken() (Token, error) {
 
 	case '"':
 		var flags jsonwire.ValueFlags // TODO: Preserve this in Token?
-		if n = jsonwire.ConsumeSimpleString(d.buf[pos:]); n == 0 {
+		var long bool
+		if n, long = jsonwire.ConsumeShortSimpleString(d.buf[pos:]); long {
+			n = jsonwire.ConsumeSimpleStringResume(d.buf[pos:], n)
+		}
+		if n == 0 {
 			oldAbsPos := d.baseOffset + int64(pos)
 			pos, err = d.consumeString(&flags, pos)
 			newAbsPos := d.baseOffset + int64(pos)
@@ -870,7 +874,11 @@ func (d *decoderState) consumeValue(flags *jsonwire.ValueFlags, pos, depth int) 
 				n, err = jsonwire.ConsumeLiteral(d.buf[pos:], "true")
 			}
 		case '"':
-			if n = jsonwire.ConsumeSimpleString(d.buf[pos:]); n == 0 {
+			var long bool
+			if n, long = jsonwire.ConsumeShortSimpleString(d.buf[pos:]); long {
+				n = jsonwire.ConsumeSimpleStringResume(d.buf[pos:], n)
+			}
+			if n == 0 {
 				return d.consumeString(flags, pos)
 			}
 		case '0':
@@ -1006,7 +1014,11 @@ func (d *decoderState) consumeObject(flags *jsonwire.ValueFlags, pos, depth int)
 			}
 		}
 		var flags2 jsonwire.ValueFlags
-		if n = jsonwire.ConsumeSimpleString(d.buf[pos:]); n == 0 {
+		var long bool
+		if n, long = jsonwire.ConsumeShortSimpleString(d.buf[pos:]); long {
+			n = jsonwire.ConsumeSimpleStringResume(d.buf[pos:], n)
+		}
+		if n == 0 {
 			oldAbsPos := d.baseOffset + int64(pos)
 			pos, err = d.consumeString(&flags2, pos)
 			newAbsPos := d.baseOffset + int64(pos)

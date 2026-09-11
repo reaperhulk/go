@@ -259,7 +259,11 @@ func (t Token) appendString(dst []byte, flags *jsonflags.Flags) ([]byte, error) 
 		// Handle raw string value.
 		buf := raw.previousBuffer()
 		if Kind(buf[0]) == '"' {
-			if jsonwire.ConsumeSimpleString(buf) == len(buf) {
+			n, long := jsonwire.ConsumeShortSimpleString(buf)
+			if long {
+				n = jsonwire.ConsumeSimpleStringResume(buf, n)
+			}
+			if n == len(buf) {
 				return append(dst, buf...), nil
 			}
 			dst, _, err := jsonwire.ReformatString(dst, buf, flags)
@@ -294,7 +298,13 @@ func (t Token) string() (string, []byte) {
 		buf := raw.previousBuffer()
 		if buf[0] == '"' {
 			// TODO: Preserve ValueFlags in Token?
-			isVerbatim := jsonwire.ConsumeSimpleString(buf) == len(buf)
+			// Most names fit the inline scan window, so only a long one
+			// pays for a call here.
+			n, long := jsonwire.ConsumeShortSimpleString(buf)
+			if long {
+				n = jsonwire.ConsumeSimpleStringResume(buf, n)
+			}
+			isVerbatim := n == len(buf)
 			return "", jsonwire.UnquoteMayCopy(buf, isVerbatim)
 		}
 		// Handle tokens that are not JSON strings for fmt.Stringer.
