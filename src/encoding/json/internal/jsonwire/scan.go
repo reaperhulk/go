@@ -93,6 +93,10 @@ var escapeTables = scanTables{
 	}),
 }
 
+// vectorBytes is the number of input bytes a vectorized bulk scanner examines
+// per step, and so the fewest it needs to be handed to do anything at all.
+const vectorBytes = 32
+
 // shortScan is the number of bytes that the window scanners below examine
 // before handing off to the out-of-line bulk scanner. Runs of copyable bytes
 // in real JSON are usually very short: object names are a handful of bytes,
@@ -266,6 +270,67 @@ var whitespaceTables = scanTables{
 		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	}),
 }
+
+// utf8StringTables and utf8EscapeTables are stringTables and escapeTables
+// without the non-ASCII rows, for the UTF-8 aware scanner, which validates
+// non-ASCII bytes itself instead of stopping on them. utf8EscapeTables does
+// stop on 0xE2, the lead byte of U+2028 and U+2029, which the encoder may
+// have to escape; the scalar code decides.
+//
+// Bit assignments for utf8StringTables:
+//
+//	0x01: high nibble 0 (0x00-0x0F control characters)
+//	0x02: high nibble 1 (0x10-0x1F control characters)
+//	0x04: high nibble 2, low nibble 2 ('"')
+//	0x08: high nibble 5, low nibble C ('\\')
+var utf8StringTables = scanTables{
+	lo: dup16([16]uint8{
+		0x03, 0x03, 0x07, 0x03, 0x03, 0x03, 0x03, 0x03,
+		0x03, 0x03, 0x03, 0x03, 0x0b, 0x03, 0x03, 0x03,
+	}),
+	hi: dup16([16]uint8{
+		0x01, 0x02, 0x04, 0x00, 0x00, 0x08, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	}),
+}
+
+// Bit assignments for utf8EscapeTables:
+//
+//	0x01: high nibble 0 (0x00-0x0F control characters)
+//	0x02: high nibble 1 (0x10-0x1F control characters)
+//	0x04: high nibble 2, low nibble 2 or 6 ('"' and '&')
+//	0x08: high nibble 3, low nibble C or E ('<' and '>')
+//	0x10: high nibble 5, low nibble C ('\\')
+//	0x20: high nibble E, low nibble 2 (0xE2, the lead byte of U+2028/U+2029)
+var utf8EscapeTables = scanTables{
+	lo: dup16([16]uint8{
+		0x03, 0x03, 0x27, 0x03, 0x03, 0x03, 0x07, 0x03,
+		0x03, 0x03, 0x03, 0x03, 0x1b, 0x03, 0x0b, 0x03,
+	}),
+	hi: dup16([16]uint8{
+		0x01, 0x02, 0x04, 0x08, 0x00, 0x10, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00,
+	}),
+}
+
+// utf8IsDense reports whether the non-ASCII byte at b[n] is likely the start
+// of a run of non-ASCII text worth handing to the vector scanner, as opposed
+// to a lone accented letter in otherwise ASCII text, for which the scalar
+// decoder is cheaper, and whether there is a whole vector left to hand over.
+// It looks at the byte after this sequence, using the count of leading one
+// bits in the lead byte as the sequence length; for a malformed lead the
+// answer is merely a guess, and the scanner copes.
+//
+// NOTE: The logic is kept simple so that this inlines into its callers.
+func utf8IsDense(b []byte, n int) bool {
+	m := n + bits.LeadingZeros8(^b[n])
+	return len(b)-n >= vectorBytes && b[m] >= utf8.RuneSelf
+}
+
+// isUTF8StringByte and isUTF8EscapeByte are the predicates that
+// utf8StringTables and utf8EscapeTables encode.
+func isUTF8StringByte(c byte) bool { return c < utf8.RuneSelf && isStringByte(c) }
+func isUTF8EscapeByte(c byte) bool { return (c < utf8.RuneSelf && isEscapeByte(c)) || c == 0xe2 }
 
 // isStringByte reports whether c terminates a run of raw JSON string content.
 func isStringByte(c byte) bool {

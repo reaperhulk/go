@@ -27,3 +27,8 @@ func indexEscapeByteLong(b []byte) int { return indexEscapeByteScalar(b) }
 // consumeWhitespaceLong is the out-of-line half of [ConsumeWhitespace]. This
 // wrapper inlines into it, so the call it makes goes straight to the scanner.
 func consumeWhitespaceLong(b []byte) int { return consumeWhitespaceScalar(b) }
+
+// utf8SIMD reports whether this build can validate UTF-8 a vector at a time.
+const utf8SIMD = false
+
+func skipUTF8Long(t *scanTables, b []byte, n int) int { return n }

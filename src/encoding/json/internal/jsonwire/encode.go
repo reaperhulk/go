@@ -46,6 +46,12 @@ func NeedEscape(src []byte) bool {
 				i = m
 			}
 		} else {
+			if utf8SIMD && useSIMD && utf8IsDense(src, i) {
+				if m := skipUTF8Long(&utf8EscapeTables, src, i); m > i {
+					i = m
+					continue
+				}
+			}
 			r, rn := utf8.DecodeRune(src[i:])
 			if r == utf8.RuneError || r == '\u2028' || r == '\u2029' {
 				return true
@@ -92,7 +98,15 @@ func AppendQuote(dst, src []byte, flags *jsonflags.Flags) ([]byte, error) {
 				i = n
 			}
 		} else {
-			// Handle multi-byte Unicode.
+			// Handle multi-byte Unicode. Valid non-ASCII text that needs no
+			// escaping is skipped a vector at a time where possible; the
+			// scanner stops on 0xE2 so that U+2028 and U+2029 are decoded.
+			if utf8SIMD && useSIMD && utf8IsDense(src, n) {
+				if m := skipUTF8Long(&utf8EscapeTables, src, n); m > n {
+					n = m
+					continue
+				}
+			}
 			r, rn := utf8.DecodeRune(src[n:])
 			n += rn
 			if r != utf8.RuneError && r != '\u2028' && r != '\u2029' {

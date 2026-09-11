@@ -192,6 +192,14 @@ func ConsumeStringResumable(flags *ValueFlags, b []byte, resumeOffset int, valid
 			}
 			continue
 		}
+		// Non-ASCII text is validated and skipped a vector at a time where
+		// possible; what comes back is a byte the scalar code must look at.
+		if utf8SIMD && useSIMD && c >= utf8.RuneSelf && utf8IsDense(b, n) {
+			if m := skipUTF8Long(&utf8StringTables, b, n); m > n {
+				n = m
+				continue
+			}
+		}
 
 		// Check for terminating double quote.
 		if c == '"' {
@@ -327,6 +335,12 @@ func AppendUnquote(dst, src []byte) (v []byte, err error) {
 				n = m
 			}
 			continue
+		}
+		if utf8SIMD && useSIMD && c >= utf8.RuneSelf && utf8IsDense(src, n) {
+			if m := skipUTF8Long(&utf8StringTables, src, n); m > n {
+				n = m
+				continue
+			}
 		}
 
 		// Check for terminating double quote.

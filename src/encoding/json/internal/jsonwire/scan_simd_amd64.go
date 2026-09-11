@@ -23,9 +23,6 @@ var simdHardware = archsimd.X86.AVX2()
 // the scalar and vector implementations against each other in one process.
 var useSIMD = simdHardware
 
-// vectorBytes is the number of input bytes classified per loop iteration.
-const vectorBytes = 32
-
 // classTablesSIMD holds a scanTables pair loaded into vector registers.
 type classTablesSIMD struct {
 	lo, hi, nibble archsimd.Uint8x32
