@@ -7,6 +7,7 @@
 package jsontext
 
 import (
+	"bytes"
 	"errors"
 	"iter"
 	"math"
@@ -719,9 +720,32 @@ type objectNamespace struct {
 	endOffsets []uint
 	// allUnquotedNames is a back-to-back concatenation of every name in the namespace.
 	allUnquotedNames []byte
+	// signatures[i] holds nameSignature of the ith name, for the names the
+	// linear search can see: it runs only while there are at most
+	// maxLinearNames of them, after which mapNames takes over. A name can
+	// only equal another whose signature matches, so the search compares
+	// bytes only against the names that bytes.IndexByte picks out of this,
+	// which is a single vector compare for most objects. It is a fixed array
+	// rather than a slice so that inserting a name never allocates for it.
+	signatures [maxLinearNames]uint8
 	// mapNames is a Go map containing every name in the namespace.
 	// Only valid if non-nil.
 	mapNames map[string]struct{}
+}
+
+// maxLinearNames is the most names a namespace holds before insert switches
+// from linear search to mapNames.
+const maxLinearNames = 64
+
+// nameSignature is a cheap 8-bit digest of a name, mixing its length with
+// its first and last bytes. Names in one object are usually distinct in at
+// least one of those, so the signature rules almost all of them out without
+// touching their bytes.
+func nameSignature(name []byte) uint8 {
+	if len(name) == 0 {
+		return 0
+	}
+	return uint8(len(name))*31 ^ name[0]<<2 ^ name[len(name)-1]
 }
 
 // reset resets the namespace to be empty.
@@ -779,7 +803,7 @@ func (ns *objectNamespace) insert(name []byte, quoted bool) bool {
 
 	// Switch to a map if the buffer is too large for linear search.
 	// This does not add the current name to the map.
-	if ns.mapNames == nil && (ns.length() > 64 || len(ns.allUnquotedNames) > 1024) {
+	if ns.mapNames == nil && (ns.length() > maxLinearNames || len(ns.allUnquotedNames) > 1024) {
 		ns.mapNames = make(map[string]struct{})
 		var startOffset uint
 		for _, endOffset := range ns.endOffsets {
@@ -789,15 +813,39 @@ func (ns *objectNamespace) insert(name []byte, quoted bool) bool {
 		}
 	}
 
+	sig := nameSignature(name)
 	if ns.mapNames == nil {
 		// Perform linear search over the buffer to find matching names.
 		// It provides O(n) lookup, but does not require any allocations.
-		var startOffset uint
-		for _, endOffset := range ns.endOffsets {
-			if string(ns.allUnquotedNames[startOffset:endOffset]) == string(name) {
-				return false
+		// Only names whose signature matches have their bytes compared.
+		// Most objects have a handful of names, for which a plain loop
+		// beats the call into bytes.IndexByte; past that, IndexByte finds
+		// the candidates with one vector compare per 16 or 32 names.
+		const smallObject = 8
+		sigs := ns.signatures[:ns.length()] // at most maxLinearNames, since mapNames is nil
+		if len(sigs) <= smallObject {
+			var startOffset uint
+			for i, endOffset := range ns.endOffsets {
+				if sigs[i] == sig && string(ns.allUnquotedNames[startOffset:endOffset]) == string(name) {
+					return false
+				}
+				startOffset = endOffset
 			}
-			startOffset = endOffset
+		} else {
+			for i := 0; i < len(sigs); i++ {
+				j := bytes.IndexByte(sigs[i:], sig)
+				if j < 0 {
+					break
+				}
+				i += j
+				var startOffset uint
+				if i > 0 {
+					startOffset = ns.endOffsets[i-1]
+				}
+				if string(ns.allUnquotedNames[startOffset:ns.endOffsets[i]]) == string(name) {
+					return false
+				}
+			}
 		}
 	} else {
 		// Use the map if it is populated.
@@ -808,6 +856,9 @@ func (ns *objectNamespace) insert(name []byte, quoted bool) bool {
 		ns.mapNames[string(name)] = struct{}{} // allocates a new string
 	}
 
+	if n := ns.length(); n < len(ns.signatures) {
+		ns.signatures[n] = sig // beyond this, only mapNames is consulted
+	}
 	ns.allUnquotedNames = allNames
 	ns.endOffsets = append(ns.endOffsets, uint(len(ns.allUnquotedNames)))
 	return true

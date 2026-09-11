@@ -394,3 +394,41 @@ func TestObjectNamespace(t *testing.T) {
 		}
 	}
 }
+
+// TestObjectNamespaceSignatureCollisions checks that names which share a
+// signature (same length, first byte and last byte) are still told apart,
+// and that duplicates are still found, across the linear-search and map
+// regimes and after removeLast.
+func TestObjectNamespaceSignatureCollisions(t *testing.T) {
+	var ns objectNamespace
+	names := [][]byte{[]byte("axb"), []byte("ayb"), []byte("azb"), []byte(""), []byte("a"), []byte("b")}
+	for i, name := range names {
+		if nameSignature(name) != nameSignature(names[0]) && i < 3 {
+			t.Fatalf("test needs colliding signatures for %q and %q", names[0], name)
+		}
+		if !ns.InsertUnquoted(name) {
+			t.Fatalf("InsertUnquoted(%q) = false, want true", name)
+		}
+	}
+	for _, name := range names {
+		if ns.InsertUnquoted(name) {
+			t.Fatalf("InsertUnquoted(%q) = true on duplicate, want false", name)
+		}
+	}
+	ns.removeLast()
+	if !ns.InsertUnquoted([]byte("b")) {
+		t.Fatal("name removed with removeLast should be insertable again")
+	}
+	// Force the switch to the map and check that both regimes agree.
+	for i := range 70 {
+		name := []byte("k" + string(rune('0'+i%10)) + string(rune('a'+i/10)))
+		if got, want := ns.InsertUnquoted(name), true; got != want {
+			t.Fatalf("InsertUnquoted(%q) = %v, want %v", name, got, want)
+		}
+	}
+	for _, name := range names {
+		if ns.InsertUnquoted(name) {
+			t.Fatalf("InsertUnquoted(%q) = true on duplicate after map switch, want false", name)
+		}
+	}
+}
