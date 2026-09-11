@@ -24,6 +24,18 @@ func indexStringByteLong(b []byte) int { return indexStringByteScalar(b) }
 // indexEscapeByteLong is the out-of-line half of [indexEscapeByte].
 func indexEscapeByteLong(b []byte) int { return indexEscapeByteScalar(b) }
 
-// consumeWhitespaceLong is the out-of-line half of [ConsumeWhitespace]. This
-// wrapper inlines into it, so the call it makes goes straight to the scanner.
-func consumeWhitespaceLong(b []byte) int { return consumeWhitespaceScalar(b) }
+// ConsumeWhitespace consumes leading JSON whitespace per RFC 7159, section 2.
+//
+// This build has no vectorized whitespace scanner. On amd64 the plain loop
+// measures as well as the bulk scalar scanner on runs of indentation and
+// costs nothing on the single space after a colon, where going out of line
+// showed up as +6-15% on the indented testdata, so it stays the loop it
+// always was. The builds with a vector path define their own
+// ConsumeWhitespace in scan_whitespace_simd.go.
+func ConsumeWhitespace(b []byte) (n int) {
+	// NOTE: The arguments and logic are kept simple to keep this inlinable.
+	for len(b) > n && (b[n] == ' ' || b[n] == '\t' || b[n] == '\r' || b[n] == '\n') {
+		n++
+	}
+	return n
+}
