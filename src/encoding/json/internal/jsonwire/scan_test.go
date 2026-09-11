@@ -25,6 +25,9 @@ func TestScanTables(t *testing.T) {
 		if got, want := escapeTables.classifyScalar(c), isEscapeByte(c); got != want {
 			t.Errorf("escapeTables.classifyScalar(%#02x) = %v, want %v", c, got, want)
 		}
+		if got, want := whitespaceTables.classifyScalar(c), isWhitespace(c); got != want {
+			t.Errorf("whitespaceTables.classifyScalar(%#02x) = %v, want %v", c, got, want)
+		}
 	}
 }
 
@@ -149,6 +152,63 @@ func FuzzIndexScanners(f *testing.F) {
 		}
 		if got, want := indexEscapeByte(b), indexEscapeByteScalar(b); got != want {
 			t.Fatalf("indexEscapeByte(%q) = %d, want %d", b, got, want)
+		}
+	})
+}
+
+// consumeWhitespaceReference is the obvious implementation of
+// [ConsumeWhitespace], which the inline, SWAR and vector paths must all match.
+func consumeWhitespaceReference(b []byte) int {
+	var n int
+	for n < len(b) && isWhitespace(b[n]) {
+		n++
+	}
+	return n
+}
+
+// TestConsumeWhitespaceRuns checks every run length up to several vectors, with
+// every whitespace byte, terminated by every byte that is not whitespace,
+// including the control characters that share the inline test's b[0] <= ' '
+// fast path with real whitespace.
+func TestConsumeWhitespaceRuns(t *testing.T) {
+	if simdEnabled && !useSIMD {
+		t.Skip("vectorized scanners unavailable on this CPU")
+	}
+	for _, ws := range []byte{' ', '\t', '\n', '\r'} {
+		for n := range 100 {
+			run := bytes.Repeat([]byte{ws}, n)
+			if got, want := ConsumeWhitespace(run), consumeWhitespaceReference(run); got != want {
+				t.Fatalf("ConsumeWhitespace(%d x %q) = %d, want %d", n, ws, got, want)
+			}
+			for term := range 256 {
+				c := byte(term)
+				if isWhitespace(c) {
+					continue
+				}
+				b := append(append(bytes.Repeat([]byte{ws}, n), c), run...)
+				if got, want := ConsumeWhitespace(b), consumeWhitespaceReference(b); got != want {
+					t.Fatalf("ConsumeWhitespace(%d x %q, then %#02x) = %d, want %d", n, ws, c, got, want)
+				}
+			}
+		}
+	}
+	// Mixed whitespace, at every alignment.
+	mixed := []byte(strings.Repeat(" \t\n\r  \n\t", 20) + "x" + strings.Repeat(" ", 40))
+	for off := range len(mixed) {
+		b := mixed[off:]
+		if got, want := ConsumeWhitespace(b), consumeWhitespaceReference(b); got != want {
+			t.Fatalf("off=%d: got %d, want %d", off, got, want)
+		}
+	}
+}
+
+func FuzzConsumeWhitespaceRuns(f *testing.F) {
+	f.Add([]byte(""))
+	f.Add([]byte("   \n\t x"))
+	f.Add([]byte(strings.Repeat(" ", 70) + "\x00"))
+	f.Fuzz(func(t *testing.T, b []byte) {
+		if got, want := ConsumeWhitespace(b), consumeWhitespaceReference(b); got != want {
+			t.Fatalf("ConsumeWhitespace(%q) = %d, want %d", b, got, want)
 		}
 	})
 }

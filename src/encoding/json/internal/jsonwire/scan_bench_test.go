@@ -84,6 +84,16 @@ func BenchmarkIndexEscapeByte(b *testing.B) {
 	benchScan(b, plainRun, func(src []byte) { sinkInt = indexEscapeByte(src) })
 }
 
+// BenchmarkConsumeWhitespace models the indentation before a token: n
+// whitespace bytes followed by the token and more of the document.
+func BenchmarkConsumeWhitespace(b *testing.B) {
+	indent := func(n int) []byte {
+		ws := append([]byte("\n"), bytes.Repeat([]byte(" "), max(n-1, 0))...)[:n]
+		return append(ws, []byte(`"name": "value", `+strings.Repeat("x", 48))...)
+	}
+	benchScan(b, indent, func(src []byte) { sinkInt = ConsumeWhitespace(src) })
+}
+
 func BenchmarkConsumeSimpleString(b *testing.B) {
 	quoted := func(n int) []byte { return append([]byte{'"'}, plainRun(n)...) }
 	benchScan(b, quoted, func(src []byte) { sinkInt = ConsumeSimpleString(src) })

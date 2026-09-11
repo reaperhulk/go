@@ -253,6 +253,18 @@ func (v *Value) UnmarshalJSON(b []byte) error {
 // Kind returns the starting token kind.
 // For a valid value, this will never include [KindEndObject] or [KindEndArray].
 func (v Value) Kind() Kind {
+	// NOTE: The logic is kept simple to keep this inlinable; it is called
+	// for every value the unmarshaler inspects. A value produced by the
+	// decoder starts on its first token, so only leading whitespace, which
+	// takes a call to skip, goes out of line.
+	if len(v) > 0 && v[0] > ' ' {
+		return Kind(v[0]).normalize()
+	}
+	return v.kindSlow()
+}
+
+// kindSlow is [Value.Kind] for a value that starts with whitespace, or is empty.
+func (v Value) kindSlow() Kind {
 	if v := v[jsonwire.ConsumeWhitespace(v):]; len(v) > 0 {
 		return Kind(v[0]).normalize()
 	}

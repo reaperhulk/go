@@ -23,3 +23,7 @@ func indexStringByteLong(b []byte) int { return indexStringByteScalar(b) }
 
 // indexEscapeByteLong is the out-of-line half of [indexEscapeByte].
 func indexEscapeByteLong(b []byte) int { return indexEscapeByteScalar(b) }
+
+// consumeWhitespaceLong is the out-of-line half of [ConsumeWhitespace]. This
+// wrapper inlines into it, so the call it makes goes straight to the scanner.
+func consumeWhitespaceLong(b []byte) int { return consumeWhitespaceScalar(b) }

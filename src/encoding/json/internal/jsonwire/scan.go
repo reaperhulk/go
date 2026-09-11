@@ -6,7 +6,10 @@
 
 package jsonwire
 
-import "unicode/utf8"
+import (
+	"math/bits"
+	"unicode/utf8"
+)
 
 // This file declares the byte classification scanners that sit at the heart of
 // both the JSON decoder and encoder. Every scanner answers the same question:
@@ -162,6 +165,74 @@ func indexEscapeByte(b []byte) int {
 	return n
 }
 
+// isWhitespace reports whether c is JSON whitespace per RFC 7159, section 2.
+func isWhitespace(c byte) bool {
+	return c == ' ' || c == '\t' || c == '\r' || c == '\n'
+}
+
+// whitespaceTable is [isWhitespace] as a lookup table; see stringByteTable.
+var whitespaceTable = classTable(isWhitespace)
+
+// consumeWhitespaceScalar is the portable bulk half of [ConsumeWhitespace]: it
+// returns the index of the first byte of b that is not JSON whitespace, or
+// len(b), examining eight bytes per step. It is the whole of the out-of-line
+// path in builds without a vectorized scanner, and the tail of it in builds
+// with one. In the former it is the one call [ConsumeWhitespace] makes;
+// putting a wrapper with its own frame between the two measured as a few
+// percent on indented documents.
+//
+// Each of the four whitespace bytes is tested for with the exact
+// byte-equals-zero idiom: after y = x ^ (w repeated), the expression
+// ((y & 0x7f..) + 0x7f..) | y has bit 7 clear in exactly the bytes that were
+// equal to w. The cheaper (y - 0x01..) & ^y & 0x80.. idiom is not used because
+// it can misreport the byte after a match, and here every byte's verdict
+// matters, not just the first.
+func consumeWhitespaceScalar(b []byte) int {
+	// The single space after a colon is the most common whitespace run in an
+	// indented document. It is decided before anything is loaded in bulk;
+	// the inline half has no budget left for it.
+	if len(b) > 1 && b[0] == ' ' && b[1] > ' ' {
+		return 1
+	}
+	var n int
+	const (
+		ones  = 0x0101010101010101
+		lo7   = 0x7f7f7f7f7f7f7f7f
+		hi1   = 0x8080808080808080
+		space = ' ' * ones
+		tab   = '\t' * ones
+		cr    = '\r' * ones
+		nl    = '\n' * ones
+	)
+	for len(b)-n >= 8 {
+		// Index through a reslice: the prover cannot see that b[n+7] is in
+		// range from len(b)-n >= 8, and without this it emits eight bounds
+		// checks per word, which is more work than the word itself.
+		p := b[n:]
+		x := uint64(p[0]) | uint64(p[1])<<8 | uint64(p[2])<<16 | uint64(p[3])<<24 |
+			uint64(p[4])<<32 | uint64(p[5])<<40 | uint64(p[6])<<48 | uint64(p[7])<<56
+		// Indentation is a newline and then spaces, so after the first word
+		// of a run every word is usually all spaces; one compare settles it.
+		if x == space {
+			n += 8
+			continue
+		}
+		notSpace := ((x ^ space) & lo7) + lo7 | (x ^ space)
+		notTab := ((x ^ tab) & lo7) + lo7 | (x ^ tab)
+		notCR := ((x ^ cr) & lo7) + lo7 | (x ^ cr)
+		notNL := ((x ^ nl) & lo7) + lo7 | (x ^ nl)
+		// A byte is not whitespace if it differs from all four.
+		if other := notSpace & notTab & notCR & notNL & hi1; other != 0 {
+			return n + bits.TrailingZeros64(other)/8
+		}
+		n += 8
+	}
+	for uint(len(b)) > uint(n) && whitespaceTable[b[n]] != 0 {
+		n++
+	}
+	return n
+}
+
 // stringByteTable and escapeByteTable are [isStringByte] and [isEscapeByte]
 // as 256-entry lookup tables. A single indexed load is both smaller and
 // faster than the run of comparisons that the predicates compile to, and the
@@ -179,6 +250,21 @@ func classTable(in func(byte) bool) (t [256]uint8) {
 		}
 	}
 	return t
+}
+
+// Bit assignments for whitespaceTables:
+//
+//	0x01: high nibble 0, low nibble 9, A or D ('\t', '\n', '\r')
+//	0x02: high nibble 2, low nibble 0 (' ')
+var whitespaceTables = scanTables{
+	lo: dup16([16]uint8{
+		0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x01, 0x01, 0x00, 0x00, 0x01, 0x00, 0x00,
+	}),
+	hi: dup16([16]uint8{
+		0x01, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	}),
 }
 
 // isStringByte reports whether c terminates a run of raw JSON string content.

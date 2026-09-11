@@ -26,24 +26,48 @@ var useSIMD = simdHardware
 // vectorBytes is the number of input bytes classified per loop iteration.
 const vectorBytes = 32
 
+// classTablesSIMD holds a scanTables pair loaded into vector registers.
+type classTablesSIMD struct {
+	lo, hi, nibble archsimd.Uint8x32
+}
+
+func loadClassTables(t *scanTables) classTablesSIMD {
+	return classTablesSIMD{
+		lo:     archsimd.LoadUint8x32Array(&t.lo),
+		hi:     archsimd.LoadUint8x32Array(&t.hi),
+		nibble: archsimd.BroadcastUint8x32(0x0f),
+	}
+}
+
+// members returns a bitmask with bit i set if byte i of v belongs to the
+// class described by t.
+//
+// This is the simdjson nibble trick described in scan.go: two VPSHUFB
+// lookups, one indexed by the low nibble of each input byte and one by the
+// high nibble, ANDed together. Bytes that are members of the class have a
+// non-zero product, which VPCMPEQB and VPMOVMSKB turn into a bitmask.
+func (t *classTablesSIMD) members(v archsimd.Uint8x32) uint32 {
+	// AVX2 has no byte-granular shift, so the high nibbles are extracted
+	// with a 16-bit shift followed by a mask.
+	lo := v.And(t.nibble)
+	hi := v.ReshapeToUint16s().ShiftAllRight(4).ReshapeToUint8s().And(t.nibble)
+	class := t.lo.PermuteOrZeroGrouped(lo.AsInt8x32()).
+		And(t.hi.PermuteOrZeroGrouped(hi.AsInt8x32()))
+	// Equal(zero) marks the bytes that are *not* in the class, so the
+	// complement of the bitmask marks the ones that are.
+	var zero archsimd.Uint8x32
+	return ^class.Equal(zero).ToBits()
+}
+
 // indexClassSIMD returns the index of the first byte of b that belongs to the
 // character class described by t, considering only whole vectorBytes-sized
 // blocks. If no such byte is found it reports the number of bytes it examined,
 // which is the largest multiple of vectorBytes that fits in b, and false.
-//
-// The classifier is the simdjson nibble trick described in scan.go: two
-// VPSHUFB lookups, one indexed by the low nibble of each input byte and one by
-// the high nibble, ANDed together. Bytes that are members of the class have a
-// non-zero product, which VPCMPEQB and VPMOVMSKB turn into a bitmask that a
-// single TZCNT resolves to an index.
 func indexClassSIMD(t *scanTables, b []byte) (int, bool) {
 	if len(b) < vectorBytes {
 		return 0, false
 	}
-	tableLo := archsimd.LoadUint8x32Array(&t.lo)
-	tableHi := archsimd.LoadUint8x32Array(&t.hi)
-	nibble := archsimd.BroadcastUint8x32(0x0f)
-	var zero archsimd.Uint8x32
+	tables := loadClassTables(t)
 
 	// Every return below first clears the upper halves of the YMM registers.
 	// Leaving them dirty makes each legacy-SSE instruction that runs
@@ -53,22 +77,37 @@ func indexClassSIMD(t *scanTables, b []byte) (int, bool) {
 	// documents whose scans never even reach a vector.
 	var i int
 	for ; i+vectorBytes <= len(b); i += vectorBytes {
-		v := archsimd.LoadUint8x32(b[i:])
-		// AVX2 has no byte-granular shift, so the high nibbles are extracted
-		// with a 16-bit shift followed by a mask.
-		lo := v.And(nibble)
-		hi := v.ReshapeToUint16s().ShiftAllRight(4).ReshapeToUint8s().And(nibble)
-		class := tableLo.PermuteOrZeroGrouped(lo.AsInt8x32()).
-			And(tableHi.PermuteOrZeroGrouped(hi.AsInt8x32()))
-		// Equal(zero) marks the bytes that are *not* in the class, so the
-		// complement of the bitmask marks the ones that are.
-		if m := ^class.Equal(zero).ToBits(); m != 0 {
+		if m := tables.members(archsimd.LoadUint8x32(b[i:])); m != 0 {
 			archsimd.ClearAVXUpperBits()
 			return i + bits.TrailingZeros32(m), true
 		}
 	}
 	archsimd.ClearAVXUpperBits()
 	return i, false
+}
+
+// consumeWhitespaceLong is the out-of-line half of [ConsumeWhitespace]. It
+// skips whole vectors of whitespace while it can and leaves the rest to the
+// portable scanner. Indentation before a token is typically one to a few
+// dozen bytes, so this is usually a single vector.
+func consumeWhitespaceLong(b []byte) int {
+	if len(b) > 1 && b[0] == ' ' && b[1] > ' ' {
+		return 1 // the space after a colon; see consumeWhitespaceScalar
+	}
+	var n int
+	if useSIMD && len(b) >= vectorBytes {
+		tables := loadClassTables(&whitespaceTables)
+		for ; n+vectorBytes <= len(b); n += vectorBytes {
+			// The class is whitespace, so the complement marks the first
+			// byte that is not.
+			if m := ^tables.members(archsimd.LoadUint8x32(b[n:])); m != 0 {
+				archsimd.ClearAVXUpperBits()
+				return n + bits.TrailingZeros32(m)
+			}
+		}
+		archsimd.ClearAVXUpperBits()
+	}
+	return n + consumeWhitespaceScalar(b[n:])
 }
 
 // indexStringByteLong is the out-of-line half of [indexStringByte].
