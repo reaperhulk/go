@@ -124,35 +124,50 @@ scanners. Rows carry 5-15% variance; read geomeans and the rows marked
 significant, not every cell. Where a CL's own run and the final run differ
 by a few points, that is the machine, not the code.
 
-### The chain, stacked, on the `BenchmarkTestdata` Value benchmarks
+### On amd64, per CL, against the code before the chain
 
-Each row is the geomean of one build against the code before any of it,
-with the rows that moved significantly in that step.
+A binary at every commit of the chain as it now stands (after the archsimd
+escape fix and the scalar-path fixes), `GOEXPERIMENT=nosimd` for all of
+them and `simd` at CL 2, CL 8 and the tip, all 14 Value rows, interleaved,
+`-benchtime=100ms -count=8`, medians, percent versus the base commit.
+Column "arch" is the archsimd escape fix alone, which changes no json code.
 
-    CL                                              geomean   what moved (p < 0.05)
-    1  window + scalar bulk scan                     -2.3%   Citm/Synthea encode -6/-7%, Synthea/Twitter decode -5/-6%
-    2  AVX2 string scanner                           -4.5%   Synthea encode -11%, Twitter decode -6%
-    5  whitespace runs in bulk                       -7.9%   Citm -24/-25%, Synthea -16/-15%
-    6  SIMD UTF-8 validation                        -24.2%   StringUnicode -68/-70%, Twitter -16/-13%, GolangSource decode -9%
-    7  signature filter for duplicate names         -29.0%   Twitter -34/-39%
-    8  full-grammar number scan + SWAR digits       -29.2%   Canada decode -19%, encode -12%
+    CL                              arch    1     2     3     5     6     7     8     9   docs    2s    8s  tips   fix
+    geomean, 14 rows                -0.4  -0.6  -3.6  -3.4  +1.0  +0.8  -2.0  -5.4  -5.1  -5.5  -3.1 -27.4 -26.6  -4.1
+    worst row                       +2.5  +4.2  -0.7  +0.2 +15.4 +16.9 +16.6 +12.0 +12.1  +6.3  +5.3  -2.1  -2.9  +6.3
+    CanadaGeometry Decode/Value     -5.3  -3.1  -6.8  -5.8  -8.8  -7.9  -8.8 -13.8 -13.9 -14.4  -2.5 -17.4 -16.3  -4.4
+    CitmCatalog    Decode/Value     +2.5  +2.1  -1.4  +0.2  -0.1  -1.0  +3.3  -1.2  +0.0  -0.5  -1.4 -20.6 -20.2  +2.6
+    CitmCatalog    Encode/Value     +2.1  +4.2  -2.8  -2.4 +10.1 +16.9  +9.9 +12.0 +12.1  +6.3  +5.3 -10.9 -10.9  +6.3
+    SyntheaFhir    Decode/Value     +0.9  +1.0  -0.7  -2.7 +15.4  +9.0 +11.0  +3.9  +2.4  +5.6  -8.5  -8.3  -8.8  -1.1
+    SyntheaFhir    Encode/Value     +1.0  +2.4  -2.5  -1.5  +8.0  +7.3 +16.6  +4.0  +3.7  +6.0  -1.9  -5.5  -5.4  +3.0
+    TwitterStatus  Decode/Value     +0.5  +0.0  -4.7  -3.5  +5.9  +5.7 -10.4 -11.5 -12.6 -12.2  -2.7 -31.7 -30.0 -15.1
+    TwitterStatus  Encode/Value     -0.5  +3.0  -3.4  -3.7  +6.7  +6.9  -8.6 -10.8 -11.6 -12.6  -0.4 -26.8 -26.8 -10.8
+    StringUnicode  Decode/Value     -1.7  -6.7  -4.0  -8.1  -4.0  -1.8  -8.1 -10.9  -9.1  -7.7  -8.3 -75.3 -73.9  -7.3
 
-    final, GOEXPERIMENT=simd                        -29.2%
-    final, GOEXPERIMENT=nosimd                       -5.0%   Canada -12/-19%, Twitter -14/-12%; Citm encode +5%
+Two things this table says that the arm64 one does not. First, CL 5 (the
+whitespace CL) regresses the scalar build on amd64 — SyntheaFhir decode
++15%, encode +8%, TwitterStatus +6/+7%, CitmCatalog encode +10% — and the
+regression is carried to the tip (Synthea decode +5.6%, Citm encode +6.3%
+in the "docs" column), while CitmCatalog decode, the document with the
+most whitespace, does not improve. The profile puts it in the out-of-line
+call: on amd64 the bulk scalar scanner is no faster than the plain loop on
+indentation, and the call costs on the single space after a colon. The
+fix that follows the chain restores the plain inline loop for builds with
+no vector path; its column is "fix", measured in a separate interleaved
+run against the same base (n=8): SyntheaFhir decode goes from +2.9% to
+-1.1% and TwitterStatus decode from -10% to -15%, and the SIMD build is
+unchanged by it (geomean -27.1%, no row above -2%). CitmCatalog encode
+stays a few points up on the scalar build (+6% in that run, +2% in a
+profiled pair); its profile shows the same inline whitespace loop as the
+base and the encoder's window scan taking the share ConsumeSimpleString
+used to, so it has no identified cause and is left open. Second, the noise
+floor per row is about 3 points: CL 2 and CL 3 are the same scalar code
+and differ by up to 3, as do CL 8 and CL 9.
 
-CL 3 (counters), CL 4 (this document) and CL 9 (the arm64 draft) change no
-amd64 code path.
-
-The `nosimd` row is what every user who does not set `GOEXPERIMENT=simd`
-gets: the number scan, the signature filter and the class tables are all
-portable, and the SWAR whitespace and digit scans run everywhere. It is the
-row that must never regress, per benchmark, and it is measured per CL: the
-table under "On arm64" below was built from a binary at every commit of the
-chain, run interleaved, and the standard for the chain is that no commit
-leaves any row above the baseline. These amd64 figures predate the scalar
-path fixes folded into the chain after the arm64 measurements (the CL 5 and
-CL 7 rows in particular), so the per-CL numbers there are due for a re-run;
-the CitmCatalog encode +5% that this row used to carry was one of them.
+CL 3 (counters), CL 4 (this document) and CL 9 (the arm64 port) change no
+amd64 code path. The `nosimd` column is what every user who does not set
+`GOEXPERIMENT=simd` gets, and it is the column that must never regress,
+per row.
 
 ### On arm64 (Apple M1 Max), per CL, against the code before the chain
 
@@ -165,10 +180,10 @@ machine's run-to-run band for a row.
     CL                              1     2     3     4     5     6     7     8     9    10   9s   10s
     geomean, 28 rows              -0.1  -1.6  -1.6  -1.5  -2.3  -2.7  -4.2  -5.0  -5.0  -5.0  -6.3  -6.5
     worst row                     +0.4  +1.1  +2.5  +2.1  +0.6  +0.3  -0.0  +0.3  +0.4  +0.2  +0.3  +0.2
-    CanadaGeometry Decode/Value   -0.1  -0.1  +0.6  +0.6  -2.3  -3.0  -3.0 -17.4 -17.5 -17.5 -16.3 -16.5
-    CitmCatalog    Decode/Value   +0.1  -1.4  -1.0  -1.1  -8.2  -8.2  -7.8  -7.5  -7.3  -7.3  -9.9 -10.8
-    SyntheaFhir    Decode/Value   -0.1  -4.0  -4.4  -4.4  -2.6  -2.8  -2.1  -1.6  -1.5  -1.6  -4.5  -4.1
-    TwitterStatus  Decode/Value   +0.3  -3.1  -3.4  -3.2  -3.0  -2.8 -15.7 -15.3 -15.1 -15.1 -17.8 -17.6
+    CanadaGeometry Decode/Value   -0.1  -0.1  +0.6  +0.6  -2.3  -3.0  -3.0 -17.4 -17.5 -17.5 -16.3 -16.5  -4.4
+    CitmCatalog    Decode/Value   +0.1  -1.4  -1.0  -1.1  -8.2  -8.2  -7.8  -7.5  -7.3  -7.3  -9.9 -10.8  +2.6
+    SyntheaFhir    Decode/Value   -0.1  -4.0  -4.4  -4.4  -2.6  -2.8  -2.1  -1.6  -1.5  -1.6  -4.5  -4.1  -1.1
+    TwitterStatus  Decode/Value   +0.3  -3.1  -3.4  -3.2  -3.0  -2.8 -15.7 -15.3 -15.1 -15.1 -17.8 -17.6 -15.1
     StringUnicode  Unmarshal      -0.3  -4.7  -4.6  -4.4  -4.1  -4.4  -4.4  -4.4  -4.4  -4.0  -4.5  -4.6
     CitmCatalog    Unmarshal      +0.4  +1.1  +2.5  +2.1  -0.2  -2.7  -2.8  -2.2  -1.9  -1.8  -8.0  -7.7
 
