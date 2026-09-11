@@ -458,8 +458,11 @@ func (x {{.Name}}) Len() int { return {{.LenExpr}} }
 
 // Load{{.Name}}Array loads {{.Article}} {{.Name}} from an array.
 //
-//go:noescape
-func Load{{.Name}}Array(y *[{{.Lanes}}]{{.Base}}) {{.Name}}
+// The body is what the intrinsic does; calls are still intrinsified. It is
+// here so that escape analysis can see that y is only read: a body-less
+// function's pointer parameters are assumed to be written through, which
+// would make a []byte(s) conversion anywhere up the call chain a copy.
+func Load{{.Name}}Array(y *[{{.Lanes}}]{{.Base}}) {{.Name}} { return *(*{{.Name}})(unsafe.Pointer(y)) }
 
 // StoreArray stores {{.Article}} {{.Name}} to an array.
 //
@@ -898,6 +901,10 @@ func writeSIMDTypes(buffer *bytes.Buffer, typeMap simdTypeMap) {
 	maskFromVal := templateOf(simdMaskFromValTemplate, "maskFromVal_amd64")
 
 	buffer.WriteString(simdPackageHeader())
+	if !CurrentArch().isSVE() {
+		// For the Load*Array bodies; the scalable types have none.
+		buffer.WriteString("\nimport \"unsafe\"\n")
+	}
 
 	if CurrentArch().isSVE() {
 		// SVE predicates are represented as-is (a P register), not as data vectors,

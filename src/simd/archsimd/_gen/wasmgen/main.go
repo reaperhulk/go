@@ -1085,8 +1085,11 @@ func templateOf(name, text string) *template.Template {
 var loadDecl = templateOf("load from array", `
 // Load{{.Name}}Array loads {{.Article}} {{.Name}} from a [{{.Count}}]{{.Elem}}.
 //
-//go:noescape
-func Load{{.Name}}Array(y *[{{.Count}}]{{.Elem}}) {{.Name}}
+// The body is what the intrinsic does; calls are still intrinsified. It is
+// here so that escape analysis can see that y is only read: a body-less
+// function's pointer parameters are assumed to be written through, which
+// would make a []byte(s) conversion anywhere up the call chain a copy.
+func Load{{.Name}}Array(y *[{{.Count}}]{{.Elem}}) {{.Name}} { return *(*{{.Name}})(unsafe.Pointer(y)) }
 
 // Load{{.Name}} loads {{.Article}} {{.Name}} from a slice of at least {{.Count}} {{.Elem}}s.
 func Load{{.Name}}(s []{{.Elem}}) {{.Name}} {
@@ -1138,6 +1141,8 @@ func genTypes(f *bytes.Buffer) {
 	fmt.Fprintln(f, "//go:build goexperiment.simd && wasm")
 	fmt.Fprintln(f)
 	fmt.Fprintln(f, "package archsimd")
+	fmt.Fprintln(f)
+	fmt.Fprintln(f, `import "unsafe"`) // for the Load*Array bodies
 	fmt.Fprintln(f)
 	fmt.Fprintln(f, "// v128 is a tag type that tells the compiler that this is really 128-bit SIMD")
 	fmt.Fprintln(f, "type v128 struct {")
