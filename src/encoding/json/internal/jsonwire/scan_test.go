@@ -14,6 +14,20 @@ import (
 	"unicode/utf8"
 )
 
+// TestScanTables checks that the nibble classification tables encode exactly
+// the predicates that the scalar scanners implement.
+func TestScanTables(t *testing.T) {
+	for i := range 256 {
+		c := byte(i)
+		if got, want := stringTables.classifyScalar(c), isStringByte(c); got != want {
+			t.Errorf("stringTables.classifyScalar(%#02x) = %v, want %v", c, got, want)
+		}
+		if got, want := escapeTables.classifyScalar(c), isEscapeByte(c); got != want {
+			t.Errorf("escapeTables.classifyScalar(%#02x) = %v, want %v", c, got, want)
+		}
+	}
+}
+
 // TestScanPredicates pins the two character classes to the definitions that
 // the rest of the package relies on.
 func TestScanPredicates(t *testing.T) {

@@ -278,7 +278,11 @@ var depsRules = `
 	STR, errors
 	< encoding/json/internal
 	< encoding/json/internal/jsonflags
-	< encoding/json/internal/jsonopts
+	< encoding/json/internal/jsonopts;
+
+	# jsonwire vectorizes its byte scanners with simd/archsimd
+	# under GOEXPERIMENT=simd.
+	encoding/json/internal/jsonopts, math/bits, simd/archsimd
 	< encoding/json/internal/jsonwire
 	< encoding/json/jsontext;
 

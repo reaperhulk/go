@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-//go:build goexperiment.jsonv2
+//go:build goexperiment.jsonv2 && !(goexperiment.simd && amd64)
 
 package jsonwire
 
@@ -10,9 +10,9 @@ package jsonwire
 // It is a constant so that builds without one pay nothing for the check.
 const simdEnabled = false
 
-// simdHardware reports whether the CPU can run the vectorized bulk scanner,
-// and useSIMD whether it is currently in use; benchmarks flip the latter to
-// compare implementations in one process. Neither is ever true here.
+// simdHardware and useSIMD mirror the variables of the same name in the
+// vectorized builds so that tests and benchmarks compile everywhere.
+// They are always false here.
 var (
 	simdHardware = false
 	useSIMD      = false
