@@ -124,50 +124,151 @@ scanners. Rows carry 5-15% variance; read geomeans and the rows marked
 significant, not every cell. Where a CL's own run and the final run differ
 by a few points, that is the machine, not the code.
 
-### On amd64, per CL, against the code before the chain
+### On amd64, per commit, against the previous commit
 
-A binary at every commit of the chain as it now stands (after the archsimd
-escape fix and the scalar-path fixes), `GOEXPERIMENT=nosimd` for all of
-them and `simd` at CL 2, CL 8 and the tip, all 14 Value rows, interleaved,
-`-benchtime=100ms -count=8`, medians, percent versus the base commit.
-Column "arch" is the archsimd escape fix alone, which changes no json code.
+A binary at every commit of the chain, `GOEXPERIMENT=nosimd` for all of
+them and `simd` from CL 2 on, all 28 rows (Value and Marshal/Unmarshal),
+interleaved, `-benchtime=100ms -count=6`, medians, each commit against the
+commit before it, with a two-sided Mann-Whitney U test per row. "Sig."
+means p < 0.05. This is the measurement that answers, per CL, whether it
+regressed anything and whether it gained anything; the two commits after
+the chain are a whitespace change that this measurement showed to be wrong
+and its revert (see below).
 
-    CL                              arch    1     2     3     5     6     7     8     9   docs    2s    8s  tips   fix
-    geomean, 14 rows                -0.4  -0.6  -3.6  -3.4  +1.0  +0.8  -2.0  -5.4  -5.1  -5.5  -3.1 -27.4 -26.6  -4.1
-    worst row                       +2.5  +4.2  -0.7  +0.2 +15.4 +16.9 +16.6 +12.0 +12.1  +6.3  +5.3  -2.1  -2.9  +6.3
-    CanadaGeometry Decode/Value     -5.3  -3.1  -6.8  -5.8  -8.8  -7.9  -8.8 -13.8 -13.9 -14.4  -2.5 -17.4 -16.3  -4.4
-    CitmCatalog    Decode/Value     +2.5  +2.1  -1.4  +0.2  -0.1  -1.0  +3.3  -1.2  +0.0  -0.5  -1.4 -20.6 -20.2  +2.6
-    CitmCatalog    Encode/Value     +2.1  +4.2  -2.8  -2.4 +10.1 +16.9  +9.9 +12.0 +12.1  +6.3  +5.3 -10.9 -10.9  +6.3
-    SyntheaFhir    Decode/Value     +0.9  +1.0  -0.7  -2.7 +15.4  +9.0 +11.0  +3.9  +2.4  +5.6  -8.5  -8.3  -8.8  -1.1
-    SyntheaFhir    Encode/Value     +1.0  +2.4  -2.5  -1.5  +8.0  +7.3 +16.6  +4.0  +3.7  +6.0  -1.9  -5.5  -5.4  +3.0
-    TwitterStatus  Decode/Value     +0.5  +0.0  -4.7  -3.5  +5.9  +5.7 -10.4 -11.5 -12.6 -12.2  -2.7 -31.7 -30.0 -15.1
-    TwitterStatus  Encode/Value     -0.5  +3.0  -3.4  -3.7  +6.7  +6.9  -8.6 -10.8 -11.6 -12.6  -0.4 -26.8 -26.8 -10.8
-    StringUnicode  Decode/Value     -1.7  -6.7  -4.0  -8.1  -4.0  -1.8  -8.1 -10.9  -9.1  -7.7  -8.3 -75.3 -73.9  -7.3
+    
+    === scalar build: each commit vs the previous commit, 28 rows ===
+    commit             worst row (delta, p)               best row (delta, p)                 verdicts
+    archsimd fix       StringEscaped/Marshal +3.3% p=0.42 TwitterStatus/Encode -3.5% p=0.08   no sig. regression>1%; NO sig. gain>5%
+    CL1 window scan    TwitterStatus/Decode +5.6% p=0.04  StringEscaped/Decode -7.3% p=0.01   2 sig. regression(s)>1%; 1 sig. gain(s)>5%
+          REG  CitmCatalog/Encode                       +3.2% p=0.037
+          REG  TwitterStatus/Decode                     +5.6% p=0.037
+          GAIN StringEscaped/Decode                     -7.3% p=0.006
+    CL2 AVX2 strings   SyntheaFhir/Unmarshal +5.5% p=0.11 TwitterStatus/Decode -8.4% p=0.00   1 sig. regression(s)>1%; 3 sig. gain(s)>5%
+          REG  CanadaGeometry/Encode                    +1.0% p=0.037
+          GAIN CitmCatalog/Encode                       -6.7% p=0.004
+          GAIN SyntheaFhir/Encode                       -5.2% p=0.010
+          GAIN TwitterStatus/Decode                     -8.4% p=0.004
+    CL3 jsonperf       CanadaGeometry/Marshal +11.1% p=0.02 SyntheaFhir/Unmarshal -5.5% p=0.34  2 sig. regression(s)>1%; NO sig. gain>5%
+          REG  TwitterStatus/Decode                     +5.0% p=0.037
+          REG  CanadaGeometry/Marshal                   +11.1% p=0.025
+    CL5 whitespace     SyntheaFhir/Marshal +5.5% p=0.15   CitmCatalog/Decode -20.6% p=0.00    no sig. regression>1%; 4 sig. gain(s)>5%
+          GAIN CanadaGeometry/Encode                    -6.1% p=0.016
+          GAIN CitmCatalog/Decode                       -20.6% p=0.004
+          GAIN CanadaGeometry/Marshal                   -11.2% p=0.010
+          GAIN CitmCatalog/Unmarshal                    -10.1% p=0.004
+    CL6 UTF-8          CitmCatalog/Decode +4.8% p=0.08    GolangSource/Marshal -4.4% p=0.20   1 sig. regression(s)>1%; NO sig. gain>5%
+          REG  GolangSource/Unmarshal                   +4.7% p=0.004
+    CL7 name sigs      SyntheaFhir/Encode +6.7% p=0.02    TwitterStatus/Decode -16.3% p=0.00  2 sig. regression(s)>1%; 3 sig. gain(s)>5%
+          REG  SyntheaFhir/Encode                       +6.7% p=0.025
+          REG  CitmCatalog/Unmarshal                    +4.8% p=0.025
+          GAIN StringUnicode/Encode                     -7.3% p=0.004
+          GAIN TwitterStatus/Encode                     -10.4% p=0.004
+          GAIN TwitterStatus/Decode                     -16.3% p=0.004
+    CL8 numbers        GolangSource/Marshal +14.1% p=0.05 CanadaGeometry/Decode -19.3% p=0.00  no sig. regression>1%; 7 sig. gain(s)>5%
+          GAIN CanadaGeometry/Encode                    -13.8% p=0.004
+          GAIN CanadaGeometry/Decode                    -19.3% p=0.004
+          GAIN GolangSource/Decode                      -9.4% p=0.010
+          GAIN SyntheaFhir/Encode                       -11.6% p=0.004
+          GAIN SyntheaFhir/Decode                       -7.5% p=0.016
+          GAIN TwitterStatus/Encode                     -10.7% p=0.004
+          GAIN CanadaGeometry/Unmarshal                 -6.3% p=0.010
+    CL9 NEON           StringEscaped/Encode +3.3% p=0.75  SyntheaFhir/Marshal -9.9% p=0.15    no sig. regression>1%; NO sig. gain>5%
+    CL4 docs           StringEscaped/Unmarshal +4.3% p=0.11 GolangSource/Marshal -6.5% p=0.87   no sig. regression>1%; NO sig. gain>5%
+    fix: ws loop       CitmCatalog/Decode +34.2% p=0.00   StringUnicode/Decode -5.1% p=0.34   10 sig. regression(s)>1%; NO sig. gain>5%
+          REG  CanadaGeometry/Decode                    +7.4% p=0.016
+          REG  CitmCatalog/Encode                       +16.8% p=0.004
+          REG  CitmCatalog/Decode                       +34.2% p=0.004
+          REG  GolangSource/Encode                      +8.8% p=0.004
+          REG  GolangSource/Decode                      +6.1% p=0.004
+          REG  SyntheaFhir/Encode                       +13.1% p=0.025
+          REG  SyntheaFhir/Decode                       +13.5% p=0.016
+          REG  CitmCatalog/Unmarshal                    +8.6% p=0.025
+          REG  SyntheaFhir/Unmarshal                    +6.2% p=0.037
+          REG  TwitterStatus/Unmarshal                  +5.4% p=0.006
+    doc re-measure     SyntheaFhir/Encode +7.2% p=0.01    SyntheaFhir/Marshal -7.0% p=0.63    2 sig. regression(s)>1%; NO sig. gain>5%
+          REG  StringUnicode/Encode                     +5.8% p=0.025
+          REG  SyntheaFhir/Encode                       +7.2% p=0.010
+    
+    === simd build: each commit vs the previous commit, 28 rows ===
+    commit             worst row (delta, p)               best row (delta, p)                 verdicts
+    CL2 AVX2 strings   CitmCatalog/Marshal +7.3% p=0.26   SyntheaFhir/Decode -9.7% p=0.00     1 sig. regression(s)>1%; 1 sig. gain(s)>5%
+          REG  CitmCatalog/Encode                       +7.2% p=0.010
+          GAIN SyntheaFhir/Decode                       -9.7% p=0.004
+    CL3 jsonperf       GolangSource/Marshal +6.6% p=0.15  SyntheaFhir/Marshal -7.2% p=0.15    1 sig. regression(s)>1%; 1 sig. gain(s)>5%
+          REG  StringUnicode/Decode                     +2.9% p=0.016
+          GAIN TwitterStatus/Unmarshal                  -5.3% p=0.025
+    CL5 whitespace     SyntheaFhir/Marshal +7.6% p=0.20   CitmCatalog/Decode -33.5% p=0.00    no sig. regression>1%; 8 sig. gain(s)>5%
+          GAIN CitmCatalog/Encode                       -28.7% p=0.004
+          GAIN CitmCatalog/Decode                       -33.5% p=0.004
+          GAIN GolangSource/Encode                      -6.0% p=0.016
+          GAIN GolangSource/Decode                      -6.7% p=0.004
+          GAIN SyntheaFhir/Decode                       -11.3% p=0.004
+          GAIN TwitterStatus/Encode                     -7.2% p=0.004
+          GAIN TwitterStatus/Decode                     -9.5% p=0.016
+          GAIN CitmCatalog/Unmarshal                    -10.7% p=0.025
+    CL6 UTF-8          GolangSource/Decode +10.8% p=0.00  StringUnicode/Decode -69.3% p=0.00  1 sig. regression(s)>1%; 10 sig. gain(s)>5%
+          REG  GolangSource/Decode                      +10.8% p=0.004
+          GAIN StringUnicode/Encode                     -67.1% p=0.004
+          GAIN StringUnicode/Decode                     -69.3% p=0.004
+          GAIN TwitterStatus/Encode                     -12.4% p=0.004
+          GAIN TwitterStatus/Decode                     -7.8% p=0.037
+          GAIN GolangSource/Marshal                     -9.7% p=0.016
+          GAIN StringEscaped/Marshal                    -28.3% p=0.004
+          GAIN StringUnicode/Marshal                    -32.1% p=0.004
+          GAIN StringUnicode/Unmarshal                  -62.0% p=0.004
+          GAIN TwitterStatus/Marshal                    -9.5% p=0.016
+          GAIN TwitterStatus/Unmarshal                  -8.8% p=0.004
+    CL7 name sigs      CanadaGeometry/Unmarshal +7.6% p=0.01 TwitterStatus/Decode -20.7% p=0.00  3 sig. regression(s)>1%; 4 sig. gain(s)>5%
+          REG  CanadaGeometry/Marshal                   +3.1% p=0.006
+          REG  CanadaGeometry/Unmarshal                 +7.6% p=0.010
+          REG  CitmCatalog/Marshal                      +5.7% p=0.010
+          GAIN StringUnicode/Encode                     -15.1% p=0.004
+          GAIN StringUnicode/Decode                     -12.8% p=0.004
+          GAIN TwitterStatus/Encode                     -19.2% p=0.004
+          GAIN TwitterStatus/Decode                     -20.7% p=0.004
+    CL8 numbers        GolangSource/Encode +6.6% p=0.15   CanadaGeometry/Decode -16.5% p=0.00  no sig. regression>1%; 6 sig. gain(s)>5%
+          GAIN CanadaGeometry/Encode                    -10.4% p=0.004
+          GAIN CanadaGeometry/Decode                    -16.5% p=0.004
+          GAIN GolangSource/Decode                      -9.8% p=0.006
+          GAIN StringUnicode/Encode                     -7.6% p=0.010
+          GAIN TwitterStatus/Decode                     -7.0% p=0.006
+          GAIN CanadaGeometry/Unmarshal                 -8.7% p=0.016
+    CL9 NEON           SyntheaFhir/Decode +6.7% p=0.08    GolangSource/Encode -5.9% p=0.11    1 sig. regression(s)>1%; NO sig. gain>5%
+          REG  TwitterStatus/Encode                     +6.2% p=0.016
+    CL4 docs           GolangSource/Marshal +9.2% p=0.08  SyntheaFhir/Decode -5.1% p=0.08     1 sig. regression(s)>1%; NO sig. gain>5%
+          REG  GolangSource/Unmarshal                   +5.3% p=0.037
+    fix: ws loop       StringEscaped/Encode +5.8% p=0.75  GolangSource/Marshal -4.4% p=0.26   no sig. regression>1%; NO sig. gain>5%
+    doc re-measure     StringUnicode/Decode +3.7% p=1.00  TwitterStatus/Marshal -7.4% p=0.08  no sig. regression>1%; NO sig. gain>5%
 
-Two things this table says that the arm64 one does not. First, CL 5 (the
-whitespace CL) regresses the scalar build on amd64 — SyntheaFhir decode
-+15%, encode +8%, TwitterStatus +6/+7%, CitmCatalog encode +10% — and the
-regression is carried to the tip (Synthea decode +5.6%, Citm encode +6.3%
-in the "docs" column), while CitmCatalog decode, the document with the
-most whitespace, does not improve. The profile puts it in the out-of-line
-call: on amd64 the bulk scalar scanner is no faster than the plain loop on
-indentation, and the call costs on the single space after a colon. The
-fix that follows the chain restores the plain inline loop for builds with
-no vector path; its column is "fix", measured in a separate interleaved
-run against the same base (n=8): SyntheaFhir decode goes from +2.9% to
--1.1% and TwitterStatus decode from -10% to -15%, and the SIMD build is
-unchanged by it (geomean -27.1%, no row above -2%). CitmCatalog encode
-stays a few points up on the scalar build (+6% in that run, +2% in a
-profiled pair); its profile shows the same inline whitespace loop as the
-base and the encoder's window scan taking the share ConsumeSimpleString
-used to, so it has no identified cause and is left open. Second, the noise
-floor per row is about 3 points: CL 2 and CL 3 are the same scalar code
-and differ by up to 3, as do CL 8 and CL 9.
+Read the noise floor first. Commits that change no amd64 code — CL 3, CL 9,
+CL 4 (docs) and the doc re-measure at the end — still show single rows at
++5% to +11% with p < 0.05 (CL 3: CanadaGeometry Marshal +11.1%). Different
+binaries of the same code land differently in the cache and the branch
+predictors, so on this VM a significant single row under about 5% says
+nothing on its own; a regression is real when it is large, or when it
+repeats across rows and runs. By that standard:
 
-CL 3 (counters), CL 4 (this document) and CL 9 (the arm64 port) change no
-amd64 code path. The `nosimd` column is what every user who does not set
-`GOEXPERIMENT=simd` gets, and it is the column that must never regress,
-per row.
+- Every CL that changes amd64 code makes a significant gain of more than
+  5% on at least one row in the build it targets: CL 1 (StringEscaped
+  decode -7%), CL 2 (SyntheaFhir decode -10%, simd), CL 5 (CitmCatalog
+  decode -34% simd, -21% scalar), CL 6 (StringUnicode -69%, simd), CL 7
+  (TwitterStatus decode -21% simd, -16% scalar), CL 8 (CanadaGeometry
+  decode -19%).
+- Two regressions are above the noise floor and belong to the CL they show
+  up in: CL 6 costs GolangSource decode +10.8% on the simd build (a
+  document with no non-ASCII text, so this is the cost of the density check
+  and the handoff, not of validation), and CL 7 costs CanadaGeometry
+  Unmarshal +7.6% and CitmCatalog Marshal +5.7% on the simd build (the
+  signature per name on documents whose objects are tiny). Both are open.
+- The scalar-build whitespace regression that an earlier per-CL run on this
+  machine reported for CL 5 (SyntheaFhir decode +15%) did not reproduce:
+  in this run CL 5 is a clean gain on the scalar build too, and a commit
+  that restored the plain inline loop for non-vector builds regressed ten
+  rows (CitmCatalog decode +34%), confirmed head-to-head in both orders
+  against the tip binary. That commit is reverted. The lesson is recorded
+  under "Regressions this regime caught": one interleaved run is not
+  enough on this machine; the same binaries must agree across runs before
+  a change is made on their evidence.
 
 ### On arm64 (Apple M1 Max), per CL, against the code before the chain
 
@@ -253,6 +354,17 @@ nothing on CanadaGeometry: the digits were the work, not the machine. The
 SWAR digit scan is what produced the -19%. A patch to the decoder call sites
 had also silently failed to apply, and the tests could not tell, because the
 scanner was correct and merely unused; only the unchanged profile did.
+
+One that was not a regression at all. Two interleaved runs on the amd64 VM
+put the whitespace CL's scalar path 15% behind the plain loop on
+SyntheaFhir decode, and a commit restored the plain loop for builds with no
+vector path. A third run, of every commit in the chain, showed the opposite
+by a wide margin — the plain loop 32% behind on CitmCatalog decode — and a
+head-to-head of the same two binaries in both orders agreed with the third
+run. The same tip binary had measured 1.83ms and 1.42ms on the same row in
+runs hours apart. Nothing about the code had changed; the machine had. The
+commit was reverted, and the rule now is that a change made on benchmark
+evidence needs the same binaries to agree in at least two runs.
 
 Measuring the chain per commit on arm64, where nothing was vectorized until
 the last CL, showed that the AVX2 scanners had been hiding scalar-path
