@@ -30,6 +30,19 @@ func (f *ValueFlags) Join(f2 ValueFlags) { *f |= f2 }
 func (f ValueFlags) IsVerbatim() bool    { return f&stringNonVerbatim == 0 }
 func (f ValueFlags) IsCanonical() bool   { return f&stringNonCanonical == 0 }
 
+// ConsumeWhitespace consumes leading JSON whitespace per RFC 7159, section 2.
+func ConsumeWhitespace(b []byte) int {
+	// NOTE: The arguments and logic are kept simple to keep this inlinable.
+	// Minified documents have no whitespace between tokens, and that case is
+	// decided here without a call. Every JSON whitespace byte is <= ' ', so
+	// anything at or below it (which, in valid JSON, is whitespace) goes out
+	// of line, where runs of indentation are skipped in bulk.
+	if len(b) > 0 && b[0] <= ' ' {
+		return consumeWhitespaceLong(b)
+	}
+	return 0
+}
+
 // ConsumeNull consumes the next JSON null literal per RFC 7159, section 3.
 // It returns 0 if it is invalid, in which case ConsumeLiteral should be used.
 func ConsumeNull(b []byte) int {
