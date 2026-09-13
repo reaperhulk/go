@@ -173,7 +173,7 @@ func ClosureIndirect() {
 	g(new(int)) // ERROR "new\(int\) does not escape"
 
 	h := nopFunc
-	h(new(int)) // ERROR "new\(int\) does not escape"
+	h(new(int)) // ERROR "new\(int\) does not escape" "devirtualizing h to nopFunc"
 }
 
 func nopFunc(p *int) {} // ERROR "p does not escape"
@@ -187,7 +187,7 @@ func ClosureIndirect2() {
 	g(new(int)) // ERROR "new\(int\) does not escape"
 
 	h := nopFunc2
-	h(new(int)) // ERROR "new\(int\) does not escape"
+	h(new(int)) // ERROR "new\(int\) does not escape" "devirtualizing h to nopFunc2"
 }
 
 func nopFunc2(p *int) *int { return p } // ERROR "leaking param: p to result ~r0 level=0"

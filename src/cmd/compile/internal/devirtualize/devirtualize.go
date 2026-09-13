@@ -37,6 +37,10 @@ func StaticCall(s *State, call *ir.CallExpr) {
 		return
 	}
 
+	if call.Op() == ir.OCALLFUNC {
+		staticFuncValueCall(call)
+		return
+	}
 	if call.Op() != ir.OCALLINTER {
 		return
 	}
@@ -174,6 +178,26 @@ func StaticCall(s *State, call *ir.CallExpr) {
 
 	// Desugar OCALLMETH, if we created one (#57309).
 	typecheck.FixMethodCall(call)
+}
+
+// staticFuncValueCall rewrites a call through a function value whose
+// value is statically known to be a declared function into a direct
+// call of that function. The common source of such calls is inlining:
+// a parameter of function type bound to a constant function, which the
+// inliner already charges as a cheap call in the expectation that this
+// happens, and which escape analysis already sees through.
+func staticFuncValueCall(call *ir.CallExpr) {
+	if fun, ok := call.Fun.(*ir.Name); ok && fun.Class == ir.PFUNC {
+		return // already direct
+	}
+	fn, ok := ir.StaticValue(call.Fun).(*ir.Name)
+	if !ok || fn.Class != ir.PFUNC {
+		return
+	}
+	if base.Flag.LowerM != 0 {
+		base.WarnfAt(call.Pos(), "devirtualizing %v to %v", call.Fun, fn)
+	}
+	call.Fun = fn
 }
 
 const concreteTypeDebug = false

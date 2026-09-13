@@ -55,7 +55,7 @@ func j(x int) int { // ERROR "can inline j"
 func f2() int { // ERROR "can inline f2"
 	tmp1 := h
 	tmp2 := tmp1
-	return tmp2(0) // ERROR "inlining call to h"
+	return tmp2(0) // ERROR "devirtualizing tmp2 to h" "inlining call to h"
 }
 
 var abc = errors.New("abc") // ERROR "inlining call to errors.New"
